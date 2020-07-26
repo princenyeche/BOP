@@ -61,8 +61,6 @@ virtualenv venv
 # clone the repo
 git clone https://github.com/princenyeche/BOP.git
 cd BOP
-# install all our modules
-pip install -r requirements.txt
 # a Procfile is already included
 git status
 # Add the files which includes Procfile, startup.py, bulkops folder
@@ -73,7 +71,7 @@ heroku create
 heroku addons:create heroku-postgresql:hobby-dev
 git push heroku master
 ```
-Your `requirements.txt` file should download all the necessary modules needed by Python framework. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table above. your DATABASE_URL should be configured for you from the above command.
+Your `requirements.txt` file should download all the necessary modules needed by Python framework on Heroku. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table above. your DATABASE_URL should be configured for you from the above command.
 
 ### Local
 Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
