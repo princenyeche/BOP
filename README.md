@@ -35,6 +35,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 wsgi = imp.load_source('wsgi', 'startup.py')
 application = wsgi.bulk
 ```
+SSH into your Application path and run the `requirements.txt` file to install all the required modules.
+
 In the environment variables, you will need to set it up as below, so python knows what to use anytime you stop or start the Application.
 | <!-- -->    | <!-- -->    |
 |-------------|-------------|
@@ -71,7 +73,7 @@ heroku create
 heroku addons:create heroku-postgresql:hobby-dev
 git push heroku master
 ```
-Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table above. your DATABASE_URL should be configured for you from the above command.
+Your `requirements.txt` file should download all the necessary modules needed by Python framework. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table above. your DATABASE_URL should be configured for you from the above command.
 
 ### Local
 Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
