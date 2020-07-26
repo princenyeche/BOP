@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 wsgi = imp.load_source('wsgi', 'startup.py')
 application = wsgi.bulk
 ```
-SSH into your Application path and run the `requirements.txt` file to install all the required modules.
+SSH into your Application path using the virtualenv and run the `pip install -r requirements.txt` file to install all the required modules.
 
 In the environment variables, you will need to set it up as below, so python knows what to use anytime you stop or start the Application.
 | <!-- -->    | <!-- -->    |
