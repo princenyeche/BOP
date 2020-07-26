@@ -17,7 +17,7 @@ You can be able to launch the application in various ways. either you host it yo
 
 ## **Hosting with Linux**
 ### Cpanel Linux
-You can use any Linux environment that support or has the ability to install python modules and the required WSGI need to run the App. Our recommendation is to use a web hosting service that provides CPanel as it comes preconfigured with `Passenger` WSGI which can be set up within less than 5 mins. Go to Cpanel and find Setup python App.
+You can use any Linux environment that support or has the ability to install python modules and the required WSGI needed to run the App. Our recommendation is to use a web hosting service that provides CPanel as it comes preconfigured with `Passenger` WSGI which can be set up within less than 5 mins. Go to Cpanel and find Setup python App.
 
 ![](https://github.com/princenyeche/BOP/blob/master/img/setup.png)
 
