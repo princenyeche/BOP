@@ -74,7 +74,14 @@ git push heroku master
 Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table above. your DATABASE_URL should be configured for you from the above command.
 
 ### Local
-The most easiest way to have this App, is to run it locally on your device, use the `requirements.txt` file to ensure you have all the modules installed on your machine.
+Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
+```bash
+$: pip --version
+```
+
+If you installed Python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
+
+This is the most easiest way to have this App, by running it locally on your device. use the `requirements.txt` file to ensure you have all the modules installed on your machine.
 ```python
 pip install -r requirements.txt
 ```
