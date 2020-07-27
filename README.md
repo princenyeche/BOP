@@ -15,40 +15,7 @@ Bulk Operations App for Jira is a Cloud based Add-on, which helps in performing 
 ## **Configuration**
 You can be able to launch the application in various ways. either you host it yourself or you can easily run it locally on your machine or download it from Atlassian Marketplace and run it on your Cloud Instance. 
 
-## **Hosting with Linux**
-### Cpanel Linux
-You can use any Linux environment that support or has the ability to install python modules and the required WSGI needed to run the App. Our recommendation is to use a web hosting service that provides CPanel as it comes preconfigured with `Passenger` WSGI which can be set up within less than 5 mins. Go to Cpanel and find Setup python App.
-
-![](https://github.com/princenyeche/BOP/blob/master/img/setup.png)
-
-##### Create an App by clicking on the "Create Application" button
-
-![](https://github.com/princenyeche/BOP/blob/master/img/create_app.png)
-Then, click to edit the App, set your "Application Start file" as `startup.py` and "Application Entry point" as `bulk`. Therefore your `passenger_wsgi.py` file should look like the below:
-```python
-import imp
-import os
-import sys
-
-sys.path.insert(0, os.path.dirname(__file__))
-
-wsgi = imp.load_source('wsgi', 'startup.py')
-application = wsgi.bulk
-```
-SSH into your Application path using the virtualenv and run the `pip install -r requirements.txt` file to install all the required modules.
-
-In the environment variables, you will need to set it up as below, so python knows what to use anytime you stop or start the Application.
-| <!-- -->    | <!-- -->    |
-|-------------|-------------|
-|DATABASE_URL  | mysql+pymysql://youruser:yourpassword@localhost:3306/yourdatabase|
-|FLASK_APP| startup.py|
-|MAIL_SERVER | smtp.example.com |
-|MAIL_PORT | 587 |
-|MAIL_USE_TLS | 1 |
-|MAIL_USERNAME | youremail@example.com|
-|MAIL_PASSWORD | yourpassword |
-|MAIL_SUFFIX | example.com  |
-|SECRET_KEY | secretkey |  
+## **Hosting**
 
 ### Heroku
 Heroku is an easier hosting platform which you can get for free to host this App, simply create an Account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own App running in no time. Assuming you've already logged in to Heroku on your terminal.
@@ -71,7 +38,20 @@ heroku create
 heroku addons:create heroku-postgresql:hobby-dev
 git push heroku master
 ```
-Your `requirements.txt` file should download all the necessary modules needed by Python framework on Heroku. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table above. your DATABASE_URL should be configured for you from the above command.
+Your `requirements.txt` file should download all the necessary modules needed by Python framework on Heroku. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should be configured for you from the above command.
+
+In the environment variables, you will need to set it up as below, so python knows what to use anytime you stop or start the Application.
+| <!-- -->    | <!-- -->    |
+|-------------|-------------|
+|DATABASE_URL  | postgres://youruser:yourpassword@remotehost:5487/yourdatabase|
+|FLASK_APP| startup.py|
+|MAIL_SERVER | smtp.example.com |
+|MAIL_PORT | 587 |
+|MAIL_USE_TLS | 1 |
+|MAIL_USERNAME | youremail@example.com|
+|MAIL_PASSWORD | yourpassword |
+|MAIL_SUFFIX | example.com  |
+|SECRET_KEY | secretkey |  
 
 ### Local
 Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
