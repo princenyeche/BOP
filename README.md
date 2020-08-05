@@ -13,29 +13,28 @@ Bulk Operations App for Jira is a Cloud based Add-on, which helps in performing 
 
 
 ## **Configuration**
-You can be able to launch the application in various ways. either you host it yourself or you can easily run it locally on your machine or download it from Atlassian Marketplace and run it on your Cloud Instance. 
+You can be able to launch the application in various ways. either you host it yourself or you can easily run it locally on your machine or download it from Atlassian Marketplace and run it on your Cloud Instance. You can Install the **Beta release** of the Cloud App from **[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=overview)**
 
 ## **Hosting**
 
 ### Heroku
-Heroku is an easier hosting platform which you can get for free to host this App, simply create an Account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own App running in no time. Assuming you've already logged in to Heroku on your terminal.
+Heroku is an easier hosting platform which you can get for free to host this App, simply create an Account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own App running in no time. Assuming you've already logged in to Heroku on your terminal. you need to have git, if you don't download it. if on macOS use "homebrew", for windows use **[Git for Windows](https://git-for-windows.github.io)**
 ```bash
 # create our App folder
 mkdir App && cd App
-# make a virtual env so we can have pip
-virtualenv venv
-. venv/bin/activate
 # clone the repo
 git clone https://github.com/princenyeche/BOP.git
 cd BOP
 # a Procfile is already included
 git status
-# Add the files which includes Procfile, startup.py, bulkops folder
+# create a heroku app, the below makes a default url
+heroku create <give appname>
+# add a buildpack
+git buildpack:set heroku/python -a <appame>
+# Add the files which includes Procfile, startup.py, bulkops-folder
 git add Procfile, startup.py, <bulkops folder>
 git commit
-# create a heroku app, the below makes a default url
-heroku create
-heroku addons:create heroku-postgresql:hobby-dev
+heroku addons:create heroku-postgresql:hobby-dev -a <appname>
 git push heroku master
 ```
 Your `requirements.txt` file should download all the necessary modules needed by Python framework on Heroku. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should be configured for you from the above command.
@@ -94,3 +93,8 @@ if you would like to run the App on another IP or port local to you, you can spe
 ```bash
 flask run -h 192.168.1.100 -p 8080
 ```
+### Other Linux Hosting
+* You can use other linux Servers as well to install this application online
+
+## LICENSE
+I hope this is clear but if it isn't, please note this software uses **[MIT License](https://github.com/princenyeche/BOP/blob/master/LICENSE)**
