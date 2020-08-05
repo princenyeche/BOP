@@ -68,4 +68,4 @@ Keep track of everything you're doing by visiting the Audit log to see what chan
 
 
 # Support
-* Please report any bugs or issues by raising a **[Support ticket](https://princeh.atlassian.net/servicedesk/customer/portal/5)** or if you have questions.
+* Please report any bugs or issues by raising a **[Support ticket](https://elfapp.website/support)** or if you have questions.
