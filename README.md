@@ -100,5 +100,11 @@ flask run -h 192.168.1.100 -p 8080
 ### Other Linux Hosting
 * You can use other linux Servers as well to install this application online
 
+## SECURITY
+(If using the Online version from Atlassian Marketplace)
+* Since you're accessing your Instance, always make sure you protect your password
+* You can change the API token to "None" after usage, so the connection to your Instance is Inactive.
+* Activate the **Notify me when I login** feature.
+
 ## LICENSE
 I hope this is clear but if it isn't, please note this software uses **[MIT License](https://github.com/princenyeche/BOP/blob/master/LICENSE)**
