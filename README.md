@@ -89,6 +89,10 @@ Once you're done with the configuration, you can load up the App by running the 
 ```bash
 flask run
 ```
+OR simply use
+```bash
+python startup.py
+```
 if you would like to run the App on another IP or port local to you, you can specify the host and port number, so it can be access locally on your network. find your local machine IPv4 address to find your IP, use the `ifconfig` (linux/macOS) or `ipconfig` if on windows.
 ```bash
 flask run -h 192.168.1.100 -p 8080
