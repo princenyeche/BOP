@@ -1154,13 +1154,3 @@ def notify_me():
         db.session.commit()
         flash("Notifications setting changed.")
         return redirect(url_for("config"))
-
-
-@bulk.route("/progress", methods=["GET", "POST"])
-@login_required
-def progress(n, m):
-    n = n
-    while m < 100:
-        if n == 100:
-            n = 100
-        return n
