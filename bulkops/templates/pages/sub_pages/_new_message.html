@@ -1,0 +1,45 @@
+{% if current_user.username == "admin" %}
+      {% else %}
+<!--  new messages -->
+<div class="modal fade" id="messagePost" tabindex="-1" role="dialog" aria-labelledby="messages" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageFmLabel">New Message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form action="" method="post" id="revForm">
+
+      <div class="modal-body">
+        {{ form.hidden_tag() }}
+           <div class="form-group">
+            <label for="receiver" class="col-form-label">Recipient:</label>
+            {% if current_user.username == 'admin'  %}
+           <input type="text" class="form-control send_back" id="receiver" name="receiver" value="" required readonly>
+             {% else %}
+             <input type="text" class="form-control" id="receiver-name" name="receiver-name" value="@BulkOps Team" readonly>
+             <input type="hidden" class="form-control" id="receiver" name="receiver" value="{{ admin.username }}" readonly>
+             {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="subject" class="col-form-label">Subject:</label>
+            <input type="text" class="form-control" name="subject" id="subject" placeholder="Enter a Subject" required>
+          </div>
+          <div class="form-group">
+            <label for="messages" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="messages" name="messages" placeholder="Type a Message, that you want to send!" required></textarea>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-warning">Clear</button>
+        <button type="submit" class="btn btn-success">Send message</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+<!--  end messages -->
+{% endif %}

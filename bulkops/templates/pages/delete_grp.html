@@ -1,0 +1,122 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+  {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('add_groups') }}"><i class="fa fa-user-plus"></i>&nbsp;ADD USERS TO GROUP</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('remove_groups') }}"><i class="fa fa-user-times"></i>&nbsp;REMOVE USERS FROM GROUP</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link " href="{{ url_for('create_groups') }}"><i class="fa fa-users"></i>&nbsp;CREATE GROUPS</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link active" href="{{ url_for('delete_groups') }}"><i class="fa fa-users"></i>&nbsp;DELETE GROUPS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+           
+            <div class="tab-pane container show active" id="delete_group">
+    <br />
+
+       <form class="form-group" action=""  method="post">
+           {{ form.hidden_tag() }}
+        <div class="form-group mx-sm-3 mb-2">
+            <i class="fa fa-users" aria-hidden="true"></i>
+      <label class="sr-only" for="delete_gp">Delete Groups</label>
+      <input class="form-control" id="delete_gp" name="delete_gp" placeholder="Delete a Group. for multiple Groups, separate by comma">
+    <small id="cloudHelp" class="form-text text-muted">Format for multiple group deletion e.g job,computer</small>
+        </div>
+
+           <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.delete_gp.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+           </div>
+
+<div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-danger"> Delete Group </button>
+
+</div>
+
+ </form>
+
+
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>How can I delete a group?</u></b> <br />
+          <ul type="list">
+          <li> You can do so by typing the group name and clicking the remove group button</li>
+          <li> You must know the name of the group by its exact string for the group to be successfully removed.</li>
+      </ul>
+          </div>
+         <div> <b><u>What happens if a user is in a group when I delete it?</u></b> <br />
+          <ul type="list">
+          <li> The users will be removed from the group completely.</li>
+      </ul>
+          </div>
+         <div> <b><u>Can I delete multiple groups?</u></b> <br />
+          <ul type="list">
+          <li> Yes, you can, to do so type the name of the group separated by a comma e.g. cpu,magnet.</li>
+          <li> If the group name doesn't exist, an error is return that group cannot be found</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

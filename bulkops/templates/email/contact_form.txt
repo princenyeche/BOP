@@ -1,0 +1,13 @@
+Hi BulkOps Admin,
+
+The Below user has sent a message to you:
+
+Subject : {{ form.subject.data }}
+
+Reply-Email: {{ form.email.data }}
+
+Message : {{ form.message.data }}
+
+Courtesy,
+
+The BulkOps App Team

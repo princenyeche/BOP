@@ -1,0 +1,18 @@
+<p>Hi {{default.username.capitalize()}},</p>
+
+This is to inform you that your account has been Generated:
+<div>
+
+    <b>Username:</b> {{ default.username }} <br />
+
+    <b>Password:</b> <strong>{{ x  }}</strong>  <br />
+    Please reset the password <a href="{{ url_for('reset_request', _external=True) }}">here</a><br />
+
+    <b>Date:</b> {{ date }} <br />
+
+</div>
+<p>Access your account by logging in <a href="{{ url_for('signin', _external=True) }}">here</a>
+</p>
+<br/>
+<p>Cheers,</p>
+<p>The BulkOps App Team</p>

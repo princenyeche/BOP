@@ -1,0 +1,201 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Change your Site settings!</strong> You can update your API token & Notification Configuration.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+   {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% else %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ message }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('config') }}"><span class="fa fa-bell"></span>&nbsp;Configurations</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('settings') }}"><span class="fa fa-lock"></span>&nbsp;Security</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('account_delete') }}"><i class="fa fa-trash"></i>&nbsp;Delete Account</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane container show active" id="config">
+<br />
+ <div class="row">
+    <div class="col">
+      <div class="card" style="width: 18rem;">
+   {% if data.status_code == 200 %}
+   <img class="card-img-top" src="{{ load_data['avatarUrls']['32x32'] }}" alt="User Avatar">
+          {% else %}
+           <img class="card-img-top" src="{{ user.avatar(64) }}" alt="User Avatar">
+          {% endif %}
+  <div class="card-body">
+    <p class="card-text"></p>
+        <button type="button" class="btn btn-primary">Username: {{ current_user.username.capitalize() }}</button>
+  </div>
+</div>
+    </div>
+    <div class="col">
+      <div class="input-group mb-3 shadow-lg p-3 mb-5 bg-white rounded justify-content-center">
+    <div class="form-group mx-sm-3 mb-2">
+     <div class="input-group mb-3">
+   <input type="password" class="form-control" id="token" placeholder="Edit API Token" value="*token_encrypted*" readonly>
+    <div class="input-group-append">
+    <span class="btn btn-success" id="apitoken" data-toggle="modal" style="" data-target="#bulktoken">Edit Token</span>
+  </div>
+        </div>
+
+
+         <div class="input-group mb-3">
+   <input type="text" class="form-control" id="token_status" placeholder="status" value="TOKEN STATUS" readonly>
+    <div class="input-group-append">
+   {% if data.status_code == 200 %}<span class="btn btn-success">Active</span>
+        {% else %}
+        <span class="btn btn-danger">Inactive</span>
+        {% endif %}
+  </div>
+        </div>
+
+
+         <div class="input-group mb-3">
+   <input type="text" class="form-control" id="total_number" placeholder="number" value="RECEIVED MESSAGES" readonly>
+    <div class="input-group-append">
+   {% if r_msg %}
+    <span class="btn btn-primary"> {{ r_msg }}
+    </span>
+    {% else %}
+    <span class="btn btn-warning"> No Data </span>
+    {% endif %}
+  </div>
+        </div>
+
+        {% include 'config/notify_me.html' %}
+  </div>
+</div>
+    </div>
+  </div>
+<br />
+          <div class="row">
+    <div class="col">
+     <!-- Adding this in future
+     <button type="button" class="btn btn-primary">Last Login: </button>
+     -->
+    </div>
+
+  </div>
+
+
+
+<script>
+$(document).ready(function() {
+   $('#configForm').on('change', function() {
+      $('#configForm').submit();
+      });
+   });
+</script>
+        </div>
+  </div>
+</div>
+
+
+
+<script type="text/javascript">
+function delete() {
+window.location.href="{{ url_for('logout') }}"
+
+}
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>What can I change?</u></b> <br />
+          <ul type="list">
+          <li> You can update your token here</li>
+          <li> You can toggle the option to receive notification anytime you login to the App.</li>
+      </ul>
+          </div>
+          <div> <b><u>Where do I get a Token From?</u></b> <br />
+          <ul type="list">
+          <li> You can generate a token by visiting <a href="https://id.atlassian.com/manage/api-tokens" target="_blank">https://id.atlassian.com/manage/api-tokens</a></li>
+      </ul>
+          </div>
+           <div> <b><u>How do all these work?</u></b> <br />
+          <ul type="list">
+          <li> By using your API token, the App is able to access Atlassian API's</li>
+          <li> You make an action and we send a request to Atlassian's API and capture the response.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal for token page-->
+<div class="modal fade" id="bulktoken">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">TOKEN</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ <!-- Modal body -->
+
+      <div class="modal-body">
+        Please enter your New token on the form below<br />
+     {% include 'users/token.html' %}
+
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end token tab -->
+{% endblock %}

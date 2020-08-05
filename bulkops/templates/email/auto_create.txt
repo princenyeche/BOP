@@ -1,0 +1,14 @@
+Hi {{default.username.capitalize()}},
+
+This is to inform you that your account has been Generated:
+Username: {{ default.username }}
+
+Password: {{ x }}
+Please reset it here on this link {{ url_for('reset_request', _external=True) }}
+
+Date: {{ date }}
+
+Access your account by logging on this link {{ url_for('signin', _external=True) }}
+
+Cheers,
+The BulkOps App Team

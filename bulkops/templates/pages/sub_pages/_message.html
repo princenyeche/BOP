@@ -1,0 +1,40 @@
+<div class="modal fade" id="messageFm" tabindex="-1" role="dialog" aria-labelledby="contact" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageFmLabel">Messages</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+       <div class="list-group">
+           {% set msgs = current_user.received_messages.order_by(Messages.timestamp.desc()).limit(5).all() %}
+           {% if msgs %}
+          {% for m in msgs %}
+  <a href="{{ url_for('i_messages', id=m['id']) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ m.subject }}</h5>
+      <small> {{ moment(m.timestamp).fromNow() }} </small>
+    </div>
+    <p class="mb-1">{{ m.body|truncate(80, False, '...', 0) }}</p>
+    <small>Sent by User @{% if m.sender is none() %}FormerUser {% else %}{{ m.sender.username.capitalize() }} {% endif %}</small>
+  </a>
+             {% endfor %}
+           {% else %}
+               <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">No Messages Available</h5>
+    </div>
+           {% endif %}
+
+</div>
+
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary" style="color: white;" href="{{ url_for('messages') }}">View Messages</a>
+      </div>
+    </div>
+  </div>
+</div>

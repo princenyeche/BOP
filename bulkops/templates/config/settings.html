@@ -1,0 +1,161 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Change your Site settings!</strong> You can only change your Instance URL or Password below.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+   {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('config') }}"><span class="fa fa-bell"></span>&nbsp;Configurations</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('settings') }}"><span class="fa fa-lock"></span>&nbsp;Security</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('account_delete') }}"><i class="fa fa-trash"></i>&nbsp;Delete Account</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+    <div class="tab-pane container show active" id="security">
+      <form class="form-group"  action="" method="post">
+          {{ form.hidden_tag() }}
+         <div class="form-group mx-sm-3 mb-2">
+    <label for="email" class="sr-only">Email Address</label>
+    <i class="fa fa-envelope" aria-hidden="true"></i>
+    <input type="text" class="form-control" name="email" id="email" value="{{ form.email.data }}" readonly>
+    </div>
+          <div class="form-group mx-sm-3 mb-2">
+    <label for="instances" class="sr-only">Instances</label>
+    <i class="fa fa-server" aria-hidden="true"></i>
+    <input type="text" class="form-control" name="instances" id="instances" value="{{ form.instances.data }}">
+  <small id="cloudHelp" class="form-text text-muted">Instance URL should be in format e.g. nexusfive.atlassian.net</small>
+    </div>
+          <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.instances.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+          </div>
+        <!-- hidden -->
+
+    <div class="form-group mx-sm-3 mb-2">
+      <i class="fa fa-key" aria-hidden="true"></i>
+    <label for="password" class="sr-only">Password</label>
+    <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+        <small id="passHelp" class="form-text text-muted">Type a New Password to Change it or Enter Current Password to save settings!</small>
+    </div>
+          <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.password.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+          </div>
+
+          <div class="form-group mx-sm-3 mb-2">
+      <i class="fa fa-key" aria-hidden="true"></i>
+    <label for="password2" class="sr-only">Confirm Password</label>
+    <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm Password">
+<small id="pass2Help" class="form-text text-muted">Type the same value as above for Password Field!</small>
+          </div>
+<div class="form-group mx-sm-3 mb-2">
+          {% for error in form.password2.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+</div>
+
+          <div class="form-group mx-sm-3 mb-2">
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+          </div>
+
+     </form>
+    </div>
+  </div>
+</div>
+
+
+
+<script type="text/javascript">
+function delete() {
+window.location.href="{{ url_for('logout') }}"
+
+}
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>What can I change?</u></b> <br />
+          <ul type="list">
+          <li> You can change your Instance name and Password</li>
+          <li> For you to change your Instance name, you will need to type in your current password or a new password</li>
+      </ul>
+          </div>
+         <div> <b><u>When I change my Password, Why am I still logged In?</u></b> <br />
+          <ul type="list">
+          <li> The changes to your password updates the token stored, so no logout is initiated.</li>
+      </ul>
+          </div>
+         <div> <b><u>Can I delete my Account?</u></b> <br />
+          <ul type="list">
+          <li> Yes, you have the right to delete your account, once done it cannot be reversed.</li>
+          <li> Once a deletion is initiated, it removes any traces of your account</li>
+          <li> We do not store any meta data, so once a deletion happens it is gone.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

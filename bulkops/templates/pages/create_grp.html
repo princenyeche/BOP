@@ -1,0 +1,118 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+  {% for message in get_flashed_messages() %}
+     {% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('add_groups') }}"><i class="fa fa-user-plus"></i>&nbsp;ADD USERS TO GROUP</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('remove_groups') }}"><i class="fa fa-user-times"></i>&nbsp;REMOVE USERS FROM GROUP</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link active" href="{{ url_for('create_groups') }}"><i class="fa fa-users"></i>&nbsp;CREATE GROUPS</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link " href="{{ url_for('delete_groups') }}"><i class="fa fa-users"></i>&nbsp;DELETE GROUPS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+
+       <div class="tab-pane container show active" id="credel">
+           <br />
+
+       <form class="form-group" action=""  method="post">
+           {{ form.hidden_tag() }}
+        <div class="form-group mx-sm-3 mb-2">
+            <i class="fa fa-users" aria-hidden="true"></i>
+      <label class="sr-only" for="group">Create Groups</label>
+      <input class="form-control" name="group" id="group" placeholder="Create a Group. for multiple Groups, separate by comma">
+             <small id="cloudHelp" class="form-text text-muted">Format for multiple group creation e.g. man,woman,cat</small>
+    </div>
+           <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.group.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+           </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-success"> Create Group </button>
+ </div>
+
+ </form>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>How can I create a Group?</u></b> <br />
+          <ul type="list">
+          <li> You can start by typing the name of the Group you want to create</li>
+          <li> Avoid using &lt;space&gt; characters in the word.</li>
+      </ul>
+          </div>
+         <div> <b><u>How can I create Multiple groups?</u></b> <br />
+          <ul type="list">
+          <li> To create multiple groups, separate the words by a comma e.g.nexusfive,atlassian,space-walk</li>
+      </ul>
+          </div>
+         <div> <b><u>Can I use Special Characters in the Group Name</u></b> <br />
+          <ul type="list">
+          <li> Yes, you can use Special characters such as "@", "$", "#". However this might cause undesirable result when adding users to the group.</li>
+          <li> We can nicely, format the special characters but try not to depend on it.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

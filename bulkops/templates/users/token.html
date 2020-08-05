@@ -1,0 +1,11 @@
+ <form class="form-group" action="{{ url_for('tokens') }}"  method="post">
+        <div class="form-group mx-sm-3 mb-2">
+            {{ form.hidden_tag() }}
+      <label class="sr-only" for="token">Token</label>
+      <input type="text" class="form-control form-control-lg" name="token" id="token" placeholder="Edit API Token" required>
+    </div>
+
+     <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-success"> SAVE </button>
+     </div>
+ </form>

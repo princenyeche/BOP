@@ -1,0 +1,20 @@
+<form action="{{ url_for('notify_me') }}" id="configForm" method="post">
+           {{ form.hidden_tag() }}
+           <div class="input-group mb-3">
+  <select class="custom-select" name="notify_me" id="notify_me">
+    <option selected>Notify me when I login.</option>
+    <option value="Yes" onchange="document.getElementById('configForm').submit()">Yes</option>
+    <option value="No" onchange="document.getElementById('configForm').submit()">No</option>
+  </select>
+  <div class="input-group-append">
+    <label class="{% if form.notify_me.data == 'Yes' %}btn btn-success
+           {% elif form.notify_me.data == 'No' %}btn btn-danger
+           {% else %}btn btn-secondary{% endif %}" for="notify_me">
+        {{ form.notify_me.data }}
+</label>
+
+  </div>
+
+</div>
+
+</form>

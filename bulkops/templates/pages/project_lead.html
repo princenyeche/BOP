@@ -1,0 +1,140 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+ {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('projects')}}"><i class="fa fa-trash"></i>&nbsp;DELETE PROJECTS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('delete_issue')}}"><i class="fa fa-eraser"></i>&nbsp;DELETE JIRA ISSUES</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link active" href="{{ url_for('project_lead')}}"><i class="fa fa-user"></i>&nbsp;CHANGE PROJECT LEADS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+       <div class="tab-pane container show active" id="leads">
+ <br />
+         <form class="form-group" action=""  method="post">
+        {{ form.hidden_tag() }}
+         <div class="form-group mx-sm-3 mb-2">
+      <i class="fa fa-folder" aria-hidden="true"></i>
+    <label for="project" class="sr-only">Project Key or Id</label>
+    <input type="text" class="form-control" id="project" name="project" placeholder="Enter the Project Key or Id"  value="">
+    </div>
+<div class="form-group mx-sm-3 mb-2">
+             {% for error in form.project.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+</div>
+             <div class="form-group mx-sm-3 mb-2">
+  <div class="input-group-prepend">
+      <i class="fa fa-exchange" aria-hidden="true"></i>
+    <label for="assignee" class="sr-only">Options</label>
+  </div>
+  <select class="custom-select" id="assignee" name="assignee">
+      <option selected value="PROJECT_LEAD">Choose Assignee Type </option>
+    <option value="PROJECT_LEAD">Project Lead</option>
+    <option value="UNASSIGNED">Unassigned</option>
+  </select>
+      <small id="projectHelp" class="form-text text-muted">Assignee Type is set as "Project Lead" by default, if no option is chosen!</small>
+</div>
+
+       <div class="form-group mx-sm-3 mb-2">
+      <i class="fa fa-address-card-o" aria-hidden="true"></i>
+    <label for="aaid" class="sr-only">AccountId</label>
+    <input type="text" class="form-control" id="aaid" name="aaid" placeholder="Enter the Project Lead Atlassian AccountId" value="">
+           <small id="cloudHelp" class="form-text text-muted">Format of AccountId is in alphanumeric e.g 5e0a04330242870e996e6221</small>
+    </div>
+ <div class="form-group mx-sm-3 mb-2">
+             {% for error in form.aaid.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+            {% endfor %}
+ </div>
+
+<div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-success"> Change Project Lead </button>
+    &nbsp; <a class="btn btn-success" href="{{ url_for('bulk_lead')}}"> Bulk Change Project Lead </a>
+</div>
+
+ </form>
+
+
+        </div>
+
+
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>What do I need change a Project Lead?</u></b> <br />
+          <ul type="list">
+          <li> You will need the project key or id and the accountId of the new lead user</li>
+          <li> You will also need access to Administer Jira Project in order to edit it</li>
+      </ul>
+          </div>
+         <div> <b><u>What does the option do?</u></b> <br />
+          <ul type="list">
+          <li> The option let's you decide if you want the project lead to have issues automatically assigned when the Assignee type is "Project Lead" or leave it unassigned.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

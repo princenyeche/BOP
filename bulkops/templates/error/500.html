@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Internal Server Error!</strong> The Administrator has been notified of this Problem
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div style="text-align: center">
+
+<span class="fa-stack fa-5x">
+  <i class="fa fa-free-code-camp fa-stack-1x text-warning"></i>
+
+</span>
+  <h1 style="margin:2px; padding: 4px; width: auto"> 500 ERROR </h1>
+<h2 style="margin:2px; padding: 4px; width: auto"> INTERNAL SERVER ERROR  </h2>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>Why am I seeing this Page?</u></b> <br />
+          <ul type="list">
+          <li> You have reached a page which either has some errors generated on it. if an error is found, it is sent to the Admin of the App</li>
+            <li> Most likely you have selected a wrong delimiter when uploading a CSV file which doesn't tally with what the file has</li>
+            <li> You sent a request in the form, which broke the request being sent</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

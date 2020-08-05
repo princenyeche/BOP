@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% for msg in get_flashed_messages() %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Info!</strong> {{ msg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+ <form class="form-signin" action="" name="signForm" method="post" novalidate>
+         <span class="icon-center" style="margin: 0px 0px 0px 25px"> <i class="fa fa-5x fa-user-circle"></i></span>
+       <h1 class="h3 mb-3 font-weight-normal" style="margin: 0px 0px 0px 40px">Please Sign In</h1>
+        {{ form.hidden_tag() }}
+         <div class="input-group">
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+             <small id="userHelp" class="form-text text-muted">Enter your username </small>
+            {% for error in form.username.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+         </div>
+        <div class="input-group">
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}<br>
+            {% for error in form.password.errors %}
+
+  <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+        </div>
+
+        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p> Forgot your Password? <a href="{{ url_for('reset_request') }}">Reset it here</a></p>
+     <button class="btn btn-lg btn-primary btn-block" type="submit" style="width: 280px;"> Sign In <i class="fa fa-lock"></i></button>
+      <span class="mt-5 mb-3 text-muted" style="margin: 0px 0px 0px 80px">&copy;{{ copy }}</span>
+
+     </form>
+
+{% endblock %}
+

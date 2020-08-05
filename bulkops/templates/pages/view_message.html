@@ -1,0 +1,163 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+  {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('messages') }}"><i class="fa fa-envelope-open"></i>&nbsp;INBOX</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('sent_messages') }}"><i class="fa fa-mail-reply"></i>&nbsp;SENT MESSAGES</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link " href="{{ url_for('stats') }}"><i class="fa fa-bar-chart"></i>&nbsp;STATS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+
+            <div class="tab-pane container show active" id="view">
+    <br />
+<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+   {% if current_user.username == "admin" %}
+      {% else %}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#messagePost"><i class="fa fa-edit"></i> New Message</button>
+    {% endif %}
+  </div>
+</div>
+              <br />
+   {% if view %}
+<div class="list-group">
+
+   <div class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ view.subject }}</h5>
+      <small> {{ moment(view.timestamp).fromNow() }} </small>
+    </div>
+    <p class="mb-1">{{ view.body }}</p>
+     {% if current_user.username == "admin" and url_path == 1 %}
+     <small> Reply to User <a href="#" data-toggle="modal" data-target="#messagePost">@{{ view.sender.username.capitalize() }}</a>
+ <script>
+ $(document).ready(function() {
+   $('#revForm').on('mouseover', function() {
+      $('input#receiver').val("{{ view.sender.username }}");
+      });
+   });
+</script>
+         {% else %}
+         <small> Sent by User @{% if view.sender is none() %}FormerUser {% else %}{{ view.sender.username.capitalize() }} {% endif %} </small>
+    {% endif %}
+    </small>  <br />
+        <small><button type="button" class="btn btn-warning btn-sm" onclick="javascript:history.go(-1);"><i class="fa fa-history"></i> Go Back</button> </small>
+  </div>
+</div>
+              {% endif %}
+
+
+
+
+    </div>
+
+  </div>
+</div>
+
+<!-- faq modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>What can I do while viewing a Message?</u></b> <br />
+          <ul type="list">
+          <li> Click on New Messages button to write a new message</li>
+          <li> Type your message and send it to us for any feedbacks or comments.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  end faq -->
+
+
+<!--  new messages -->
+<div class="modal fade" id="messagePost" tabindex="-1" role="dialog" aria-labelledby="messages" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageFmLabel">New Message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form action="" method="post" id="revForm">
+
+      <div class="modal-body">
+        {{ form.hidden_tag() }}
+           <div class="form-group">
+            <label for="receiver" class="col-form-label">Recipient:</label>
+            {% if current_user.username == 'admin'  %}
+           <input type="text" class="form-control send_back" id="receiver" name="receiver" value="" required readonly>
+             {% else %}
+             <input type="text" class="form-control" id="receiver-name" name="receiver-name" value="@BulkOps Team" readonly>
+             <input type="hidden" class="form-control" id="receiver" name="receiver" value="{{ admin.username }}" readonly>
+             {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="subject" class="col-form-label">Subject:</label>
+            <input type="text" class="form-control" name="subject" id="subject" placeholder="Enter a Subject" required>
+          </div>
+          <div class="form-group">
+            <label for="messages" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="messages" name="messages" placeholder="Type a Message, that you want to send!" required></textarea>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-warning">Clear</button>
+        <button type="submit" class="btn btn-success">Send message</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+<!--  end messages -->
+
+{% endif %}
+{% endblock %}

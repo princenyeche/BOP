@@ -1,0 +1,123 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+  {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('messages') }}"><i class="fa fa-envelope-open"></i>&nbsp;INBOX</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('sent_messages') }}"><i class="fa fa-mail-reply"></i>&nbsp;SENT MESSAGES</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link active" href="{{ url_for('stats') }}"><i class="fa fa-bar-chart"></i>&nbsp;STATS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+
+            <div class="tab-pane container show active" id="sent_messages">
+    <br />
+<div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+     {% if current_user.username == "admin" %}
+      {% else %}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#messagePost"><i class="fa fa-edit"></i> New Message</button>
+    {% endif %}
+</div>
+</div>
+                <br />
+<ul class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Total Number of Received Messages
+    {% if r_msg %}
+    <span class="badge badge-primary badge-pill"> {{ r_msg }}
+    </span>
+    {% else %}
+    <span class="badge badge-primary badge-pill"> No Data </span>
+    {% endif %}
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Total Number of Sent Messages
+    {% if s_msg %}
+    <span class="badge badge-primary badge-pill"> {{ s_msg }}
+    </span>
+    {% else %}
+    <span class="badge badge-primary badge-pill"> No Data </span>
+    {% endif %}
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    Last Message Received Date
+   {% if t_msg %}
+    <span class="badge badge-primary badge-pill"> {% for n in t_msg %} {{ moment(n.timestamp).format('LLL') }}  {% endfor %}</span>
+    {% else %}
+    <span class="badge badge-primary badge-pill"> No timestamp </span>
+    {% endif %}
+  </li>
+</ul>
+
+
+
+    </div>
+
+  </div>
+</div>
+
+<!-- FAQ Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>What are these Statistics?</u></b> <br />
+          <ul type="list">
+          <li> The Stats on this page, shows you what you've been doing</li>
+          <li> It displays the number of receiver or sent Messages</li>
+            <li> It also displays the last time you received a message</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'pages/sub_pages/_new_message.html' %}
+
+
+{% endif %}
+{% endblock %}

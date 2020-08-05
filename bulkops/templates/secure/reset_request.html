@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+ <form class="form-signin" name="resetForm" action="" method="post" novalidate>
+         <span class="icon-center" style="margin: 0px 0px 0px 25px"> <i class="fa fa-5x fa-user-circle"></i></span>
+       <h1 class="h3 mb-3 font-weight-normal" style="margin: 0px 0px 0px 50px">Reset Email</h1>
+        {{ form.hidden_tag() }}
+         <div class="input-group">
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}<br>
+             <small id="userHelp" class="form-text text-muted">Enter your Registered Email </small>
+            {% for error in form.email.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+         </div>
+<br />
+     <button class="btn btn-lg btn-success btn-block" type="submit" style="width: 280px;"> Reset Password <i class="fa fa-lock"></i></button>
+      <span class="mt-5 mb-3 text-muted" style="margin: 0px 0px 0px 80px">&copy;{{ copy }}</span>
+
+     </form>
+
+{% endblock %}
+

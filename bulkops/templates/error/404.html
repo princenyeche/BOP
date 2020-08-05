@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+  <strong>Not Found!</strong> It seems, we couldn't find what you were looking for
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div style="text-align: center">
+
+<span class="fa-stack fa-5x">
+  <i class="fa fa-chain-broken fa-stack-2x"></i>
+  <i class="fa fa-file fa-stack-1x text-warning"></i>
+
+</span>
+  <h1 style="margin:2px; padding: 4px; width: auto"> 404 ERROR </h1>
+<h2 style="margin:2px; padding: 4px; width: auto"> PAGE NOT FOUND </h2>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>Why am I seeing this Page?</u></b> <br />
+          <ul type="list">
+          <li> You have reached a page which does not exist</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

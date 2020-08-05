@@ -1,0 +1,106 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %}{{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+  <strong>View the Audit Log!</strong> You can view the changes that you have performed, by searching below
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<table class="table shadow-lg p-3 mb-5 bg-white rounded" style="overflow-y: hidden">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Author</th>
+      <th scope="col">Activity</th>
+      <th scope="col">Events </th>
+      <th scope="col">Date </th>
+    </tr>
+  </thead>
+  <tbody>
+  {% if logs %}
+  {% for a in logs %}
+    <tr>
+      <td><span class="badge badge-light">{{ a.display_name }}</span></td>
+      <td> <span class="badge badge-light">{{ a.activity}}</span></td>
+      <td> <span class="badge badge-light">{{ a.audit_log }} </span></td>
+      <td> <span class="badge badge-light">{{ moment(a.timestamp).format('LLL') }}</span></td>
+    </tr>
+
+  {% endfor %}
+  {% else %}
+  <tr>
+      <td> <b>No Data is Available</b></td>
+  </tr>
+  {% endif %}
+  </tbody>
+</table>
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    <li class="page-item">
+       {% if prev_url %}
+      <a class="page-link" href="{{ prev_url }}">Previous</a>
+      {% endif %}
+    </li>
+    <li class="page-item"><a class="page-link" href="#"><i class="fa fa-sort" aria-hidden="true"></i></a></li>
+    <li class="page-item">
+     {% if next_url %}
+      <a class="page-link" href="{{ next_url }}">Next</a>
+       {% endif %}
+    </li>
+  </ul>
+</nav>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>Where is this Data Stored?</u></b> <br />
+          <ul type="list">
+          <li> The Logs from the Audit is stored to the database associated with this App.</li>
+          <li> Each request that is sent out, is logged so you can know the changes done with the App.</li>
+      </ul>
+          </div>
+         <div> <b><u>What are those codes on Events Column?</u></b> <br />
+          <ul type="list">
+          <li> These codes are called Status codes and they represent responses to changes.</li>
+        <ul type="square">
+          <li>  Status <span class="badge badge-success">200</span> means a request is successful</li>
+           <li>  Status <span class="badge badge-primary">201</span> means a request fulfilled or completed</li>
+           <li>  Status <span class="badge badge-secondary">204</span> means a request is done</li>
+            <li>  Status <span class="badge badge-danger">400</span> means request will not be processed</li>
+           <li>  Status <span class="badge badge-danger">401</span> means request is<i class="text-danger"> Unauthorized</i></li>
+           <li>  Status <span class="badge badge-light">403</span>means the request is not accepted</li>
+           <li>  Status <span class="badge badge-warning">404</span> means the request cannot be found</li>
+           <li>  Status <span class="badge badge-dark">500</span> means an Internal Server Error occurred</li>
+            <li>  Status <span class="badge badge-info">503</span> means a Service is unavailable</li>
+      </ul>
+        <li> These codes are called Status codes and they represent responses to changes.</li>
+      </ul>
+          </div>
+         <div> <b><u>What is the Activity Column?</u></b> <br />
+          <ul type="list">
+          <li> This shows what action was done on the App.</li>
+          <li> This information is stored against your user profile.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

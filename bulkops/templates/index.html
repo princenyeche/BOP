@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title> {% block title %}{% endblock %}</title>
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Bulk Operations App is a Jira Cloud based Add-on, which can be downloaded for Free.">
+    <meta name="author" content="Prince Nyeche">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='progress.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='progress.js') }}"></script>
+
+<style>
+.menu-change {
+background:#333FFF;
+position: relative;
+top: 0px;
+width: 100%;
+margin-top: 0px;
+margin-left: 0px;
+margin-right: 0px;
+padding: 5px;
+}
+
+.menu-header-color {
+  color: #FFFFFF;
+}
+.menu-header-color:hover{
+  color: #0B0B0B;
+  font-weight: bold;
+}
+.navbar-move-right {
+
+}
+.navbar-move-center {
+
+}
+
+{% if current_user.is_anonymous %}
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+span.icon-center {
+position: relative;
+left: 65px;
+}
+
+.sign-error {
+  display: none;
+}
+.sign-okay {
+  display: none;
+}
+{% endif %}
+.logo_text {
+font: 24px Impact, sans-serif;
+}
+
+.progress {
+display: block;
+}
+</style>
+    {{ moment.include_moment() }}
+
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-collapse navbar-expand-sm menu-change shadow p-3 mb-5 bg-primary rounded"> <!-- menu -->
+ <div class="container-fluid">
+    <div class="navbar-header">
+     <a class="navbar-brand menu-header-color logo_text" href="#" onclick="javascript:bulkhome();">
+         <span class="fa-stack fa-lg">
+  <i class="fa fa-cog fa-spin fa-3x fa-fw fa-stack-2x"></i>
+  <i class="fa fa-microchip fa-stack-1x text-primary"></i>
+</span>BULKOPS</a>
+   </div>
+        <!-- Toggler/collapsibe Button -->
+ <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+   <span class="fa fa-bars menu-header-color"></span>
+ </button>
+     {% if current_user.is_anonymous %}
+  <div class="collapse navbar-collapse nav-bar-move-center" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link menu-header-color" href="#" data-toggle="modal" data-target="#myAbout"><i class="fa fa-podcast"></i>&nbsp;About </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-header-color"  href="#" onclick="javascript:bulksignup();"><i class="fa fa-check-square-o"></i>&nbsp;Sign up</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-header-color" href="#" onclick="javascript:bulksignin();"><i class="fa fa-sign-in"></i>&nbsp;Sign in</a>
+      </li>
+
+         <li class="nav-item">
+        <a class="nav-link menu-header-color" href="#" data-toggle="modal" data-target="#contactFm"><i class="fa fa-comment"></i>&nbsp;Contact Us</a>
+      </li>
+
+    </ul>
+  </div>
+
+     {% else %}
+      <div class="collapse navbar-collapse nav-bar-move-center" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link menu-header-color" href="{{ url_for('index') }}"><i class="fa fa-home"></i>&nbsp;Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-header-color" href="{{ url_for('audit') }}"><i class="fa fa-line-chart"></i>&nbsp;Audit Log</a>
+      </li>
+
+         <li class="nav-item dropdown">
+        <a class="nav-link menu-header-color dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-o"></i>&nbsp;Users</a>
+             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                 <a class="dropdown-item" href="{{ url_for('users') }}"><i class="fa fa-plus text-success"></i> Create User</a>
+                 <a class="dropdown-item" href="{{ url_for('delete_users') }}"><i class="fa fa-trash text-danger"></i> Delete User</a>
+          <a class="dropdown-item" href="{{ url_for('bulk_users') }}"><i class="fa fa-plus-square text-success"></i> Bulk Create Users</a>
+          <a class="dropdown-item" href="{{ url_for('bulk_delete') }}"><i class="fa fa-ban text-danger"></i> Bulk Delete Users</a>
+
+        </div>
+      </li>
+         <li class="nav-item dropdown">
+        <a class="nav-link menu-header-color dropdown-toggle" href="#" id="navbarDropdownMenuLink1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-group"></i>&nbsp;Groups</a>
+             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink1">
+                 <a class="dropdown-item" href="{{ url_for('add_groups') }}"><i class="fa fa-plus text-success"></i> Add User</a>
+                 <a class="dropdown-item" href="{{ url_for('remove_groups') }}"><i class="fa fa-trash text-danger"></i> Remove User</a>
+          <a class="dropdown-item" href="{{ url_for('bulk_add') }}"><i class="fa fa-user-plus text-success"></i> Bulk Add Users</a>
+          <a class="dropdown-item" href="{{ url_for('bulk_remove') }}"><i class="fa fa-user-times text-danger"></i> Bulk Remove Users</a>
+           <a class="dropdown-item" href="{{ url_for('create_groups') }}"><i class="fa fa-plus-square text-success"></i> Create Groups</a>
+             <a class="dropdown-item" href="{{ url_for('delete_groups') }}"><i class="fa fa-ban text-danger"></i> Remove Groups</a>
+        </div>
+      </li>
+         <li class="nav-item dropdown">
+        <a class="nav-link menu-header-color dropdown-toggle" href="#" id="navbarDropdownMenuLink2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-folder"></i>&nbsp;Projects</a>
+             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                 <a class="dropdown-item" href="{{ url_for('projects') }}"><i class="fa fa-times-rectangle text-danger"></i> Delete Projects</a>
+                 <a class="dropdown-item" href="{{ url_for('delete_issue') }}"><i class="fa fa-times text-danger"></i> Delete Issues</a>
+          <a class="dropdown-item" href="{{ url_for('project_lead') }}"><i class="fa fa-check text-success"></i> Change Project Lead</a>
+                 <a class="dropdown-item" href="{{ url_for('bulk_lead') }}"><i class="fa fa-check-square text-success"></i> Bulk Change Project Lead</a>
+
+        </div>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link menu-header-color" href="{{ url_for('settings') }}"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
+      </li>
+         <li class="nav-item">
+        <a class="nav-link menu-header-color" href="#" data-toggle="modal" data-target="#messageFm"><i class="fa fa-paper-plane-o"></i>&nbsp;Messages
+        {% set new_msg = current_user.new_messages() %}
+             {% if new_msg %}
+            <span id="msg_number" class="badge badge-danger" style="visibility: {% if new_msg %}visible
+            {% else %}hidden {% endif %};">{{ new_msg }}</span>
+            {% endif %}
+        </a>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link menu-header-color" href="#" data-toggle="modal" data-target="#leaveLink"><i class="fa fa-book"></i>&nbsp;Ask in Community</a>
+      </li>
+        <li class="nav-item">
+      <a class="nav-link menu-header-color" href="#" data-toggle="modal" data-target="#modQuestion"><i class="fa fa-question-circle"></i>&nbsp;Need Help?</a>
+    </li>
+      <li class="nav-item">
+        <a class="nav-link menu-header-color" href="#" data-toggle="modal" data-target="#bulkLogout"><i class="fa fa-sign-out"></i>&nbsp;Sign Out</a>
+      </li>
+
+    </ul>
+  </div>
+ {% endif %}
+ </div>
+</nav>
+</div>
+
+<div class="container">
+
+{% block content %}{% endblock %}
+
+</div>
+{% if current_user.is_anonymous %}
+<!-- The Modal for about-->
+<div class="modal fade" id="myAbout">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">ABOUT</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ <!-- Modal body -->
+      <div class="modal-body">
+         <b>Bulk Operations App?</b><br />
+          <hr />
+         Do you always want to Perform Bulk Operations on your Jira Cloud Instance
+          and haven't seen the feature yet to do very mundane task!
+         If you're asking yourself this question, then this App might just be the
+          key towards solving those minor issues.
+          BulkOps as we call it, helps you and makes Administrating Jira easier, by
+          automating features that are not available on Cloud Instances
+          <a href="https://github.com/princenyeche/BOP/" class="btn btn-primary">Learn more &gt;&gt;</a>
+
+
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end about tab -->
+
+<!--  contact -->
+<div class="modal fade" id="contactFm" tabindex="-1" role="dialog" aria-labelledby="contact" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="contactFmLabel">Contact Us</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <form action="{{ url_for('contact') }}" method="post" name="contactForm">
+      <div class="modal-body">
+
+           <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name" value="@BulkOps Team" readonly>
+          </div>
+          <div class="form-group">
+            <label for="subject" class="col-form-label">Subject:</label>
+            <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter a Subject" required>
+          </div>
+          <div class="form-group">
+            <label for="email" class="col-form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter a valid email Address" required>
+          </div>
+          <div class="form-group">
+            <label for="message" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message" name="message" placeholder="Type a Message, that you want to send!" required></textarea>
+          </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-warning">Clear</button>
+        <button type="submit" class="btn btn-success">Send message</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+function bulksignin() {
+window.location.href="{{ url_for('signin') }}"
+}
+
+function bulksignup() {
+window.location.href="{{ url_for('signup') }}"
+}
+
+function bulkhome() {
+window.location.href="{{ url_for('index') }}"
+}
+
+</script>
+{% else %}
+<!-- The Modal for Logout-->
+<div class="modal fade" id="bulkLogout">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">SIGN OUT</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ <!-- Modal body -->
+      <div class="modal-body">
+        Are you sure you want to Logout?<br />
+
+        <button type="button" class="btn-success" onclick="javascript:logOut()"> YES </button>
+        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end logout tab -->
+
+<!-- The Modal for ExternalPages-->
+<div class="modal fade" id="leaveLink">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">EXTERNAL LINK</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ <!-- Modal body -->
+      <div class="modal-body">
+        You're about to leave this page to an external link, would you like to proceed?<br />
+
+        <button type="button" class="btn-success" onclick="javascript:leaveLink()"> YES </button>
+        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end ExternalPages tab -->
+
+<!-- message tab -->
+{% include 'pages/sub_pages/_message.html' %}
+<!-- end message tab -->
+
+<!-- scripts -->
+<script type="text/javascript">
+function logOut() {
+window.location.href="{{ url_for('logout') }}"
+
+}
+function leaveLink() {
+window.open("https://community.atlassian.com", "_blank")
+}
+// update message number on new messages
+function set_msg_number(n) {
+$('#msg_number').text(n);
+$('#msg_number').css('visibility', n ? 'visible' : 'hidden');
+}
+function bulkhome() {
+window.location.href="{{ url_for('index') }}"
+}
+// dynamic notification fetch
+$(function() {
+   var when = 0;
+       setInterval(function() {
+          $.ajax('{{ url_for('notifications') }}?when' + when).done(
+                function(notifications) {
+                    for (var i = 0; i < notifications.length; i++) {
+                        if (notifications[i].name == 'unread_msg_count')
+                            set_msg_count(notifications[i].data);
+                                 when = notifications[i].timestamp;
+
+                        }
+                    }
+                    );
+                }, 10000);
+       });
+</script>
+
+<!-- floating question mark -->
+<div class="icon-bar float-right"><a href="#" class="text-primary" title="Need Help? Click me!" data-toggle="modal" data-target="#modQuestion"> <i class="fa fa-question-circle fa-5x"></i> </a>
+</div>
+
+
+<script>
+$(document).ready(function(){
+  $("#progressing").submit(function(){
+    $("div#progressing").removeClass("d-none");
+  });
+  $("#progressing").unload(function(){
+    $("div#progressing").addClass("d-none");
+  });
+});
+</script>
+{% endif %}
+</body>
+</html>

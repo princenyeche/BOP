@@ -1,0 +1,142 @@
+{% extends 'index.html' %}
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form class="form-signin" action="" name="signupForm" method="post" novalidate>
+    <span class="icon-center" style="margin: 0px 0px 0px 25px"> <i class="fa fa-user-circle fa-5x"></i></span>
+       <h1 class="h3 mb-3 font-weight-normal" style="margin: 0px 0px 0px 40px">Please Sign Up</h1>
+        {{ form.hidden_tag() }}
+         <div class="form-group">
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+             <small id="userHelp" class="form-text text-muted">Try not to use &lt;space&gt; characters for username </small>
+{% for error in form.username.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+
+        </div>
+
+        <div class="input-group">
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}<br>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+{% for error in form.email.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+        </div>
+        <div class="input-group">
+            {{ form.instances.label }}<br>
+            {{ form.instances(size=32) }}<br>
+            <small id="cloudHelp" class="form-text text-muted">Enter URL in format e.g. nexusfive.atlassian.net</small>
+{% for error in form.instances.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+        </div>
+
+         <div class="input-group">
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}<br>
+{% for error in form.password.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+        </div>
+
+        <div class="input-group">
+            {{ form.password2.label }}<br>
+            {{ form.password2(size=32) }}<br>
+
+{% for error in form.password2.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+            <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="tos" name="tos">
+      <label class="form-check-label" for="tos">
+          Agree to <a href="#" data-toggle="modal" data-target="#Terms">terms and conditions</a>
+      </label>
+    </div>
+  </div>
+{% for error in form.tos.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+            {% endfor %}
+
+            {% for error in get_flashed_messages() %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+        </div>
+       <button class="btn btn-lg btn-primary btn-block" type="submit" style="width: 280px;"> Sign Up <i class="fa fa-unlock"></i></button>
+      <span class="mt-5 mb-3 text-muted" style="margin: 0px 0px 0px 100px">&copy;{{ copy }}</span>
+
+     </form>
+
+<!-- The Modal for tos-->
+<div class="modal fade" id="Terms">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">TERMS</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ <!-- Modal body -->
+      <div class="modal-body">
+          <b>MIT License</b><br />
+
+<p>Copyright (c) 2020 Prince Nyeche
+<br />
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+</p>
+<br />
+          <p>
+The above copyright notice and this permission notice shall be included in all
+              copies or substantial portions of the Software.</p>
+<br />
+          <p>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</p>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end tos tab -->
+{% endblock %}
+
+

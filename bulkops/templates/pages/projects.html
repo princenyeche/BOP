@@ -1,0 +1,147 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+ {% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('projects')}}"><i class="fa fa-trash"></i>&nbsp;DELETE PROJECTS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('delete_issue')}}"><i class="fa fa-eraser"></i>&nbsp;DELETE JIRA ISSUES</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('project_lead')}}"><i class="fa fa-user"></i>&nbsp;CHANGE PROJECT LEADS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane container show active" id="delete">
+
+ <form class="form-group" action=""  method="post">
+           {{ form.hidden_tag() }}
+        <div class="form-group mx-sm-3 mb-2">
+            <i class="fa fa-users" aria-hidden="true"></i>
+      <label class="sr-only" for="project">Delete Groups</label>
+      <input class="form-control" id="project" name="project" placeholder="Delete a Project using Project key or ID. for multiple Project deletion, separate by comma ">
+    <small id="cloudHelp" class="form-text text-muted">Format for multiple Project deletion e.g NB,NGT</small>
+        </div>
+
+           <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.project.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+
+ </div>
+
+      <div class="form-group mx-sm-3 mb-2">
+    <button type="button" class="btn btn-danger" role="button" data-toggle="modal" data-target="#bulkdeleteproject" aria-pressed="true"> Delete Project(s) </button>
+</div>
+
+     <!-- The Modal for delete project-->
+<div class="modal fade" id="bulkdeleteproject">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">DELETE PROJECT</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        Are you sure you want to proceed with Project Deletion? This process cannot be reversed; once it starts, there's no "STOP" button?<br />
+
+        <button type="submit" class="btn-success"> YES </button>
+        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end delete tab -->
+ </form>
+
+
+
+        </div>
+
+
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>How can I delete a Project?</u></b> <br />
+          <ul type="list">
+          <li> Just specify the Project key and the project will be deleted.</li>
+          <li> There's a confirmation button, however note that this process is irreversible.</li>
+      </ul>
+          </div>
+         <div> <b><u>What do I do to delete Multiple Projects?</u></b> <br />
+          <ul type="list">
+          <li> Separate multiple project deletion by comma if you would like to delete it off.</li>
+      </ul>
+          </div>
+         <div> <b><u>I made a mistake with the delete?</u></b> <br />
+          <ul type="list">
+          <li> Once you initiate a delete of project, it cannot be reversed.</li>
+          <li> If you hope to restore the deleted project, please contact <a class="btn btn-primary" href="https://support.atlassian.com" target="_blank">Atlassian Support</a> </li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}

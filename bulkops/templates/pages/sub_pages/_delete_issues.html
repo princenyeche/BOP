@@ -1,0 +1,87 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+{% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('projects')}}"><i class="fa fa-trash"></i>&nbsp;DELETE PROJECTS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('delete_issue')}}"><i class="fa fa-eraser"></i>&nbsp;DELETE JIRA ISSUES</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('project_lead')}}"><i class="fa fa-user"></i>&nbsp;CHANGE PROJECT LEADS</a>
+    </li>
+
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+    <div class="tab-pane container show active" id="issue">
+<br />
+        <form action="" enctype="multipart/form-data" method="post">
+    {{ form.hidden_tag() }}
+<div class="form-group mx-sm-3 mb-2">
+<div class="form-group">
+    <label for="docs">File Upload</label>
+    <input type="file" class="form-control-file" id="docs" name="docs">
+  </div>
+    <small id="addHelp" class="form-text text-muted">To see for the Format, please click the "Need Help?" link above!</small>
+</div>
+<div class="form-group mx-sm-3 mb-2">
+       {% for error in form.docs.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+       </div>
+
+
+<br />
+             <div class="form-group mx-sm-3 mb-2">
+        <button type="submit" class="btn btn-danger"> Bulk Delete Issues </button>
+</div>
+
+
+
+</form>
+
+    </div>
+
+
+
+
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}

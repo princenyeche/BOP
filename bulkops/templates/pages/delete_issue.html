@@ -1,0 +1,161 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+{% for message in get_flashed_messages() %}
+{% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('projects')}}"><i class="fa fa-trash"></i>&nbsp;DELETE PROJECTS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('delete_issue')}}"><i class="fa fa-eraser"></i>&nbsp;DELETE JIRA ISSUES</a>
+    </li>
+       <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('project_lead')}}"><i class="fa fa-user"></i>&nbsp;CHANGE PROJECT LEADS</a>
+    </li>
+
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+    <div class="tab-pane container show active" id="issue">
+
+        <form class="form-group" action=""  method="post">
+           {{ form.hidden_tag() }}
+            <br />
+             <div class="form-group mx-sm-3 mb-2">
+  <div class="input-group-prepend">
+      <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+    <label for="sub_task" class="sr-only">Options</label>
+  </div>
+  <select class="custom-select" id="sub_task" name="sub_task">
+      <option selected value="false">Choose to delete Sub-Task </option>
+    <option value="true">Yes</option>
+    <option value="false">No</option>
+  </select>
+                 <small id="optHelp" class="form-text text-muted">If no option is selected, delete subtask is set to "No" by default!</small>
+</div>
+        <div class="form-group mx-sm-3 mb-2">
+            <i class="fa fa-users" aria-hidden="true"></i>
+      <label class="sr-only" for="issues">Delete Issues</label>
+      <input class="form-control" name="issues" id="issues" placeholder="Delete an Issue. For Multiple delete you can use Issue Key separated by comma, e.g. AB-12,T2-20 or Type a valid JQL Query to search Issues">
+            <small id="jqlHelp" class="form-text text-muted">For a valid JQL Type in Format: "JQL:Project = ABC AND type in (Bug)" without the quotes. This feature is <span class="badge badge-warning">EXPERIMENTAL</span></small>
+
+    </div>
+           <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.issues.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+           </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+    <button type="button" class="btn btn-danger" role="button" data-toggle="modal" data-target="#bulkdeleteissues" aria-pressed="true"> Delete Issues </button>
+    </div>
+
+            <!-- The Modal for delete issues-->
+<div class="modal fade" id="bulkdeleteissues">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">DELETE ISSUES</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        Are you sure you want to proceed with Issue Deletion? This will delete all the Issues selected and it can't be stopped once started?<br />
+
+        <button type="submit" class="btn-success"> YES </button>
+        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end delete tab -->
+ </form>
+
+    </div>
+
+
+
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>How can I delete an Issue?</u></b> <br />
+          <ul type="list">
+          <li> Start by entering either the Issue key or Issue id, both values are accepted. e.g AT-123 or 10034</li>
+          <li> If the Issue contains a sub-task, remember to select "Yes" from the option if not the delete will fail.</li>
+      </ul>
+          </div>
+         <div> <b><u>How can I delete off multiple issues</u></b> <br />
+          <ul type="list">
+          <li> You can delete multiple issues by separating the issue key with a comma e.g. AT-123,AT-45,BT-21</li>
+          <li> Alternatively, you can run a valid JQL search to delete off Multiple issues.</li>
+          <li> A valid JQL would look like this e.g. JQL:project in (AT) AND type in (Bug)</li>
+      </ul>
+          </div>
+         <div> <b><u>Must I always use "JQL:" before the actual JQL?</u></b> <br />
+          <ul type="list">
+          <li> Yes, you should because that's how we know what JQL you've entered into the form.</li>
+          <li> we validate the JQL against Jira, so if it's not valid, we'll return an error</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

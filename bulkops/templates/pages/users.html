@@ -1,0 +1,141 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+{% for message in get_flashed_messages() %}
+{% if error %}
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif success %}
+ <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+{% endfor %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+      <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('users')}}"><i class="fa fa-user-plus"></i>&nbsp;CREATE USERS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('delete_users')}}"><i class="fa fa-user-times"></i>&nbsp;DELETE USERS</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane container fade" id="delete">
+
+<br />
+
+
+        </div>
+
+    <div class="tab-pane container show active" id="create">
+<br />
+
+   <form class="form-group" action=""  method="post">
+        {{ form.hidden_tag() }}
+         <div class="form-group mx-sm-3 mb-2">
+      <i class="fa fa-user" aria-hidden="true"></i>
+    <label for="users_name" class="sr-only">Display Name</label>
+    <input type="text" class="form-control" id="users_name" name="users_name" placeholder="Enter your display name"  value="">
+    </div>
+       <div class="form-group mx-sm-3 mb-2">
+       {% for error in form.users_name.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+       </div>
+       <div class="form-group mx-sm-3 mb-2">
+  <div class="input-group-prepend">
+      <i class="fa fa-exchange" aria-hidden="true"></i>
+    <label for="users_opt" class="sr-only">Options</label>
+  </div>
+  <select class="custom-select" id="users_opt" name="users_opt">
+      <option selected value="JIRA">Choose User type, either Jira User or JSD Customer </option>
+    <option value="JIRA">Jira User</option>
+    <option value="JSD">JSD Customer</option>
+  </select>
+           <small id="userHelp" class="form-text text-muted">User Type is set to "Jira User" by default, if no option is chosen!</small>
+</div>
+
+       <div class="form-group mx-sm-3 mb-2">
+      <i class="fa fa-envelope" aria-hidden="true"></i>
+    <label for="users_email" class="sr-only">Email Address</label>
+    <input type="text" class="form-control" id="users_email" name="users_email" placeholder="Enter your Email Address" value="">
+    </div>
+
+       <div class="form-group mx-sm-3 mb-2">
+       {% for error in form.users_email.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+       </div>
+
+<div class="form-group mx-sm-3 mb-2">
+    <button type="submit" class="btn btn-success"> Create User </button> &nbsp;
+      <a class="btn btn-success" href="{{ url_for('bulk_users')}}"> Bulk Create </a>
+</div>
+ </form>
+
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div><b><u>Creating a user?</u></b> <br />
+          <ul type="list">
+          <li> You can create a Jira users or Jira Service Desk Customer user</li>
+          <li> Specific their display name and email address of any successful creation.</li>
+           </ul>
+          </div>
+         <div><b><u>What happens if i made a mistake on the email address?</u></b> <br />
+          <ul type="list">
+          <li> You will need to perform a 3-way swap of email address in order to configure a new one.</li>
+              <li> For JSD Customers account, please visit your Admin hub console</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
