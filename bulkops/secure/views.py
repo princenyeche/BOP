@@ -78,7 +78,7 @@ def signup():
         a = re.search("[!@#$%&*]", s)
         y = form.instances.data
         i = len(s)
-        # fallback mechanism, just in-case username checker breaks
+        # addition mechanism, to reserve usernames
         if form.username.data.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")
         elif len(form.username.data) < 4:
