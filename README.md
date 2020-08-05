@@ -32,7 +32,7 @@ heroku create <give appname>
 # add a buildpack
 git buildpack:set heroku/python -a <appame>
 # Add the files which includes Procfile, startup.py, bulkops-folder
-git add Procfile, startup.py, <bulkops folder>
+git add Procfile startup.py requirements.txt <bulkopsfolder>
 git commit
 heroku addons:create heroku-postgresql:hobby-dev -a <appname>
 git push heroku master
