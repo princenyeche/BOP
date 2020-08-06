@@ -14,7 +14,7 @@ Bulk Operations App for Jira is a Cloud based Add-on, which helps in performing 
 
 ## **Configuration**
 You can be able to launch the application in various ways. either you host it yourself or you can easily run it locally on your machine or download it from Atlassian Marketplace and run it on your Cloud Instance. You can Install the **Beta release** of the Cloud App from **[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=overview)**
-* Check out the online version for **[here](https://elfapp.website/bulkops)**
+* Check out the online version of BulkOps App **[here](https://elfapp.website/bulkops)**
 
 ## **Hosting**
 
