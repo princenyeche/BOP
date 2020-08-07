@@ -54,7 +54,7 @@
   </div>
 </div>
               <br />
-   {% if view %}
+   {% if view is not none()  %}
 <div class="list-group">
 
    <div class="list-group-item list-group-item-action flex-column align-items-start">
@@ -78,6 +78,13 @@
     </small>  <br />
         <small><button type="button" class="btn btn-warning btn-sm" onclick="javascript:history.go(-1);"><i class="fa fa-history"></i> Go Back</button> </small>
   </div>
+</div>
+                {% else %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> We cannot show you this page, it seems you're trying to access a private page.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
               {% endif %}
 

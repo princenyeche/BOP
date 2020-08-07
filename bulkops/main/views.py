@@ -967,7 +967,6 @@ def receiver(recipient):
 @bulk.route("/messages/inbox/<int:id>/view", methods=["GET", "POST"])
 @login_required
 def i_messages(id):
-    view = Messages.query.get(id)
     form = MessageForm()
     error = None
     url_path = True
@@ -984,8 +983,19 @@ def i_messages(id):
         flash(success)
     return render_template("/pages/view_message.html",
                            title=f"Messages - View Inbox Messages ::{bulk.config['APP_NAME_SINGLE']}",
-                           Messages=Messages, view=view, form=form, error=error, success=success,
+                           Messages=Messages, view=trigger_msg(id), form=form, error=error, success=success,
                            admin=admin, url_path=url_path)
+
+
+def trigger_msg(id):
+    view = Messages.query.get(id)
+    # find all the messages received by the user, if not don't show it
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    c = user.received_messages.order_by(Messages.receiver_id.desc()).all()
+    if view.id not in (m.id for m in c):
+        return None
+    else:
+        return view
 
 
 @bulk.route("/messages/sent", methods=["GET", "POST"])
@@ -1033,7 +1043,6 @@ def s_messages(id):
     admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
     user.last_read_message = datetime.utcnow()
     db.session.commit()
-    view = Messages.query.get(id)
     form = MessageForm()
     error = None
     success = None
@@ -1047,7 +1056,19 @@ def s_messages(id):
         flash(success)
     return render_template("/pages/view_message.html",
                            title=f"Messages - View Sent Messages ::{bulk.config['APP_NAME_SINGLE']}",
-                           Messages=Messages, view=view, form=form, error=error, success=success, admin=admin)
+                           Messages=Messages, view=trigger_rmsg(id), form=form, error=error, success=success,
+                           admin=admin)
+
+
+def trigger_rmsg(id):
+    view = Messages.query.get(id)
+    # find all the messages sent by the user if not don't show it
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    d = user.sent_messages.order_by(Messages.sender_id.desc()).all()
+    if view.id not in (m.id for m in d):
+        return None
+    else:
+        return view
 
 
 @bulk.route("/messages/stats", methods=["GET", "POST"])
