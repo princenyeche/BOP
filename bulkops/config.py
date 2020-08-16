@@ -39,3 +39,8 @@ class Config(object):
     # if you do not want users to signup with the below names, you can reserve it by adding it to the list
     APP_RESERVED_KEYWORDS = ["admin", "formeruser", "support", "email", "atlassian"]
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
+    
+    # version checker
+    APP_VERSION = f"v1.1\n"
+    APP_UPGRADE_URL = f"https://github.com/princenyeche/BOP"
+    APP_VERSION_URL = f"https://raw.githubusercontent.com/princenyeche/BOP/master/version.txt"
