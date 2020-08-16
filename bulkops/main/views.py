@@ -77,7 +77,6 @@ def settings():
     ad = Audit(audits=current_user)
     success = None
     error = None
-    version_checker()
     v = current_user.instances
     if form.validate_on_submit() and request.method == "POST":
         s = form.password.data
