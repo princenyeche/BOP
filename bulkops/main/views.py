@@ -52,6 +52,7 @@ j = JiraUsers()
 @login_required
 def index():
     data = None
+    version_checker()
     j.make_session(email=current_user.email, token=current_user.token)
     if request.method == "GET":
         webURL = ("https://{}/rest/api/3/myself".format(current_user.instances))
@@ -76,6 +77,7 @@ def settings():
     ad = Audit(audits=current_user)
     success = None
     error = None
+    version_checker()
     v = current_user.instances
     if form.validate_on_submit() and request.method == "POST":
         s = form.password.data
@@ -1175,3 +1177,26 @@ def notify_me():
         db.session.commit()
         flash("Notifications setting changed.")
         return redirect(url_for("config"))
+
+    
+# send a message to the user only once, if the version is not the latest.
+@login_required
+def version_checker():
+    user = User.query.filter_by(username=current_user.username).first_or_404()
+    admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+    current_version = bulk.config["APP_VERSION"]
+    lookup_version = requests.get(bulk.config["APP_VERSION_URL"]).text
+    message_exist = user.received_messages.order_by(Messages.subject.desc()).all()
+    check_sub = [m.subject for m in message_exist]
+    phrase = f"You need to Upgrade to {lookup_version}!"
+    if current_version != lookup_version and phrase not in check_sub \
+            and user.username != admin.username:
+        upgrade_url = bulk.config["APP_UPGRADE_URL"]
+        head_subject = phrase
+        upgrade = f"Hi {user.username.capitalize()},\n" \
+                  f"It seems that you are probably using a lower version of this App\n" \
+                  f"Please upgrade by visiting this URL {upgrade_url}\n" \
+                  f"Thanks {admin.username.capitalize()}"
+        send = Messages(subject=head_subject, body=upgrade, receiver_id=user.id, sender_id=admin.id)
+        db.session.add(send)
+        db.session.commit()
