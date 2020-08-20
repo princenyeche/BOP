@@ -26,6 +26,7 @@
 </div>
 {% endif %}
 {% endfor %}
+{% include 'pages/processing.html' %}
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
@@ -94,7 +95,7 @@
   </div>
                  <small id="delimeter" class="form-text text-muted">Choose the options for the delimiter, by default the option is set to ",". Each value correspond to the actual character</small>
         <br />
-        <button type="submit" class="btn btn-success"> Create Users in Bulk </button>
+        <button type="submit" id="bulkprogress" class="btn btn-success"> Create Users in Bulk </button>
 </div>
 
 
