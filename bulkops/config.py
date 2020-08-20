@@ -41,6 +41,6 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = f"v1.2\n"
+    APP_VERSION = f"v1.2.1\n"
     APP_UPGRADE_URL = f"https://github.com/princenyeche/BOP"
     APP_VERSION_URL = f"https://raw.githubusercontent.com/princenyeche/BOP/master/version.txt"
