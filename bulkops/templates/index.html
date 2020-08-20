@@ -407,7 +407,7 @@ $(document).ready(function(){
   });
 
 function loadProgress() {
-var source = new EventSource("/progress");
+var source = new EventSource("{{ url_for('progress') }}");
 	source.onmessage = function(event) {
 		$('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
 		$('#showbulk').text(event.data+'%');
