@@ -26,6 +26,7 @@
 </div>
 {% endif %}
        {% endfor %}
+ {% include 'pages/processing.html' %}
  <div id="progressing" class="d-none">
           <label id="progress_status"></label>
           <div class="progress mb-3">
@@ -91,7 +92,7 @@
 
 <br />
              <div class="form-group mx-sm-3 mb-2">
-        <button type="submit" class="btn btn-success"> Bulk Add Users to Group</button>
+        <button type="submit" id="bulkprogress" class="btn btn-success"> Bulk Add Users to Group</button>
 </div>
 
 
