@@ -41,7 +41,7 @@ def signin():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             error = "Invalid username or password"
-            flash(error)
+            flash(error, category="alert-danger")
             return redirect(url_for("signin"))
         login_user(user, remember=form.remember_me.data)
         # check if the App version is the latest, then send a notification
@@ -104,7 +104,7 @@ def signup():
             db.session.add(user)
             db.session.commit()
             success = "Congratulations, you have been registered successfully!"
-            flash(success)
+            flash(success, category="alert-success")
             return redirect(url_for("signin"))
         else:
             flash("Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\"")
@@ -122,7 +122,8 @@ def reset_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_reset_password(user)
-        flash("Check your email for Password reset details...")
+        success = "Check your email for Password reset details..."
+        flash(success, category="alert-success")
         return redirect(url_for("signin"))
     return render_template("secure/reset_request.html", title="Forgot Password", form=form, copy=copy)
 
@@ -151,7 +152,8 @@ def reset_password(token):
         else:
             user.set_password(form.password.data)
             db.session.commit()
-            flash("Your Password has been reset")
+            success = "Your Password has been reset"
+            flash(success, category="alert-success")
             return redirect(url_for("signin"))
     return render_template("secure/password_reset.html", title="Recover Password", form=form, error=error, copy=copy)
 
@@ -161,9 +163,11 @@ def contact():
     form = ContactForm()
     if request.method == "POST":
         send_contact_form(form)
-        flash("Your Message was sent successfully...")
+        success = "Your Message was sent successfully..."
+        flash(success, category="alert-success")
     else:
-        flash("We're unable to send your Message...")
+        error = "We're unable to send your Message..."
+        flash(error, category="alert-danger"))
     return redirect(url_for("signin"))
 
 

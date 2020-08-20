@@ -26,6 +26,7 @@
 </div>
 {% endif %}
        {% endfor %}
+{% include 'pages/processing.html' %}
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
@@ -83,7 +84,7 @@
       <div class="modal-body">
         Are you sure you want to proceed with Project Deletion? This process cannot be reversed; once it starts, there's no "STOP" button?<br />
 
-        <button type="submit" class="btn-success"> YES </button>
+        <button type="submit" id="bulkprogress" class="btn-success"> YES </button>
         <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
 
       </div>

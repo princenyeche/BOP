@@ -26,6 +26,7 @@
 </div>
 {% endif %}
 {% endfor %}
+{% include 'pages/processing.html' %}
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
@@ -96,7 +97,7 @@
        </div>
 
 <div class="form-group mx-sm-3 mb-2">
-    <button type="submit" class="btn btn-success"> Create User </button> &nbsp;
+    <button type="submit" id="bulkprogress" class="btn btn-success"> Create User </button> &nbsp;
       <a class="btn btn-success" href="{{ url_for('bulk_users')}}"> Bulk Create </a>
 </div>
  </form>

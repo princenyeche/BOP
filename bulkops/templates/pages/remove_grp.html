@@ -26,6 +26,7 @@
 </div>
 {% endif %}
        {% endfor %}
+{% include 'pages/processing.html' %}
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
@@ -84,7 +85,7 @@
            </div>
 
 <div class="form-group mx-sm-3 mb-2">
-    <button type="submit" class="btn btn-danger"> Remove User from Group</button>
+    <button type="submit" id="bulkprogress" class="btn btn-danger"> Remove User from Group</button>
      &nbsp<a class="btn btn-danger" href="{{ url_for('bulk_remove') }}">Bulk Remove Users</a>
 </div>
 

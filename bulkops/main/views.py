@@ -3,10 +3,11 @@ import json
 import os
 import re
 import csv
+import time
 from flask import render_template, flash, redirect, url_for, current_app
 from bulkops.database import User, Audit, Messages, Notification
 from flask_login import current_user
-from flask import request, jsonify
+from flask import request, jsonify, Response
 from flask_login import login_required
 from bulkops import db
 from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
@@ -603,7 +604,6 @@ def bulk_remove():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    progress = 0
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     if request.method == "POST" and form.validate_on_submit():
@@ -640,7 +640,7 @@ def bulk_remove():
                 flash(success)
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
-                           error=error, success=success, form=form, progress=progress, Messages=Messages)
+                           error=error, success=success, form=form, Messages=Messages)
 
 
 @bulk.route("/projects", methods=["GET", "POST"])
@@ -723,7 +723,7 @@ def delete_issue():
                           .format(current_user.instances, r, startAt, maxResults))
                 data = requests.get(webURL, auth=auth_request, headers=headers)
                 if data.status_code != 200:
-                    error = "Unable to fetch JQL Issues due to {}".format(data.reason)
+                    error = "Unable to fetch JQL Issues due to, as we cannot access it."
                     flash(error)
                 else:
                     jql_data = json.loads(data.content)
@@ -1175,3 +1175,18 @@ def notify_me():
         db.session.commit()
         flash("Notifications setting changed.")
         return redirect(url_for("config"))
+
+
+@bulk.route("/progress", methods=["GET", "POST"])
+@login_required
+def progress():
+
+    def load():
+        x = 0
+
+        while x <= 100:
+            yield "data:" + str(x) + "\n\n"
+            x += 4
+            time.sleep(0.3)
+
+    return Response(load(), mimetype="text/event-stream")
