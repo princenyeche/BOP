@@ -398,14 +398,25 @@ $(function() {
 
 
 <script>
+// show a progress bar once a submit button is click at 0%
 $(document).ready(function(){
-  $("#progressing").submit(function(){
-    $("div#progressing").removeClass("d-none");
+  $("#bulkprogress").on("click", function(){
+    $("#progressing").removeClass("d-none");
+      loadProgress();
+      });
   });
-  $("#progressing").unload(function(){
-    $("div#progressing").addClass("d-none");
-  });
-});
+
+function loadProgress() {
+var source = new EventSource("/progress");
+	source.onmessage = function(event) {
+		$('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
+		$('#showbulk').text(event.data+'%');
+
+		if(event.data == 100){
+			source.close()
+		}
+	}
+}
 </script>
 {% endif %}
 </body>
