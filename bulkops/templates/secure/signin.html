@@ -5,14 +5,18 @@
 {% endblock %}
 
 {% block content %}
-{% for msg in get_flashed_messages() %}
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Info!</strong> {{ msg }}
+{% with flash_msg = get_flashed_messages(with_categories=true) %}
+{% if flash_msg %}
+{% for category, msg in  flash_msg %}
+            <div class="alert {{ category }} alert-warning alert-dismissible fade show" role="alert">
+  <strong>Alert!</strong> {{ msg }}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
             {% endfor %}
+{% endif %}
+ {% endwith %}
  <form class="form-signin" action="" name="signForm" method="post" novalidate>
          <span class="icon-center" style="margin: 0px 0px 0px 25px"> <i class="fa fa-5x fa-user-circle"></i></span>
        <h1 class="h3 mb-3 font-weight-normal" style="margin: 0px 0px 0px 40px">Please Sign In</h1>
