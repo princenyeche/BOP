@@ -57,7 +57,7 @@ In the environment variables, you will need to set it up as below, so python kno
 |SECRET_KEY | secretkey |  
 
 ### Local
-Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
+Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
 ```bash
 $: pip --version
 ```
