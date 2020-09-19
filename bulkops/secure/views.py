@@ -167,7 +167,7 @@ def contact():
         flash(success, category="alert-success")
     else:
         error = "We're unable to send your Message..."
-        flash(error, category="alert-danger"))
+        flash(error, category="alert-danger")
     return redirect(url_for("signin"))
 
 
