@@ -70,12 +70,12 @@ pip install -r requirements.txt
 ```
 you will also need to export some important variables in order to get the App running in flask. Open your terminal (linux/macOS) and key in the below variables
 ```bash
-export FLASK_APP=bulkops
+export FLASK_APP=startup.py
 export FLASK_ENV=development
 ```
 if you're on `windows` OS, please use `SET` command
 ```powershell
-SET FLASK_APP=bulkops
+SET FLASK_APP=startup.py
 SET FLASK_ENV=development
 ```
 #### Providing Mail Support
@@ -88,6 +88,14 @@ export MAIL_USERNAME=youremail@example.com
 export MAIL_PASSWORD=yourpassword
 export MAIL_SUFFIX=example.com
 ```
+
+#### Initialize the Database
+You will need to start up the database, else the App will result in an error.
+```bash
+flask db init
+flask db migrate
+```
+
 #### Starting up the App
 Once you're done with the configuration, you can load up the App by running the below command
 ```bash
