@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v1.2.2 - (19 September 2020)
+### Added
+- Updated the read me file and added the DB init on local installation
+
 ## v1.2.1 - (20 August 2020)
 ### Added
 - Updated the version variable on the config file
