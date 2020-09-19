@@ -94,6 +94,7 @@ You will need to start up the database, else the App will result in an error.
 ```bash
 flask db init
 flask db migrate
+flask db upgrade
 ```
 
 #### Starting up the App
