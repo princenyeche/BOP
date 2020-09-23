@@ -35,10 +35,10 @@ git status
 # create a heroku app, the below makes a default url
 heroku create <give appname>
 # add a buildpack
-git buildpack:set heroku/python -a <appame>
+heroku buildpacks:set heroku/python -a <appame>
 # Add the files which includes Procfile, startup.py, bulkops-folder
 git add Procfile startup.py requirements.txt <bulkopsfolder>
-git commit
+git commit -m "commits"
 heroku addons:create heroku-postgresql:hobby-dev -a <appname>
 git push heroku master
 ```
