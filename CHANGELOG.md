@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v1.2.3 - (25 September 2020)
+### Added
+- account deletion of file to remove single directory
+- added a defined session name for the BulkOps App.
+
 ## v1.2.2 - (19 September 2020)
 ### Added
 - Updated the read me file and added the DB init on local installation

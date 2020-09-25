@@ -13,6 +13,15 @@ bulk = Flask(__name__)
 bulk.config.from_object(Config)
 
 
+bulk.config.update(
+    SESSION_REFRESH_EACH_REQUEST=True,
+    SESSION_COOKIE_NAME="bulkops",
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE=None,
+)
+
+
 db = SQLAlchemy(bulk)
 migrate = Migrate(bulk, db)
 login = LoginManager(bulk)
