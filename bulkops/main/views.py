@@ -1145,7 +1145,7 @@ def account_delete():
         if os.path.exists(save_path):
             for f in files:
                 os.remove(f)
-            os.removedirs(save_path)
+            os.rmdir(save_path)
         db.session.delete(user)
         db.session.commit()
         flash("You have been signed out")
