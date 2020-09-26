@@ -1,0 +1,13 @@
+version: 2
+updates:
+    # maintains dependencies 
+  - package-ecosystem: "pip" 
+    directory: "/" 
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "princenyeche"
+    target-branch: "code-review"
+    commit-message:
+      prefix: "pip"
+      include: "scope"
