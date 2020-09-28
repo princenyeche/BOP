@@ -25,8 +25,8 @@ class Config(object):
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_SUFFIX = os.environ.get("MAIL_SUFFIX")  # e.g example.com
-    ADMINS = ["no-reply@example.com"]
-    CONTACT_EMAIL = ["admin@example.com"]  # delivery address on the contact form
+    ADMINS = [os.environ.get("ADMINS")]
+    CONTACT_EMAIL = [os.environ.get("CONTACT_EMAIL")]  # delivery address on the contact form
 
     AUDIT_PER_PAGE = 12
     MESSAGES_PER_PAGE = 8
@@ -41,6 +41,6 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = f"v1.2.4\n"
+    APP_VERSION = f"v1.2.5\n"
     APP_UPGRADE_URL = f"https://github.com/princenyeche/BOP"
     APP_VERSION_URL = f"https://raw.githubusercontent.com/princenyeche/BOP/master/version.txt"

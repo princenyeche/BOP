@@ -55,6 +55,8 @@ In the environment variables, you will need to set it up as below, so python kno
 |MAIL_USERNAME | youremail@example.com|
 |MAIL_PASSWORD | yourpassword |
 |MAIL_SUFFIX | example.com  |
+|ADMINS      | no-reply@example.com |
+|CONTACT_EMAIL | admin@example.com |
 |SECRET_KEY | secretkey |  
 
 ### Local
