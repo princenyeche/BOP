@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v1.2.5 - (28 September 2020)
+
+### Removed
+- Remove `passive_delete=True` in `User class` on `database.py` file - According to the [SQLAlchemy Doc](https://docs.sqlalchemy.org/en/13/orm/cascades.html?highlight=cascade#delete) the usage should be as changed now. Somehow I must have mixed this up during implementation, only noticed this caused a problem in some DB relationship. will run further test to confirm this fixes it fully. For now going to commit these changes.
+
 ## v1.2.4 - (28 September 2020)
 ### Added
 - issue with Flask_SQLAlchemey , SQLAlchemy and Alembic
