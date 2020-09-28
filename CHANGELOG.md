@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v1.2.4 - (28 September 2020)
+### Added
+- issue with Flask_SQLAlchemey , SQLAlchemy and Alembic
+- issue doesn't allow commit to work for transaction tables, had to bump up the versions for each module.
+- read the respective module to get more details on the issue and see `requirements.txt` file for changes.
+
 ## v1.2.3 - (25 September 2020)
 ### Added
 - account deletion of file to remove single directory
