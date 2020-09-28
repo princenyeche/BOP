@@ -20,16 +20,15 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     token = db.Column(db.String(64), index=True)
     notify_me = db.Column(db.String(5), index=True)
-    audit = db.relationship("Audit", backref="audits", lazy="dynamic", cascade="all,delete", passive_deletes=True)
+    audit = db.relationship("Audit", backref="audits", lazy="dynamic", cascade="all,delete")
 
     sent_messages = db.relationship("Messages", foreign_keys="Messages.sender_id",
-                                    backref="sender", lazy="dynamic", cascade="all,delete", passive_deletes=True)
+                                    backref="sender", lazy="dynamic", cascade="all,delete")
     received_messages = db.relationship("Messages", foreign_keys="Messages.receiver_id",
-                                        backref="receiver", lazy="dynamic", cascade="all,delete", passive_deletes=True)
+                                        backref="receiver", lazy="dynamic", cascade="all,delete")
     last_read_message = db.Column(db.DateTime)
 
-    notifications = db.relationship("Notification", backref="user", lazy="dynamic", cascade="all,delete",
-                                    passive_deletes=True)
+    notifications = db.relationship("Notification", backref="user", lazy="dynamic", cascade="all,delete")
 
     def __repr__(self):
         return "<User {}>".format(self.username)
