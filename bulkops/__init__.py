@@ -8,6 +8,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
+from redis import Redis
+import rq
 
 bulk = Flask(__name__)
 bulk.config.from_object(Config)
@@ -36,6 +38,8 @@ LOG_FOLDER = "Logs"
 bulk.config["LOG_FOLDER"] = os.path.join(basedir, LOG_FOLDER)
 our_logs = os.path.join(bulk.config["LOG_FOLDER"])
 
+bulk.redis = Redis.from_url(bulk.config["REDIS_URL"])
+bulk.job_queue = rq.Queue("bulkops-jobs", connection=bulk.redis)
 
 # log notification configuration
 if not bulk.debug:
