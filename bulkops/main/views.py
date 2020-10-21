@@ -26,9 +26,8 @@ UPLOAD_FOLDER = "Files"
 bulk.config["UPLOAD_FOLDER"] = os.path.join(basedir, UPLOAD_FOLDER)
 our_dir = os.path.join(bulk.config["UPLOAD_FOLDER"])
 file_limit = bulk.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
-if os.path.exists(our_dir):
-    pass
-else:
+
+if not os.path.exists(our_dir):
     os.mkdir(our_dir)
 
 auth_request = None
@@ -215,6 +214,8 @@ def bulk_users():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
+    if not os.path.exists(our_dir):
+        os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     if request.method == "POST" and form.validate_on_submit():
@@ -273,7 +274,6 @@ def bulk_users_creation(user_id, *args):
                                    user_id=user.id)
                         db.session.add(ad)
                         db.session.commit()
-                        os.remove(args[0])
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Success in creating Bulk JSD Users"
@@ -282,7 +282,6 @@ def bulk_users_creation(user_id, *args):
                                    user_id=user.id)
                         db.session.add(ad)
                         db.session.commit()
-                        os.remove(args[0])
             elif args[2] == "JIRA":
                 with open(args[0], "r") as csvFile:
                     reader = csv.reader(csvFile, delimiter=args[1])
@@ -364,6 +363,8 @@ def bulk_delete():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
+    if not os.path.exists(our_dir):
+        os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     if request.method == "POST" and form.validate_on_submit():
@@ -643,6 +644,8 @@ def bulk_add():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
+    if not os.path.exists(our_dir):
+        os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     if request.method == "POST" and form.validate_on_submit():
@@ -758,7 +761,8 @@ def bulk_remove():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    progress = 0
+    if not os.path.exists(our_dir):
+        os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     if request.method == "POST" and form.validate_on_submit():
@@ -779,7 +783,7 @@ def bulk_remove():
             db.session.commit()
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
-                           error=error, success=success, form=form, progress=progress, Messages=Messages)
+                           error=error, success=success, form=form, Messages=Messages)
 
 
 @bulk.route("/bulk_remove_users")
@@ -1138,6 +1142,8 @@ def bulk_lead():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
+    if not os.path.exists(our_dir):
+        os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     if request.method == "POST" and form.validate_on_submit():
