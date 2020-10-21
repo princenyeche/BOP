@@ -90,8 +90,8 @@ def signup():
         elif y.startswith("http") or y.startswith("www"):
             flash(f"Please remove the \"http://\" or \"https://\" or \"www\" from the URL")
             # return redirect(request.url) - this clears the form
-        elif i < 6:
-            flash("Your Password must be equal or greater than 6 Characters in length")
+        elif i < 8:
+            flash("Your Password must be equal or greater than 8 Characters in length")
         elif i > 64:
             flash("Your Password is too long, it must be within 64 Characters in length")
         elif a is None:
