@@ -372,7 +372,9 @@ $('#msg_number').text(n);
 $('#msg_number').css('visibility', n ? 'visible' : 'hidden');
 }
 function set_task_progress(task_id, progress) {
-            $('#' + task_id + '-progress').text(progress);
+            $('#' + task_id + '-progress').text(progress+'%');
+            $('#' + task_id + '-showbulk').text(progress+'%');
+            $('.' + task_id + '-showbulk').css('width', progress+'%').attr('aria-valuenow', progress);
         }
 function bulkhome() {
 window.location.href="{{ url_for('index') }}"
