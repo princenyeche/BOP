@@ -3,8 +3,8 @@ import json
 import os
 import re
 import csv
-import time
 import sys
+import time
 from flask import render_template, flash, redirect, url_for, current_app
 from bulkops.database import User, Audit, Messages, Notification
 from flask_login import current_user
@@ -20,11 +20,9 @@ from werkzeug.utils import secure_filename
 from bulkops import bulk
 from bulkops.tasks.jobs import set_job_progress
 
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = "Files"
-bulk.config["UPLOAD_FOLDER"] = os.path.join(basedir, UPLOAD_FOLDER)
-our_dir = os.path.join(bulk.config["UPLOAD_FOLDER"])
+our_dir = os.path.join(basedir, UPLOAD_FOLDER)
 file_limit = bulk.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 if not os.path.exists(our_dir):
@@ -229,11 +227,18 @@ def bulk_users():
             error = "A Bulk User Job is in Progress, Please wait till it's finished."
             flash(error)
         else:
-            current_user.launch_jobs("bulk_users_creation", "Bulk Creation of Users", o, delimiter, form_selection)
-            success = "A Job has been submitted for Bulk User Creation, please check the Audit log page for the " \
-                      "updated result..."
-            flash(success)
-            db.session.commit()
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |displayName | email|
+                loop_count = [u for u in reader]
+                current_user.launch_jobs("bulk_users_creation", "Bulk Creation of Users", loop_count, form_selection)
+                success = "A Job has been submitted for Bulk User Creation, please check the Audit log page for the " \
+                          "updated result..."
+                flash(success)
+                db.session.commit()
+                os.remove(o)
+
     return render_template("users/sub_pages/_create_jira_user.html",
                            title=f"Bulk User Creation :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -247,28 +252,53 @@ def bulk_users_creation(user_id, *args):
         try:
             i = 0
             set_job_progress(0)
-            if args[2] == "JSD":
-                with open(args[0], "r") as csvFile:
-                    reader = csv.reader(csvFile, delimiter=args[1])
-                    next(reader, None)
-                    # Format for CSV is |displayName | email|
-                    loop_count = [u for u in reader]
-                    count = len(loop_count)
-                    for u in loop_count:
-                        web_url = ("https://{}/rest/servicedeskapi/customer".format(user.instances))
-                        payload = (
-                            {
-                                "email": u[1],
-                                "displayName": u[0]
+            if args[1] == "JSD":
+                count = len(args[0])
+                for u in args[0]:
+                    web_url = ("https://{}/rest/servicedeskapi/customer".format(user.instances))
+                    payload = (
+                        {
+                            "email": u[1],
+                            "displayName": u[0]
 
-                            }
-                        )
-                        data = j.post(web_url, payload=payload)
-                        i += 1
-                        set_job_progress(100 * i // count)
+                        }
+                    )
+                    data = j.post(web_url, payload=payload)
+                    i += 1
+                    set_job_progress(100 * i // count)
+                if data.status_code != 201:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Failure creating Bulk JSD Users {}".format(u[0])
+                    audit_log = "ERROR: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                               user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
+                else:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Success in creating Bulk JSD Users"
+                    audit_log = "SUCCESS: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                               user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
+            elif args[1] == "JIRA":
+                count = len(args[0])
+                for u in args[0]:
+                    web_url = ("https://{}/rest/api/3/user".format(user.instances))
+                    payload = (
+                        {
+                            "emailAddress": u[1],
+                            "displayName": u[0]
+
+                        }
+                    )
+                    data = j.post(web_url, payload=payload)
+                    i += 1
+                    set_job_progress(100 * i // count)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure creating Bulk JSD Users {}".format(u[0])
+                        activity = "Failure in creating Bulk JIRA Users {}".format(u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
                         ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
                                    user_id=user.id)
@@ -276,51 +306,16 @@ def bulk_users_creation(user_id, *args):
                         db.session.commit()
                     else:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Success in creating Bulk JSD Users"
+                        activity = "Success in creating Bulk JIRA Users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
                                    user_id=user.id)
                         db.session.add(ad)
                         db.session.commit()
-            elif args[2] == "JIRA":
-                with open(args[0], "r") as csvFile:
-                    reader = csv.reader(csvFile, delimiter=args[1])
-                    next(reader, None)
-                    loop_count = [u for u in reader]
-                    count = len(loop_count)
-                    for u in loop_count:
-                        web_url = ("https://{}/rest/api/3/user".format(user.instances))
-                        payload = (
-                            {
-                                "emailAddress": u[1],
-                                "displayName": u[0]
-
-                            }
-                        )
-                        data = j.post(web_url, payload=payload)
-                        i += 1
-                        set_job_progress(100 * i // count)
-                        if data.status_code != 201:
-                            display_name = f"{user.username}".capitalize()
-                            activity = "Failure in creating Bulk JIRA Users {}".format(u[0])
-                            audit_log = "ERROR: {}".format(data.status_code)
-                            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                       user_id=user.id)
-                            db.session.add(ad)
-                            db.session.commit()
-                        else:
-                            display_name = f"{user.username}".capitalize()
-                            activity = "Success in creating Bulk JIRA Users"
-                            audit_log = "SUCCESS: {}".format(data.status_code)
-                            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                       user_id=user.id)
-                            db.session.add(ad)
-                            db.session.commit()
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
         finally:
             set_job_progress(100)
-            os.remove(args[0])
 
 
 @bulk.route("/delete_users", methods=["GET", "POST"])
@@ -377,10 +372,17 @@ def bulk_delete():
             error = "A Bulk User Deletion Job is in Progress, Please wait till it's finished."
             flash(error)
         else:
-            current_user.launch_jobs("bulk_users_deletion", "Bulk Deletion of Users", o, delimiter)
-            success = "A Job has been submitted for Bulk User Deletion"
-            flash(success)
-            db.session.commit()
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |id | displayName |
+                loop_count = [u for u in reader]
+                current_user.launch_jobs("bulk_users_deletion", "Bulk Deletion of Users", loop_count)
+                success = "A Job has been submitted for Bulk User Deletion"
+                flash(success)
+                db.session.commit()
+                os.remove(o)
+
     return render_template("users/sub_pages/_delete_user.html",
                            title=f"Bulk User Deletion :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -394,36 +396,30 @@ def bulk_users_deletion(user_id, *args):
         try:
             set_job_progress(0)
             i = 0
-            with open(args[0], "r") as csvFile:
-                reader = csv.reader(csvFile, delimiter=args[1])
-                next(reader, None)
-                # Format for CSV is |id | displayName |
-                loop_count = [u for u in reader]
-                count = len(loop_count)
-                for u in loop_count:
-                    web_url = ("https://{}/rest/api/3/user?accountId={}".format(user.instances, u[0]))
-                    data = j.delete(web_url)
-                    i += 1
-                    set_job_progress(100 * i // count)
-                    if data.status_code != 204:
-                        display_name = f"{user.username}".capitalize()
-                        activity = "Failure in Bulk user deletion of {}".format(u[1])
-                        audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
-                    else:
-                        display_name = f"{user.username}".capitalize()
-                        activity = "Executed successfully, Bulk User Deletion"
-                        audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+            count = len(args[0])
+            for u in args[0]:
+                web_url = ("https://{}/rest/api/3/user?accountId={}".format(user.instances, u[0]))
+                data = j.delete(web_url)
+                i += 1
+                set_job_progress(100 * i // count)
+                if data.status_code != 204:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Failure in Bulk user deletion of {}".format(u[1])
+                    audit_log = "ERROR: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
+                else:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Executed successfully, Bulk User Deletion"
+                    audit_log = "SUCCESS: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
         finally:
             set_job_progress(100)
-            os.remove(args[0])
 
 
 @bulk.route("/create_groups", methods=["GET", "POST"])
@@ -659,11 +655,18 @@ def bulk_add():
             error = "A Bulk Addition of Users to Group Job is in Progress, Please wait till it's finished."
             flash(error)
         else:
-            current_user.launch_jobs("bulk_add_users", "Bulk Add users to Groups", o, delimiter)
-            success = "A Job has been submitted for Bulk addition of users to Groups, Please check the " \
-                      "Audit log for a completion message..."
-            flash(success)
-            db.session.commit()
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |groupName |id | displayName |
+                loop_count = [u for u in reader]
+                current_user.launch_jobs("bulk_add_users", "Bulk Add users to Groups", loop_count)
+                success = "A Job has been submitted for Bulk addition of users to Groups, Please check the " \
+                          "Audit log for a completion message..."
+                flash(success)
+                db.session.commit()
+                os.remove(o)
+
     return render_template("pages/sub_pages/_add_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -677,45 +680,39 @@ def bulk_add_users(user_id, *args):
         try:
             set_job_progress(0)
             i = 0
-            with open(args[0], "r") as csvFile:
-                reader = csv.reader(csvFile, delimiter=args[1])
-                next(reader, None)
-                # Format for CSV is |groupName |id | displayName |
-                loop_count = [u for u in reader]
-                count = len(loop_count)
-                for u in loop_count:
-                    web_url = ("https://{}/rest/api/3/group/user?groupname={}".format(user.instances,
-                                                                                      u[0]))
-                    payload = (
-                        {
-                            "accountId": u[1]
+            count = len(args[0])
+            for u in args[0]:
+                web_url = ("https://{}/rest/api/3/group/user?groupname={}".format(user.instances,
+                                                                                  u[0]))
+                payload = (
+                    {
+                        "accountId": u[1]
 
-                        }
-                    )
-                    data = j.post(web_url, payload=payload)
-                    i += 1
-                    set_job_progress(100 * i // count)
-                    if data.status_code != 201:
-                        display_name = f"{user.username}".capitalize()
-                        activity = "Failure adding users {} to Groups {} in Bulk".format(u[2], u[0])
-                        audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
-                    else:
-                        display_name = f"{user.username}".capitalize()
-                        activity = "Bulk addition of users to Groups successful"
-                        audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                    }
+                )
+                data = j.post(web_url, payload=payload)
+                i += 1
+                set_job_progress(100 * i // count)
+                if data.status_code != 201:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Failure adding users {} to Groups {} in Bulk".format(u[2], u[0])
+                    audit_log = "ERROR: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                               user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
+                else:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Bulk addition of users to Groups successful"
+                    audit_log = "SUCCESS: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                               user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
         finally:
             set_job_progress(100)
-            os.remove(args[0])
 
 
 @bulk.route("/remove_groups", methods=["GET", "POST"])
@@ -776,11 +773,17 @@ def bulk_remove():
             error = "A Bulk Removal of Users from Group Job is in Progress, Please wait till it's finished."
             flash(error)
         else:
-            current_user.launch_jobs("bulk_remove_users", "Bulk Remove users from Groups", o, delimiter)
-            success = "A Job has been submitted for Bulk removal of users from Groups, Please check the " \
-                      "Audit log for a completion message..."
-            flash(success)
-            db.session.commit()
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                loop_count = [u for u in reader]
+                # Format for CSV is |groupName |id | displayName |
+                current_user.launch_jobs("bulk_remove_users", "Bulk Remove users from Groups", loop_count)
+                success = "A Job has been submitted for Bulk removal of users from Groups, Please check the " \
+                          "Audit log for a completion message..."
+                flash(success)
+                db.session.commit()
+
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -794,39 +797,33 @@ def bulk_remove_users(user_id, *args):
         try:
             set_job_progress(0)
             i = 0
-            with open(args[0], "r") as csvFile:
-                reader = csv.reader(csvFile, delimiter=args[1])
-                next(reader, None)
-                loop_count = [u for u in reader]
-                # Format for CSV is |groupName |id | displayName |
-                count = len(loop_count)
-                for u in loop_count:
-                    web_url = ("https://{}/rest/api/3/group/user?groupname={}&accountId={}"
-                               .format(user.instances, u[0], u[1]))
-                    data = j.delete(web_url)
-                    i += 1
-                    set_job_progress(100 * i // count)
-                    if data.status_code != 200:
-                        display_name = f"{user.username}".capitalize()
-                        activity = "Failure removing multiple users {} from Group {}".format(u[2], u[0])
-                        audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
-                    else:
-                        display_name = f"{user.username}".capitalize()
-                        activity = "Successfully removed Multiple users from Group"
-                        audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+            count = len(args[0])
+            for u in args[0]:
+                web_url = ("https://{}/rest/api/3/group/user?groupname={}&accountId={}"
+                           .format(user.instances, u[0], u[1]))
+                data = j.delete(web_url)
+                i += 1
+                set_job_progress(100 * i // count)
+                if data.status_code != 200:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Failure removing multiple users {} from Group {}".format(u[2], u[0])
+                    audit_log = "ERROR: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                               user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
+                else:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Successfully removed Multiple users from Group"
+                    audit_log = "SUCCESS: {}".format(data.status_code)
+                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                               user_id=user.id)
+                    db.session.add(ad)
+                    db.session.commit()
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
         finally:
             set_job_progress(100)
-            os.remove(args[0])
 
 
 @bulk.route("/projects", methods=["GET", "POST"])
@@ -1157,11 +1154,17 @@ def bulk_lead():
             error = "A Bulk Change of Project Lead Job is in Progress, Please wait till it's finished."
             flash(error)
         else:
-            current_user.launch_jobs("bulk_project_lead", "Bulk Change Project lead", o, delimiter)
-            success = "A Job has been submitted for Bulk Change of Project Leads, Please check the " \
-                      "Audit log for a completion message..."
-            flash(success)
-            db.session.commit()
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |id | key | assignee_type |
+                loop_count = [u for u in reader]
+                current_user.launch_jobs("bulk_project_lead", "Bulk Change Project lead", loop_count)
+                success = "A Job has been submitted for Bulk Change of Project Leads, Please check the " \
+                          "Audit log for a completion message..."
+                flash(success)
+                db.session.commit()
+
     return render_template("pages/sub_pages/_change_lead.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1175,26 +1178,21 @@ def bulk_project_lead(user_id, *args):
         try:
             set_job_progress(0)
             i = 0
-            with open(args[0], "r") as csvFile:
-                reader = csv.reader(csvFile, delimiter=args[1])
-                next(reader, None)
-                # Format for CSV is |id | key | assignee_type |
-                loop_count = [u for u in reader]
-                count = len(loop_count)
-                for u in loop_count:
-                    web_url = ("https://{}/rest/api/3/project/{}"
-                               .format(user.instances, u[1]))
-                    payload = (
-                        {
-                            "leadAccountId": u[0],
-                            "assigneeType": u[2],
-                            "key": u[1],
+            count = len(args[0])
+            for u in args[0]:
+                web_url = ("https://{}/rest/api/3/project/{}"
+                           .format(user.instances, u[1]))
+                payload = (
+                    {
+                        "leadAccountId": u[0],
+                        "assigneeType": u[2],
+                        "key": u[1],
 
-                        }
-                    )
-                    data = j.put(web_url, payload=payload)
-                    i += 1
-                    set_job_progress(100 * i // count)
+                    }
+                )
+                data = j.put(web_url, payload=payload)
+                i += 1
+                set_job_progress(100 * i // count)
                 if data.status_code != 200:
                     display_name = f"{user.username}".capitalize()
                     activity = "Error, Bulk changing Project Lead"
@@ -1215,7 +1213,6 @@ def bulk_project_lead(user_id, *args):
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
         finally:
             set_job_progress(100)
-            os.remove(args[0])
 
 
 @bulk.route("/audit", methods=["GET", "POST"])
@@ -1486,7 +1483,6 @@ def notify_me():
 @bulk.route("/progress", methods=["GET", "POST"])
 @login_required
 def progress():
-
     def load():
         x = 0
 
