@@ -8,8 +8,12 @@
        <span aria-hidden="true" >&times;</span>
      </button>
    </div>
-<div class="progress">
+<div id="progressing" class="d-none">
+          <label id="progress_status"></label>
+          <div class="progress mb-3">
   <div class="progress-bar bg-success" id="{{ job.id }}-progress" role="progressbar" style="width: {{ job.get_progress() }}%;" aria-valuenow="{{ job.get_progress() }}" aria-valuemin="0" aria-valuemax="100">{{ job.get_progress() }}%</div>
+</div>
+
 </div>
 
       {% endfor %}
