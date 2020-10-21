@@ -3,6 +3,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+
+## v2.0.0 - (21 October 2020)
+
+### Added
+* changed min. character for password to 8
+* Added Running Jobs Class using redis
+* Rewrote variable names in small letters
+* Added requests object to JiraUsers Class
+* Added new functions for worker task
+
+### Removed
+* Rewrote Audit class expression to account for any unknown bugs if using on different servers
+* Removed flash messages for bulk changes, changes will be viewable from the audit log pages
+
+### Fixed
+* Issue with timeout error on bulk changes fixed
+
 ## v1.2.5 - (28 September 2020)
 
 ### Removed
