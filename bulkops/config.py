@@ -31,6 +31,8 @@ class Config(object):
     AUDIT_PER_PAGE = 12
     MESSAGES_PER_PAGE = 8
     LOG_TO_STDOUT = os.environ.get("LOG_TO_STDOUT")
+    
+    REDIS_URL = os.environ.get("REDIS_URL") or "redis://"
 
     # App configuration
     APP_NAME = "BulkOps App"
@@ -41,6 +43,6 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = f"v1.2.5\n"
+    APP_VERSION = f"v2.0.0\n"
     APP_UPGRADE_URL = f"https://github.com/princenyeche/BOP"
     APP_VERSION_URL = f"https://raw.githubusercontent.com/princenyeche/BOP/master/version.txt"

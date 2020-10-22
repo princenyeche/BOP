@@ -5,9 +5,12 @@ from flask_login import UserMixin
 from bulkops import login
 from hashlib import md5
 from time import time
+from flask import current_app
 import jwt
 import json
 from bulkops import bulk
+import redis
+import rq
 
 
 # initialize the SQLAlchemy class Model with db variable
@@ -29,6 +32,8 @@ class User(UserMixin, db.Model):
     last_read_message = db.Column(db.DateTime)
 
     notifications = db.relationship("Notification", backref="user", lazy="dynamic", cascade="all,delete")
+    
+    jobs = db.relationship("Jobs", backref="user", lazy="dynamic", cascade="all,delete")
 
     def __repr__(self):
         return "<User {}>".format(self.username)
@@ -67,6 +72,18 @@ class User(UserMixin, db.Model):
         except:
             return
         return User.query.get(id)
+    
+    def launch_jobs(self, name, description, *args, **kwargs):
+        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, **kwargs, job_timeout="1h")
+        jobs = Jobs(id=req_job.get_id(), name=name, description=description, user=self)
+        db.session.add(jobs)
+        return jobs
+
+    def get_job_in_progress(self, name):
+        return Jobs.query.filter_by(name=name, user=self, completion=False).first()
+
+    def get_jobs_in_progress(self):
+        return Jobs.query.filter_by(user=self, completion=False).all()
 
 
 class Audit(db.Model):
@@ -102,6 +119,25 @@ class Notification(db.Model):
 
     def run_data(self):
         return json.loads(str(self.payload))
+    
+
+class Jobs(db.Model):
+    id = db.Column(db.String(64), primary_key=True)
+    name = db.Column(db.String(225), index=True)
+    description = db.Column(db.String(225), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    completion = db.Column(db.Boolean, default=False)
+
+    def get_job(self):
+        try:
+            req_job = rq.job.Job.fetch(self.id, connection=bulk.redis)
+        except (redis.exceptions.RedisError, rq.queue.NoSuchJobError):
+            return None
+        return req_job
+
+    def get_progress(self):
+        job = self.get_job()
+        return job.meta.get("progress", 0) if job is not None else 100
 
 
 @login.user_loader

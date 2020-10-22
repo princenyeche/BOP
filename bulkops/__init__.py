@@ -8,6 +8,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
+from redis import Redis
+import rq
 
 bulk = Flask(__name__)
 bulk.config.from_object(Config)
@@ -17,7 +19,7 @@ bulk.config.update(
     SESSION_REFRESH_EACH_REQUEST=True,
     SESSION_COOKIE_NAME="bulkops",
     # remove the below if running online
-    # else the comment out the ones not needed
+    # else comment out the lines not needed
     # SESSION_COOKIE_SECURE=True,
     # SESSION_COOKIE_HTTPONLY=True,
     # SESSION_COOKIE_SAMESITE=None,
@@ -36,6 +38,8 @@ LOG_FOLDER = "Logs"
 bulk.config["LOG_FOLDER"] = os.path.join(basedir, LOG_FOLDER)
 our_logs = os.path.join(bulk.config["LOG_FOLDER"])
 
+bulk.redis = Redis.from_url(bulk.config["REDIS_URL"])
+bulk.job_queue = rq.Queue("bulkops-jobs", connection=bulk.redis)
 
 # log notification configuration
 if not bulk.debug:

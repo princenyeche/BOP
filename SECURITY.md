@@ -8,7 +8,8 @@ The below Initial release version is supported.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| v1.2.5    | :white_check_mark: |
+| v2.0.0    | :white_check_mark: |
+| v1.2.5    | :x: |
 | v1.2.4    | :x: |
 | v1.2.3    | :x: |
 | v1.2.2    | :x: |

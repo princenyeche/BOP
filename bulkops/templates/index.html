@@ -371,6 +371,11 @@ function set_msg_number(n) {
 $('#msg_number').text(n);
 $('#msg_number').css('visibility', n ? 'visible' : 'hidden');
 }
+function set_task_progress(task_id, progress) {
+            $('#' + task_id + '-progress').text(progress+'%');
+            $('#' + task_id + '-showbulk').text(progress+'%');
+            $('.' + task_id + '-showbulk').css('width', progress+'%').attr('aria-valuenow', progress);
+        }
 function bulkhome() {
 window.location.href="{{ url_for('index') }}"
 }
@@ -381,8 +386,16 @@ $(function() {
           $.ajax('{{ url_for('notifications') }}?when' + when).done(
                 function(notifications) {
                     for (var i = 0; i < notifications.length; i++) {
-                        if (notifications[i].name == 'unread_msg_count')
-                            set_msg_count(notifications[i].data);
+                      switch (notifications[i].name) {
+                              case 'unread_msg_count':
+                                  set_msg_number(notifications[i].data);
+                                  break;
+                              case 'task_progress':
+                                  set_task_progress(
+                                      notifications[i].data.task_id,
+                                      notifications[i].data.progress);
+                                  break;
+                          }
                                  when = notifications[i].timestamp;
 
                         }
