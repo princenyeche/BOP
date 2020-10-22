@@ -40,6 +40,8 @@ heroku buildpacks:set heroku/python -a <appame>
 git add Procfile startup.py requirements.txt <bulkopsfolder>
 git commit -m "commits"
 heroku addons:create heroku-postgresql:hobby-dev -a <appname>
+# add redis add-on
+heroku addons:create heroku-redis:hobby-dev -a <appname>
 git push heroku master
 ```
 Your `requirements.txt` file should download all the necessary modules needed by Python framework on Heroku. The Procfile is needed by Heroku to start up the Application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should be configured for you from the above command.
@@ -58,6 +60,9 @@ In the environment variables, you will need to set it up as below, so python kno
 |ADMINS      | no-reply@example.com |
 |CONTACT_EMAIL | admin@example.com |
 |SECRET_KEY | secretkey |  
+|REDIS_URL | redis://url | 
+
+If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application.
 
 ### Local
 Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
@@ -109,10 +114,16 @@ OR simply use
 ```bash
 python startup.py
 ```
+
 if you would like to run the App on another IP or port local to you, you can specify the host and port number, so it can be access locally on your network. find your local machine IPv4 address to find your IP, use the `ifconfig` (linux/macOS) or `ipconfig` if on windows.
 ```bash
 flask run -h 192.168.1.100 -p 8080
 ```
+
+#### Using Redis Worker
+Using redis locally, download the software on macOS use `brew install redis` once installed, start the service automatically by using `brew services start redis`. which will enable the app listen for Jobs. you can view this by running on terminal `rq worker bulkops-jobs`.
+
+
 ### Other Linux Hosting
 * You can use other linux Servers as well to install this application online
 
