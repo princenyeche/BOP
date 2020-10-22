@@ -141,8 +141,8 @@ def reset_password(token):
         s = form.password.data
         a = re.search("[!@#$%&*]", s)
         y = len(s)
-        if y < 6:
-            error = "Your Password must be equal or greater than 6 Characters in length"
+        if y < 8:
+            error = "Your Password must be equal or greater than 8 Characters in length"
             flash(error)
         elif y > 64:
             flash("Your Password is too long, it must be with 64 Characters in length")
