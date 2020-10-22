@@ -74,7 +74,7 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
     
     def launch_jobs(self, name, description, *args, **kwargs):
-        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, **kwargs)
+        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, **kwargs, job_timeout="1h")
         jobs = Jobs(id=req_job.get_id(), name=name, description=description, user=self)
         db.session.add(jobs)
         return jobs
