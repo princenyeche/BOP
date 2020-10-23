@@ -235,10 +235,9 @@ def bulk_users():
                 current_user.launch_jobs("bulk_users_creation", "Bulk Creation of Users", loop_count, form_selection)
                 success = "A Job has been submitted for Bulk User Creation, please check the Audit log page for the " \
                           "updated result..."
-                flash(success)
                 db.session.commit()
                 os.remove(o)
-
+                flash(success)
     return render_template("users/sub_pages/_create_jira_user.html",
                            title=f"Bulk User Creation :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -266,22 +265,22 @@ def bulk_users_creation(user_id, *args):
                     data = j.post(web_url, payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
-                if data.status_code != 201:
-                    display_name = f"{user.username}".capitalize()
-                    activity = "Failure creating Bulk JSD Users {}".format(u[0])
-                    audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                    if data.status_code != 201:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Failure creating Bulk JSD Users {}".format(u[0])
+                        audit_log = "ERROR: {}".format(data.status_code)
+                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
                                user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
-                else:
-                    display_name = f"{user.username}".capitalize()
-                    activity = "Success in creating Bulk JSD Users"
-                    audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                        db.session.add(ad)
+                        db.session.commit()
+                    else:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Success in creating Bulk JSD Users"
+                        audit_log = "SUCCESS: {}".format(data.status_code)
+                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
                                user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                        db.session.add(ad)
+                        db.session.commit()
             elif args[1] == "JIRA":
                 count = len(args[0])
                 for u in args[0]:
@@ -379,10 +378,9 @@ def bulk_delete():
                 loop_count = [u for u in reader]
                 current_user.launch_jobs("bulk_users_deletion", "Bulk Deletion of Users", loop_count)
                 success = "A Job has been submitted for Bulk User Deletion"
-                flash(success)
                 db.session.commit()
                 os.remove(o)
-
+                flash(success)
     return render_template("users/sub_pages/_delete_user.html",
                            title=f"Bulk User Deletion :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -467,8 +465,8 @@ def create_groups():
                 current_user.launch_jobs("bulk_create_groups", "Bulk Creation of Groups", k)
                 success = "A Job has been submitted for Bulk Creation of Groups, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
+                flash(success)
     return render_template("/pages/create_grp.html", title=f"Create Group :: {bulk.config['APP_NAME_SINGLE']}",
                            form=form, error=error, success=success, Messages=Messages)
 
@@ -552,8 +550,8 @@ def delete_groups():
                 current_user.launch_jobs("bulk_delete_groups", "Bulk Deletion of Groups", k)
                 success = "A Job has been submitted for Bulk Deletion of Groups, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
+                flash(success)
     return render_template("/pages/delete_grp.html", title=f"Remove Group :: {bulk.config['APP_NAME_SINGLE']}",
                            form=form, success=success, error=error, Messages=Messages)
 
@@ -663,10 +661,9 @@ def bulk_add():
                 current_user.launch_jobs("bulk_add_users", "Bulk Add users to Groups", loop_count)
                 success = "A Job has been submitted for Bulk addition of users to Groups, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
                 os.remove(o)
-
+                flash(success)
     return render_template("pages/sub_pages/_add_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -781,9 +778,9 @@ def bulk_remove():
                 current_user.launch_jobs("bulk_remove_users", "Bulk Remove users from Groups", loop_count)
                 success = "A Job has been submitted for Bulk removal of users from Groups, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
-
+                os.remove(o)
+                flash(success)
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -866,8 +863,8 @@ def projects():
                 current_user.launch_jobs("bulk_projects", "Bulk Project deletion", f)
                 success = "A Job has been submitted for Bulk deletion of Projects, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
+                flash(success)
     return render_template("/pages/projects.html", title=f"Delete Projects :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
 
@@ -983,8 +980,8 @@ def delete_issue():
                 current_user.launch_jobs("bulk_delete_issues", "Bulk Issue deletion", q, sub_task)
                 success = "A Job has been submitted for Bulk deletion of Issues, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
+                flash(success)
     return render_template("/pages/delete_issue.html", title=f"Delete Issues :: {bulk.config['APP_NAME_SINGLE']}",
                            form=form, success=success, error=error, Messages=Messages)
 
@@ -1162,9 +1159,9 @@ def bulk_lead():
                 current_user.launch_jobs("bulk_project_lead", "Bulk Change Project lead", loop_count)
                 success = "A Job has been submitted for Bulk Change of Project Leads, Please check the " \
                           "Audit log for a completion message..."
-                flash(success)
                 db.session.commit()
-
+                os.remove(o)
+                flash(success)
     return render_template("pages/sub_pages/_change_lead.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
