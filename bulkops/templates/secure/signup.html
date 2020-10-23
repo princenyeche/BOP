@@ -12,7 +12,7 @@
          <div class="form-group">
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
-             <small id="userHelp" class="form-text text-muted">Try not to use &lt;space&gt; characters for username </small>
+             <small id="userHelp" class="form-text text-muted">*Use small letters only and no &lt;space&gt; characters for username </small>
 {% for error in form.username.errors %}
              <div class="alert alert-danger" role="alert">
   {{ error }}
