@@ -43,22 +43,22 @@ class JiraUsers:
 
     @staticmethod
     def post(url, payload=None, *args):
-        res = requests.post(url, json=payload, auth=auth_request, headers=headers)
+        res = requests.post(url, *args, json=payload, auth=auth_request, headers=headers)
         return res
 
     @staticmethod
     def get(url, *args):
-        res = requests.get(url, auth=auth_request, headers=headers)
+        res = requests.get(url, *args, auth=auth_request, headers=headers)
         return res
 
     @staticmethod
     def put(url, payload=None, *args):
-        res = requests.put(url, json=payload, auth=auth_request, headers=headers)
+        res = requests.put(url, *args, json=payload, auth=auth_request, headers=headers)
         return res
 
     @staticmethod
     def delete(url, payload=None, *args):
-        res = requests.delete(url, json=payload, auth=auth_request, headers=headers)
+        res = requests.delete(url, *args, json=payload, auth=auth_request, headers=headers)
         return res
 
 
