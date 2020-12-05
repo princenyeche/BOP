@@ -87,7 +87,7 @@ SET FLASK_APP=startup.py
 SET FLASK_ENV=development
 ```
 #### Providing Mail Support
-In order for you to get the mail running while local, you will need to export the variable on terminal or use `SET` command for windows users.
+In order for you to get the mail running locally, you will need to `export` the variable on terminal or use `SET` command for windows users.
 ```bash
 export MAIL_SERVER=smtp.example.com
 export MAIL_PORT=587
@@ -95,10 +95,11 @@ export MAIL_USE_TLS=1
 export MAIL_USERNAME=youremail@example.com
 export MAIL_PASSWORD=yourpassword
 export MAIL_SUFFIX=example.com
+export ADMINS=no-reply@example.com
 ```
 
 #### Initialize the Database
-You will need to start up the database, else the App will result in an error.
+You will need to start up the database, else the App will result in an error. run the below commands sequentially.
 ```bash
 flask db init
 flask db migrate
@@ -115,13 +116,13 @@ OR simply use
 python startup.py
 ```
 
-if you would like to run the App on another IP or port local to you, you can specify the host and port number, so it can be access locally on your network. find your local machine IPv4 address to find your IP, use the `ifconfig` (linux/macOS) or `ipconfig` if on windows.
+if you would like to run the App on another IP or port local to you, you can specify the host and port number. so it can be accessed locally on your network. find your local machine IPv4 address by using the `ifconfig` (linux/macOS) or `ipconfig` if on windows.
 ```bash
 flask run -h 192.168.1.100 -p 8080
 ```
 
 #### Using Redis Worker
-Using redis locally, download the software on macOS use `brew install redis` once installed, start the service automatically by using `brew services start redis`. which will enable the app listen for Jobs. you can view this by running on terminal `rq worker bulkops-jobs`.
+Using redis locally, download the software; on macOS use `brew install redis` once installed, start the service automatically by using `brew services start redis`. which will enable the app listen for Jobs. you can view this by running on terminal `rq worker bulkops-jobs`.
 
 
 ### Other Linux Hosting

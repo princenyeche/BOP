@@ -1,0 +1,7 @@
+Hi {{ user.username.capitalize() }},
+
+This is to inform you that your requested Bulkops Task are {{ form["job"] }}:
+Detail: {{ form["success"] }}
+
+Cheers,
+The BulkOps App Team
