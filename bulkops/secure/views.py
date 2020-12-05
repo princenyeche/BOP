@@ -145,7 +145,7 @@ def reset_password(token):
             error = "Your Password must be equal or greater than 8 Characters in length"
             flash(error)
         elif y > 64:
-            flash("Your Password is too long, it must be with 64 Characters in length")
+            flash("Your Password is too long, it must be within 64 Characters in length")
         elif a is None:
             error = "You must use at least one of this Special Characters (!, @, #, $, %, &, or *) in your Password!"
             flash(error)
