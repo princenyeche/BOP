@@ -1,0 +1,7 @@
+Hi {{user.username.capitalize()}},
+
+This is to inform you that your requested Jobs failed due to {{ form["error"] }}:
+Outcome: {{ form["job"] }}
+
+Cheers,
+The BulkOps App Team
