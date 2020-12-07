@@ -1,0 +1,24 @@
+<div class="card">
+  <h5 class="card-header">An Exciting Experience Awaits!</h5>
+  <p class="card-body">
+    <h5 class="card-title">Hi {{user.username.capitalize()}},</h5>
+    <p class="card-text"> Glad to have you sign up with us, a few things to let you know about the features you're about to use.
+        With BulkOps App, you can be able to do the below:</p>
+      <hr class="my-4">
+        <ul type="square">
+      <li>Bulk Create Jira Users or Jira Service Management Users</li>
+      <li>Bulk Delete Users</li>
+      <li>Bulk Add users to groups</li>
+      <li>Bulk remove users from groups</li>
+      <li>Bulk delete projects</li>
+  </ul>
+    <p>And many more...</p>
+
+      <p>If you require a walkthrough or a guide on how to use the application, at any point within the app - you can click on
+      the help button to know what to do. Try it out by using the button below.
+      </p>
+    <a href="{{ url_for('signin', _external=True) }}" class="btn btn-primary">Sign in</a>
+
+<p>Cheers,</p>
+<p>The BulkOps App Team</p>
+  </div>
