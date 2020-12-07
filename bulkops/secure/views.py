@@ -10,7 +10,8 @@ from flask_login import logout_user
 from werkzeug.urls import url_parse
 from bulkops import db
 from bulkops.secure.forms import RegistrationForm, LoginForm, ResetPasswordForm, ForgetEmailForm, ContactForm
-from bulkops.secure.notifier import send_reset_password, send_contact_form, login_alert, pre_config
+from bulkops.secure.notifier import send_reset_password, send_contact_form, login_alert, pre_config, \
+    send_welcome_email
 from bulkops import bulk
 from datetime import datetime as dt
 
@@ -103,8 +104,9 @@ def signup():
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
-            success = "Congratulations, you have been registered successfully!"
+            success = "Congratulations, you have been registered successfully. We also sent you a welcome message!😉"
             flash(success, category="alert-success")
+            welcome_message(extract=form.username.data.lower())
             return redirect(url_for("signin"))
         else:
             flash("Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\"")
@@ -204,3 +206,22 @@ def version_checker():
         send = Messages(subject=head_subject, body=upgrade, receiver_id=user.id, sender_id=admin.id)
         db.session.add(send)
         db.session.commit()
+
+   
+# sends a welcome message & email upon new sign up
+def welcome_message(extract):
+    user = User.query.filter_by(username=extract).first_or_404()
+    admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+    phrase = f"Thanks for Signing up {user.username.capitalize()}!"
+    subject = phrase
+    message = f"""
+              Hi {user.username.capitalize()},\n 
+              Thanks for signing up for {bulk.config["APP_NAME"]}.\n 
+              You can start by using any one of our features on the home screen; also don't\n
+              forget to update your API token before you begin.\n
+              Cheers, {admin.username.capitalize()}.
+"""
+    send = Messages(subject=subject, body=message, receiver_id=user.id, sender_id=admin.id)
+    db.session.add(send)
+    db.session.commit()
+    send_welcome_email(user)

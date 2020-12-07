@@ -1,0 +1,16 @@
+Hi {{user.username.capitalize()}},
+
+Glad to have you sign up with us, a few things to let you know about the features you're about to use.
+With BulkOps App, you can be able to do the below:
+    * Bulk Create Jira Users or Jira Service Management Users
+    * Bulk Delete Users
+    * Bulk Add users to groups
+    * Bulk remove users from groups
+    * Bulk delete projects
+And many more...
+
+If you require a walkthrough or a guide on how to use the application, at any point within the app - you can click on
+the help button to know what to do, try it out - {{ url_for('signin', _external=True) }}
+
+Cheers,
+The BulkOps App Team
