@@ -40,3 +40,12 @@ def pre_config(default, date, x):
                  text_body=render_template("email/auto_create.txt", default=default, date=date, x=x),
                  html_body=render_template("email/auto_create.html", default=default, date=date, x=x)
                  )
+    
+    
+def send_welcome_email(user):
+    send_message(f"[{bulk.config['APP_NAME']}] Thank You for Signing Up!",
+                 sender=bulk.config["ADMINS"][0],
+                 recipients=[user.email],
+                 text_body=render_template("email/app_welcome_email.txt", user=user),
+                 html_body=render_template("email/app_welcome_email.html", user=user)
+                 )
