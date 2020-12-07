@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 
+## v2.0.3 - (07 December 2020)
+### Update
+* Added a welcome `email` and `message` notifications for new sign ups
+
 ## v2.0.2 - (05 December 2020)
 ### Update
 * Added a notification system for BulkOps Jobs
