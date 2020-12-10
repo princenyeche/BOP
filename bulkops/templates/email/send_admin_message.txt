@@ -1,0 +1,9 @@
+Hi Admin,
+
+This User {{user.username.capitalize() }} has sent the below Message
+    Subject: {{ form.subject.data }}
+    Message:
+    {{ form.messages.data }}
+
+Cheers,
+The BulkOps App Team

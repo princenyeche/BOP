@@ -19,7 +19,7 @@ from requests.auth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
 from bulkops import bulk
 from bulkops.tasks.jobs import set_job_progress
-from bulkops.main.send_mail import send_app_messages, send_error_messages
+from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = "Files"
@@ -1573,6 +1573,8 @@ def messages():
         user.add_notification("unread_msg_count", user.new_messages())
         db.session.add(send)
         db.session.commit()
+        if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
+            send_admin_message(admin, user, form)
         success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
         flash(success)
     return render_template("/pages/messages.html",
@@ -1606,6 +1608,8 @@ def i_messages(id):
         user.add_notification("unread_msg_count", user.new_messages())
         db.session.add(send)
         db.session.commit()
+        if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
+            send_admin_message(admin, user, form)
         success = "Your Message has been sent Successfully"
         flash(success)
     return render_template("/pages/view_message.html",
@@ -1643,6 +1647,8 @@ def sent_messages():
         user.add_notification("unread_msg_count", user.new_messages())
         db.session.add(send)
         db.session.commit()
+        if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
+            send_admin_message(admin, user, form)
         success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
         flash(success)
     return render_template("/pages/send_message.html",
@@ -1679,6 +1685,8 @@ def s_messages(id):
         user.add_notification("unread_msg_count", user.new_messages())
         db.session.add(send)
         db.session.commit()
+        if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
+            send_admin_message(admin, user, form)
         success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
         flash(success)
     return render_template("/pages/view_message.html",
@@ -1713,6 +1721,8 @@ def stats():
         send = Messages(subject=form.subject.data, body=form.messages.data, receiver_id=admin.id, sender_id=user.id)
         db.session.add(send)
         db.session.commit()
+        if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
+            send_admin_message(admin, user, form)
         success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
         flash(success)
     return render_template("/pages/stats.html",
