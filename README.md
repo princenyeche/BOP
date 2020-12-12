@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/princenyeche/BOP/branch/master/graph/badge.svg?token=WUIUU03O1M)](https://codecov.io/gh/princenyeche/BOP) [![Requirements Status](https://requires.io/github/princenyeche/BOP/requirements.svg?branch=master)](https://requires.io/github/princenyeche/BOP/requirements/?branch=master)
+
 # **Bulk Operations App**
 Bulk Operations App for Jira is a Cloud based Add-on, which helps in performing Bulk operational features not available on Jira Cloud. 
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulkops.png)
