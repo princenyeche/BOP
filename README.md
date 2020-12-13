@@ -1,26 +1,25 @@
-[![codecov](https://codecov.io/gh/princenyeche/BOP/branch/master/graph/badge.svg?token=WUIUU03O1M)](https://codecov.io/gh/princenyeche/BOP) [![Requirements Status](https://requires.io/github/princenyeche/BOP/requirements.svg?branch=master)](https://requires.io/github/princenyeche/BOP/requirements/?branch=master)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6068ebb9b8794d11bcb8471f71b711c6)](https://www.codacy.com/gh/princenyeche/BOP/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=princenyeche/BOP&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/princenyeche/BOP/branch/master/graph/badge.svg?token=WUIUU03O1M)](https://codecov.io/gh/princenyeche/BOP) [![Requirements Status](https://requires.io/github/princenyeche/BOP/requirements.svg?branch=master)](https://requires.io/github/princenyeche/BOP/requirements/?branch=master)
 
 # **Bulk Operations App**
 Bulk Operations App for Jira is a Cloud based Add-on, which helps in performing Bulk operational features not available on Jira Cloud. 
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulkops.png)
-### **Features**
-* Bulk creating Jira users or Jira Service Desk users
-* Bulk creation of Groups
-* Bulk deletion of Groups
-* Bulk Add users to groups (multiple users & groups)
-* Bulk remove users from groups (multiple users & groups)
-* Bulk delete Projects
-* Bulk change Project leads
-* Bulk delete issues [**experimental**]
-
+## **Features**
+  * Bulk creating Jira users or Jira Service Desk users
+  * Bulk creation of Groups
+  * Bulk deletion of Groups
+  * Bulk Add users to groups (multiple users & groups)
+  * Bulk remove users from groups (multiple users & groups)
+  * Bulk delete Projects
+  * Bulk change Project leads
+  * Bulk delete issues [**experimental**]
 
 ## **Configuration**
 You can be able to launch the application in various ways. either you host it yourself or you can easily run it locally on your machine or download it from **[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=support)** and run it on your Cloud Instance. 
 
-* Check out the online version of BulkOps App **[here](https://elfapp.website/bulkops)**
+   * Check out the online version of BulkOps App **[here](https://elfapp.website/bulkops)**
 
 ## **Tutorials**
-* Please see the tutorials on how to use this App **[here](https://github.com/princenyeche/BOP/blob/master/tutorial.md)**
+   * Please see the tutorials on how to use this App **[here](https://github.com/princenyeche/BOP/blob/master/tutorial.md)**
 
 ## **Hosting**
 
@@ -69,7 +68,7 @@ If redis is installed, use the terminal and activate it by using `heroku ps:scal
 ### Local
 Make sure Python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have PIP on your computer with the download. check by using 
 ```bash
-$: pip --version
+pip --version
 ```
 
 If you installed Python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
@@ -125,7 +124,6 @@ flask run -h 192.168.1.100 -p 8080
 
 #### Using Redis Worker
 Using redis locally, download the software; on macOS use `brew install redis` once installed, start the service automatically by using `brew services start redis`. which will enable the app listen for Jobs. you can view this by running on terminal `rq worker bulkops-jobs`.
-
 
 ### Other Linux Hosting
 * You can use other linux Servers as well to install this application online
