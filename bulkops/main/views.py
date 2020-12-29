@@ -29,37 +29,29 @@ file_limit = bulk.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 if not os.path.exists(our_dir):
     os.mkdir(our_dir)
 
-auth_request = None
-headers = None
-
 
 class JiraUsers:
+    auth_request = None
+    headers = None
 
-    @staticmethod
-    def make_session(email=None, token=None):
-        global auth_request
-        global headers
-        auth_request = HTTPBasicAuth(email, token)
-        headers = {"Content-Type": "application/json"}
+    def make_session(self, email=None, token=None):
+        self.auth_request = HTTPBasicAuth(email, token)
+        self.headers = {"Content-Type": "application/json"}
 
-    @staticmethod
-    def post(url, *args, payload=None):
-        res = requests.post(url, *args, json=payload, auth=auth_request, headers=headers)
+    def post(self, url, *args, payload=None, **kwargs):
+        res = requests.post(url, *args, json=payload, auth=self.auth_request, headers=self.headers, **kwargs)
         return res
 
-    @staticmethod
-    def get(url, *args):
-        res = requests.get(url, *args, auth=auth_request, headers=headers)
+    def get(self, url, *args, **kwargs):
+        res = requests.get(url, *args, auth=self.auth_request, headers=self.headers, **kwargs)
         return res
 
-    @staticmethod
-    def put(url, *args, payload=None):
-        res = requests.put(url, *args, json=payload, auth=auth_request, headers=headers)
+    def put(self, url, *args, payload=None, **kwargs):
+        res = requests.put(url, *args, json=payload, auth=self.auth_request, headers=self.headers, **kwargs)
         return res
 
-    @staticmethod
-    def delete(url, payload=None):
-        res = requests.delete(url, json=payload, auth=auth_request, headers=headers)
+    def delete(self, url, payload=None, **kwargs):
+        res = requests.delete(url, json=payload, auth=self.auth_request, headers=self.headers, **kwargs)
         return res
 
 
@@ -159,18 +151,14 @@ def users():
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Failure creating JIRA User"
                 audit_log = "ERROR: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
                 success = "User Created Successfully, Please check your Admin hub to confirm."
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Created JIRA User successfully"
                 audit_log = "SUCCESS: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif form.users_opt.data == "JSD":
             web_url = ("https://{}/rest/servicedeskapi/customer".format(current_user.instances))
@@ -187,18 +175,14 @@ def users():
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Failure creating JSD User"
                 audit_log = "ERROR: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
                 success = "Customer user created Successfully."
                 display_name = f"{current_user.username}".capitalize()
                 activity = "JSD User created"
                 audit_log = "SUCCESS: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(success)
 
     return render_template("pages/users.html", title=f"User Creation :: {bulk.config['APP_NAME_SINGLE']}",
@@ -217,6 +201,10 @@ def bulk_users():
         os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
         filename = secure_filename(f.filename)
@@ -251,10 +239,7 @@ def bulk_users():
                             display_name = f"{current_user.username}".capitalize()
                             activity = "Failure creating Bulk JSD Users {}".format(u[0])
                             audit_log = "ERROR: {}".format(data.status_code)
-                            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                       user_id=current_user.id)
-                            db.session.add(ad)
-                            db.session.commit()
+                            auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(error)
                         else:
@@ -262,10 +247,7 @@ def bulk_users():
                             display_name = f"{current_user.username}".capitalize()
                             activity = "Success in creating Bulk JSD Users"
                             audit_log = "SUCCESS: {}".format(data.status_code)
-                            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                       user_id=current_user.id)
-                            db.session.add(ad)
-                            db.session.commit()
+                            auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(success)
                     elif form_selection == "JIRA":
@@ -284,10 +266,7 @@ def bulk_users():
                             display_name = f"{current_user.username}".capitalize()
                             activity = "Failure in creating Bulk JIRA Users {}".format(u[0])
                             audit_log = "ERROR: {}".format(data.status_code)
-                            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                       user_id=current_user.id)
-                            db.session.add(ad)
-                            db.session.commit()
+                            auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(error)
                         else:
@@ -295,10 +274,7 @@ def bulk_users():
                             display_name = f"{current_user.username}".capitalize()
                             activity = "Success in creating Bulk JIRA Users"
                             audit_log = "SUCCESS: {}".format(data.status_code)
-                            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                       user_id=current_user.id)
-                            db.session.add(ad)
-                            db.session.commit()
+                            auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(success)
                 elif number_of_loops > 10:
@@ -342,18 +318,12 @@ def bulk_users_creation(user_id, *args):
                         display_name = f"{user.username}".capitalize()
                         activity = "Failure creating Bulk JSD Users {}".format(u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Success in creating Bulk JSD Users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit_jobs(display_name, activity, audit_log, user)
             elif args[1] == "JIRA":
                 count = len(args[0])
                 for u in args[0]:
@@ -372,18 +342,12 @@ def bulk_users_creation(user_id, *args):
                         display_name = f"{user.username}".capitalize()
                         activity = "Failure in creating Bulk JIRA Users {}".format(u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Success in creating Bulk JIRA Users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit_jobs(display_name, activity, audit_log, user)
                 send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -407,18 +371,14 @@ def delete_users():
             display_name = f"{current_user.username}".capitalize()
             activity = "Failure in deleting user"
             audit_log = "ERROR: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
             success = "User Deletion has been completed."
             display_name = f"{current_user.username}".capitalize()
             activity = "Successfully deleted user"
             audit_log = "SUCCESS: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(success)
     return render_template("pages/delete.html", title=f"Delete User :: {bulk.config['APP_NAME_SINGLE']}",
                            form=form, error=error, success=success, Messages=Messages)
@@ -436,6 +396,10 @@ def bulk_delete():
         os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
         filename = secure_filename(f.filename)
@@ -461,10 +425,7 @@ def bulk_delete():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Failure in Bulk user deletion of {}".format(u[1])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
@@ -472,10 +433,7 @@ def bulk_delete():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Executed successfully, Bulk User Deletion"
                         audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
@@ -508,16 +466,12 @@ def bulk_users_deletion(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Failure in Bulk user deletion of {}".format(u[1])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Executed successfully, Bulk User Deletion"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -533,6 +487,10 @@ def create_groups():
     j.make_session(email=current_user.email, token=current_user.token)
     success = None
     error = None
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary statement to ensure our with statement works
         s_file = "sometext.txt"
@@ -555,18 +513,14 @@ def create_groups():
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Failure in creating user Group"
                 audit_log = "ERROR: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
                 success = "Group \"{}\" Created Successfully.".format(form.group.data)
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Successfully Created user Group"
                 audit_log = "SUCCESS: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
@@ -584,20 +538,14 @@ def create_groups():
                     display_name = f"{current_user.username}".capitalize()
                     activity = "Failure in creating Groups {} in Bulk".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
                     success = "Multiple Groups Created Successfully."
                     display_name = f"{current_user.username}".capitalize()
                     activity = "Bulk Group creation successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(success)
         elif p > 10:
             if current_user.get_job_in_progress("bulk_create_groups"):
@@ -638,16 +586,12 @@ def bulk_create_groups(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Failure in creating Groups {} in Bulk".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Bulk Group creation successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -663,6 +607,10 @@ def delete_groups():
     j.make_session(email=current_user.email, token=current_user.token)
     success = None
     error = None
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary expression to ensure our with statement works
         s_file = "sometext.txt"
@@ -679,18 +627,14 @@ def delete_groups():
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Failure in deleting group"
                 audit_log = "ERROR: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
                 success = "Group \"{}\" Removed Successfully".format(form.delete_gp.data)
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Group deleted successfully"
                 audit_log = "SUCCESS: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
@@ -702,20 +646,14 @@ def delete_groups():
                     display_name = f"{current_user.username}".capitalize()
                     activity = "Failure in deleting Multiple groups {}".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
                     success = "Multiple Group Removal Successful."
                     display_name = f"{current_user.username}".capitalize()
                     activity = "Multiple groups deletion successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(success)
         elif p > 10:
             if current_user.get_job_in_progress("bulk_delete_groups"):
@@ -750,18 +688,12 @@ def bulk_delete_groups(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Failure in deleting Multiple groups {}".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Multiple groups deletion successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, form={"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -791,18 +723,14 @@ def add_groups():
             display_name = f"{current_user.username}".capitalize()
             activity = "Failure in adding user to Group"
             audit_log = "ERROR: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
             success = "User Added to Group Successfully."
             display_name = f"{current_user.username}".capitalize()
             activity = "Added user successfully to Group"
             audit_log = "SUCCESS: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(success)
     return render_template("/pages/add_grp.html", title=f"Add User to Group :: {bulk.config['APP_NAME_SINGLE']}",
                            form=form, success=success, error=error, Messages=Messages)
@@ -820,6 +748,10 @@ def bulk_add():
         os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
         # saving the file literally to the path as it is named including <space> characters
@@ -853,10 +785,7 @@ def bulk_add():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Failure adding users {} to Groups {} in Bulk".format(u[2], u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
@@ -864,10 +793,7 @@ def bulk_add():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Bulk addition of users to Groups successful"
                         audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
@@ -908,18 +834,12 @@ def bulk_add_users(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Failure adding users {} to Groups {} in Bulk".format(u[2], u[0])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Bulk addition of users to Groups successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -944,18 +864,14 @@ def remove_groups():
             display_name = f"{current_user.username}".capitalize()
             activity = "Failure in removing user from Group"
             audit_log = "ERROR: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
             success = "User removed from Group successfully."
             display_name = f"{current_user.username}".capitalize()
             activity = "Successfully removed user from Group"
             audit_log = "SUCCESS: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(success)
     return render_template("/pages/remove_grp.html",
                            title=f"Remove User from Group :: {bulk.config['APP_NAME_SINGLE']}",
@@ -975,6 +891,10 @@ def bulk_remove():
         os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
         # saving the file literally to the path as it is named including <space> characters
@@ -1003,10 +923,7 @@ def bulk_remove():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Failure removing multiple users {} from Group {}".format(u[2], u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
@@ -1014,10 +931,7 @@ def bulk_remove():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Successfully removed Multiple users from Group"
                         audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
@@ -1052,18 +966,12 @@ def bulk_remove_users(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Failure removing multiple users {} from Group {}".format(u[2], u[0])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Successfully removed Multiple users from Group"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -1079,6 +987,10 @@ def projects():
     j.make_session(email=current_user.email, token=current_user.token)
     success = None
     error = None
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary statement to ensure our with statement works
         s_file = "sometext.txt"
@@ -1096,18 +1008,14 @@ def projects():
                 display_name = f"{current_user.username}".capitalize()
                 activity = f"Failure in deleting Project, {form.project.data}"
                 audit_log = "ERROR: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
                 success = "Project {} Deleted successfully,".format(form.project.data)
                 display_name = f"{current_user.username}".capitalize()
                 activity = f"Successfully deleted Project, {form.project.data}"
                 audit_log = "SUCCESS: {}".format(data.status_code)
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.commit()
+                auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
@@ -1120,20 +1028,14 @@ def projects():
                     display_name = f"{current_user.username}".capitalize()
                     activity = f"Failure deleting these Projects {z}"
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
                     success = "Projects {} Deleted completely.".format(form.project.data)
                     display_name = f"{current_user.username}".capitalize()
                     activity = f"Success in deleting off these Projects {z}"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(success)
         elif p > 10:
             if current_user.get_job_in_progress("bulk_projects"):
@@ -1169,16 +1071,12 @@ def bulk_projects(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = f"Failure deleting these Projects {z}"
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = f"Success in deleting off these Projects {z}"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -1193,6 +1091,10 @@ def delete_issue():
     form = DeleteIssuesForm()
     success = None
     error = None
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         q = form.issues.data.split(",")
         k = form.issues.data
@@ -1240,20 +1142,14 @@ def delete_issue():
                     display_name = f"{current_user.username}".capitalize()
                     activity = f"Failure deleting single issue {form.issues.data}"
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
                     success = "Issue {} Deleted with success".format(form.issues.data)
                     display_name = f"{current_user.username}".capitalize()
                     activity = f"Deleted off single issue {form.issues.data}"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=current_user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit(display_name, activity, audit_log)
                     flash(success)
         elif p > 1:
             if current_user.get_job_in_progress("bulk_delete_issues"):
@@ -1291,18 +1187,12 @@ def bulk_delete_issues(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Multiple issue deletion failed"
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Multiple issue deletion successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -1346,20 +1236,12 @@ def bulk_schedule_delete(user_id, *args):
                                 display_name = f"{user.username}".capitalize()
                                 activity = "Failure in JQL, Issue deletion returned error"
                                 audit_log = "ERROR: {}".format(data.status_code)
-                                ad = Audit(display_name=display_name, activity=activity,
-                                           audit_log=audit_log,
-                                           user_id=user.id)
-                                db.session.add(ad)
-                                db.session.commit()
+                                auto_commit_jobs(display_name, activity, audit_log, user)
                             else:
                                 display_name = f"{user.username}".capitalize()
                                 activity = "Multiple Issues were deleted"
                                 audit_log = "SUCCESS: {}".format(data.status_code)
-                                ad = Audit(display_name=display_name, activity=activity,
-                                           audit_log=audit_log,
-                                           user_id=user.id)
-                                db.session.add(ad)
-                                db.session.commit()
+                                auto_commit_jobs(display_name, activity, audit_log, user)
 
                     start_at += 50
                     if start_at > (full_number - 1):
@@ -1398,18 +1280,14 @@ def project_lead():
             display_name = f"{current_user.username}".capitalize()
             activity = "Failed updating Project Lead"
             audit_log = "ERROR: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
             success = "Project Lead changed for Project {} is completed.".format(form.project.data)
             display_name = f"{current_user.username}".capitalize()
             activity = "Project Lead updated successfully"
             audit_log = "SUCCESS: {}".format(data.status_code)
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.commit()
+            auto_commit(display_name, activity, audit_log)
             flash(success)
     return render_template("/pages/project_lead.html",
                            title=f"Change Project Lead :: {bulk.config['APP_NAME_SINGLE']}", form=form,
@@ -1420,6 +1298,7 @@ def project_lead():
 @login_required
 def bulk_lead():
     form = UploadForm()
+    j.make_session(email=current_user.email, token=current_user.token)
     success = None
     error = None
     user_dir = current_user.username
@@ -1428,6 +1307,10 @@ def bulk_lead():
         os.mkdir(our_dir)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your Token seems to be Incorrect. Please check it out"
+            flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
         # saving the file literally to the path as it is named including <space> characters
@@ -1463,10 +1346,7 @@ def bulk_lead():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Error, Bulk changing Project Lead"
                         audit_log = "ERROR: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
@@ -1474,10 +1354,7 @@ def bulk_lead():
                         display_name = f"{current_user.username}".capitalize()
                         activity = "Bulk Project Lead Change successful"
                         audit_log = "SUCCESS: {}".format(data.status_code)
-                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                                   user_id=current_user.id)
-                        db.session.add(ad)
-                        db.session.commit()
+                        auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
@@ -1519,18 +1396,12 @@ def bulk_project_lead(user_id, *args):
                     display_name = f"{user.username}".capitalize()
                     activity = "Error, Bulk changing Project Lead"
                     audit_log = "ERROR: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Bulk Project Lead Change successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
-                    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
-                               user_id=user.id)
-                    db.session.add(ad)
-                    db.session.commit()
+                    auto_commit_jobs(display_name, activity, audit_log, user)
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
@@ -1826,3 +1697,21 @@ def progress():
             time.sleep(0.3)
 
     return Response(load(), mimetype="text/event-stream")
+
+
+def auto_commit(display_name, activity, audit_log):
+    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
+    db.session.add(ad)
+    db.session.commit()
+
+
+def auto_commit_jobs(display_name, activity, audit_log, user):
+    ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=user.id)
+    db.session.add(ad)
+    db.session.commit()
+
+
+def check_token_valid():
+    web_url = ("https://{}/rest/api/3/myself".format(current_user.instances))
+    data = j.get(web_url)
+    return data
