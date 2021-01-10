@@ -1,25 +1,22 @@
-import requests
 import json
 import os
 import re
 import csv
 import sys
 import time
-from flask import render_template, flash, redirect, url_for, current_app
+from flask import render_template, flash, redirect, url_for, current_app, request, \
+    jsonify, Response
 from bulkops.database import User, Audit, Messages, Notification
-from flask_login import current_user
-from flask import request, jsonify, Response
-from flask_login import login_required
-from bulkops import db
+from flask_login import current_user, login_required
+from bulkops import db, bulk
 from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
     DeleteUserForm, CreateUsersForm, AddUserGroupForm, RemoveUserGroupForm, DeleteGroupForm, \
     ChangeProjectLeadForm, DeleteProjectForm, DeleteIssuesForm, UploadForm, MessageForm
 from datetime import datetime
-from requests.auth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
-from bulkops import bulk
 from bulkops.tasks.jobs import set_job_progress
 from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message
+from jiraone import LOGIN, endpoint
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = "Files"
@@ -30,43 +27,14 @@ if not os.path.exists(our_dir):
     os.mkdir(our_dir)
 
 
-class JiraUsers:
-    auth_request = None
-    headers = None
-
-    def make_session(self, email=None, token=None):
-        self.auth_request = HTTPBasicAuth(email, token)
-        self.headers = {"Content-Type": "application/json"}
-
-    def post(self, url, *args, payload=None, **kwargs):
-        res = requests.post(url, *args, json=payload, auth=self.auth_request, headers=self.headers, **kwargs)
-        return res
-
-    def get(self, url, *args, **kwargs):
-        res = requests.get(url, *args, auth=self.auth_request, headers=self.headers, **kwargs)
-        return res
-
-    def put(self, url, *args, payload=None, **kwargs):
-        res = requests.put(url, *args, json=payload, auth=self.auth_request, headers=self.headers, **kwargs)
-        return res
-
-    def delete(self, url, payload=None, **kwargs):
-        res = requests.delete(url, json=payload, auth=self.auth_request, headers=self.headers, **kwargs)
-        return res
-
-
-j = JiraUsers()
-
-
 @bulk.route("/", methods=["GET", "POST"])
 @bulk.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
     data = None
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     if request.method == "GET":
-        web_url = ("https://{}/rest/api/3/myself".format(current_user.instances))
-        data = j.get(web_url)
+        data = LOGIN.get(endpoint.myself())
         if data.status_code != 200:
             flash("Your API Token is invalid, please go to the Settings > Configurations page to have it sorted")
     return render_template("/users/layout.html", title=f"Home page :: {bulk.config['APP_NAME_SINGLE']}",
@@ -132,12 +100,11 @@ def settings():
 @login_required
 def users():
     form = CreateUsersForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "POST" and form.validate_on_submit():
         if form.users_opt.data == "JIRA":
-            web_url = ("https://{}/rest/api/3/user".format(current_user.instances))
             payload = (
                 {
                     "emailAddress": form.users_email.data,
@@ -145,7 +112,7 @@ def users():
 
                 }
             )
-            data = j.post(web_url, payload=payload)
+            data = LOGIN.post(endpoint.jira_user(), payload=payload)
             if data.status_code != 201:
                 error = "Unable to Create user, probably due to an error"
                 display_name = f"{current_user.username}".capitalize()
@@ -161,7 +128,6 @@ def users():
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif form.users_opt.data == "JSD":
-            web_url = ("https://{}/rest/servicedeskapi/customer".format(current_user.instances))
             payload = (
                 {
                     "email": form.users_email.data,
@@ -169,7 +135,7 @@ def users():
 
                 }
             )
-            data = j.post(web_url, payload=payload)
+            data = LOGIN.post(endpoint.create_customer(), payload=payload)
             if data.status_code != 201:
                 error = "Unable to Create Customer, check the audit log."
                 display_name = f"{current_user.username}".capitalize()
@@ -225,7 +191,6 @@ def bulk_users():
                 if 1 < number_of_loops < 10:
                     if form_selection == "JSD":
                         for u in loop_count:
-                            web_url = ("https://{}/rest/servicedeskapi/customer".format(current_user.instances))
                             payload = (
                                 {
                                     "email": u[1],
@@ -233,7 +198,7 @@ def bulk_users():
 
                                 }
                             )
-                            data = j.post(web_url, payload=payload)
+                            data = LOGIN.post(endpoint.create_customer(), payload=payload)
                         if data.status_code != 201:
                             error = "Unable to Create Multiple Customer, an error occurred."
                             display_name = f"{current_user.username}".capitalize()
@@ -252,7 +217,6 @@ def bulk_users():
                             flash(success)
                     elif form_selection == "JIRA":
                         for u in loop_count:
-                            web_url = ("https://{}/rest/api/3/user".format(current_user.instances))
                             payload = (
                                 {
                                     "emailAddress": u[1],
@@ -260,7 +224,7 @@ def bulk_users():
 
                                 }
                             )
-                            data = j.post(web_url, payload=payload)
+                            data = LOGIN.post(endpoint.jira_user(), payload=payload)
                         if data.status_code != 201:
                             error = "Unable to Create Multiple Jira users, something went wrong."
                             display_name = f"{current_user.username}".capitalize()
@@ -296,14 +260,13 @@ def bulk_users_creation(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             i = 0
             set_job_progress(0)
             if args[1] == "JSD":
                 count = len(args[0])
                 for u in args[0]:
-                    web_url = ("https://{}/rest/servicedeskapi/customer".format(user.instances))
                     payload = (
                         {
                             "email": u[1],
@@ -311,7 +274,7 @@ def bulk_users_creation(user_id, *args):
 
                         }
                     )
-                    data = j.post(web_url, payload=payload)
+                    data = LOGIN.post(endpoint.create_customer(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
@@ -327,7 +290,6 @@ def bulk_users_creation(user_id, *args):
             elif args[1] == "JIRA":
                 count = len(args[0])
                 for u in args[0]:
-                    web_url = ("https://{}/rest/api/3/user".format(user.instances))
                     payload = (
                         {
                             "emailAddress": u[1],
@@ -335,7 +297,7 @@ def bulk_users_creation(user_id, *args):
 
                         }
                     )
-                    data = j.post(web_url, payload=payload)
+                    data = LOGIN.post(endpoint.jira_user(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
@@ -360,12 +322,11 @@ def bulk_users_creation(user_id, *args):
 @login_required
 def delete_users():
     form = DeleteUserForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "POST" and form.validate_on_submit():
-        web_url = ("https://{}/rest/api/3/user?accountId={}".format(current_user.instances, form.aaid.data))
-        data = j.delete(web_url)
+        data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(form.aaid.data)))
         if data.status_code != 204:
             error = "Unable to delete user as we encountered a blocker."
             display_name = f"{current_user.username}".capitalize()
@@ -388,6 +349,7 @@ def delete_users():
 @login_required
 def bulk_delete():
     form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     user_dir = current_user.username
@@ -418,8 +380,7 @@ def bulk_delete():
                 number_of_loop = len(loop_count)
                 if 1 < number_of_loop < 10:
                     for u in loop_count:
-                        web_url = ("https://{}/rest/api/3/user?accountId={}".format(current_user.instances, u[0]))
-                        data = j.delete(web_url)
+                        data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
                     if data.status_code != 204:
                         error = "Unable to  delete Multiple users, check the audit log for the cause."
                         display_name = f"{current_user.username}".capitalize()
@@ -452,14 +413,13 @@ def bulk_users_deletion(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for u in args[0]:
-                web_url = ("https://{}/rest/api/3/user?accountId={}".format(user.instances, u[0]))
-                data = j.delete(web_url)
+                data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
@@ -484,7 +444,7 @@ def bulk_users_deletion(user_id, *args):
 @login_required
 def create_groups():
     form = CreateGroupForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "GET":
@@ -500,14 +460,13 @@ def create_groups():
         k = form.group.data.split(",")
         p = len(k)
         if p == 1:
-            web_url = ("https://{}/rest/api/3/group".format(current_user.instances))
             payload = (
                 {
                     "name": form.group.data
 
                 }
             )
-            data = j.post(web_url, payload=payload)
+            data = LOGIN.post(endpoint.jira_group(), payload=payload)
             if data.status_code != 201:
                 error = "Cannot Create Group \"{}\", failure encountered".format(form.group.data)
                 display_name = f"{current_user.username}".capitalize()
@@ -525,14 +484,13 @@ def create_groups():
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
                 for uc in k:
-                    web_url = ("https://{}/rest/api/3/group".format(current_user.instances))
                     payload = (
                         {
                             "name": uc
 
                         }
                     )
-                    data = j.post(web_url, payload=payload)
+                    data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 if data.status_code != 201:
                     error = "Cannot Create Multiple Groups, check the Audit log for more detail."
                     display_name = f"{current_user.username}".capitalize()
@@ -566,20 +524,19 @@ def bulk_create_groups(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for uc in args[0]:
-                web_url = ("https://{}/rest/api/3/group".format(user.instances))
                 payload = (
                     {
                         "name": uc
 
                     }
                 )
-                data = j.post(web_url, payload=payload)
+                data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 201:
@@ -604,7 +561,7 @@ def bulk_create_groups(user_id, *args):
 @login_required
 def delete_groups():
     form = DeleteGroupForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "GET":
@@ -620,8 +577,7 @@ def delete_groups():
         k = form.delete_gp.data.split(",")
         p = len(k)
         if p == 1:
-            web_url = ("https://{}/rest/api/3/group?groupname={}".format(current_user.instances, form.delete_gp.data))
-            data = j.delete(web_url)
+            data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(form.delete_gp.data)))
             if data.status_code != 200:
                 error = "Removing Group \"{}\" failed, check the Audit log for more detail".format(form.delete_gp.data)
                 display_name = f"{current_user.username}".capitalize()
@@ -639,8 +595,7 @@ def delete_groups():
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
                 for uc in k:
-                    web_url = ("https://{}/rest/api/3/group?groupname={}".format(current_user.instances, uc))
-                    data = j.delete(web_url)
+                    data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
                 if data.status_code != 200:
                     error = "Removing multiple Groups failed, please check the log to know why."
                     display_name = f"{current_user.username}".capitalize()
@@ -674,14 +629,13 @@ def bulk_delete_groups(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for uc in args[0]:
-                web_url = ("https://{}/rest/api/3/group?groupname={}".format(user.instances, uc))
-                data = j.delete(web_url)
+                data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
@@ -706,18 +660,17 @@ def bulk_delete_groups(user_id, *args):
 @login_required
 def add_groups():
     form = AddUserGroupForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "POST" and form.validate_on_submit():
-        web_url = ("https://{}/rest/api/3/group/user?groupname={}".format(current_user.instances, form.group_name.data))
         payload = (
             {
                 "accountId": form.aaid.data
 
             }
         )
-        data = j.post(web_url, payload=payload)
+        data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(form.group_name.data)), payload=payload)
         if data.status_code != 201:
             error = "Unable to Add user, it seems there's a problem."
             display_name = f"{current_user.username}".capitalize()
@@ -740,6 +693,7 @@ def add_groups():
 @login_required
 def bulk_add():
     form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     user_dir = current_user.username
@@ -771,15 +725,13 @@ def bulk_add():
                 number_of_loop = len(loop_count)
                 if 1 < number_of_loop < 10:
                     for u in loop_count:
-                        web_url = ("https://{}/rest/api/3/group/user?groupname={}".format(current_user.instances,
-                                                                                          u[0]))
                         payload = (
                             {
                                 "accountId": u[1]
 
                             }
                         )
-                        data = j.post(web_url, payload=payload)
+                        data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(u[0])), payload=payload)
                     if data.status_code != 201:
                         error = "Unable to Add Multiple Users to group because an error occurred."
                         display_name = f"{current_user.username}".capitalize()
@@ -813,21 +765,19 @@ def bulk_add_users(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for u in args[0]:
-                web_url = ("https://{}/rest/api/3/group/user?groupname={}".format(user.instances,
-                                                                                  u[0]))
                 payload = (
                     {
                         "accountId": u[1]
 
                     }
                 )
-                data = j.post(web_url, payload=payload)
+                data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(u[0])), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 201:
@@ -852,13 +802,11 @@ def bulk_add_users(user_id, *args):
 @login_required
 def remove_groups():
     form = RemoveUserGroupForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "POST" and form.validate_on_submit():
-        web_url = ("https://{}/rest/api/3/group/user?groupname={}&accountId={}"
-                   .format(current_user.instances, form.group_name.data, form.aaid.data))
-        data = j.delete(web_url)
+        data = LOGIN.delete(endpoint.group_jira_users(group_name=form.group_name.data, account_id=form.aaid.data))
         if data.status_code != 200:
             error = "Unable to Remove user from Group, please check the log."
             display_name = f"{current_user.username}".capitalize()
@@ -882,7 +830,7 @@ def remove_groups():
 @login_required
 def bulk_remove():
     form = UploadForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     user_dir = current_user.username
@@ -914,9 +862,7 @@ def bulk_remove():
                 number_of_loop = len(loop_count)
                 if 1 < number_of_loop < 10:
                     for u in loop_count:
-                        web_url = ("https://{}/rest/api/3/group/user?groupname={}&accountId={}"
-                                   .format(current_user.instances, u[0], u[1]))
-                        data = j.delete(web_url)
+                        data = LOGIN.delete(endpoint.group_jira_users(group_name=u[0], account_id=u[1]))
                     if data.status_code != 200:
                         error = "Unable to Remove Multiple Users {} from group {}. Something went wrong!".format(
                             u[2], u[0])
@@ -951,15 +897,13 @@ def bulk_remove_users(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for u in args[0]:
-                web_url = ("https://{}/rest/api/3/group/user?groupname={}&accountId={}"
-                           .format(user.instances, u[0], u[1]))
-                data = j.delete(web_url)
+                data = LOGIN.delete(endpoint.group_jira_users(group_name=u[0], account_id=u[1]))
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
@@ -984,7 +928,7 @@ def bulk_remove_users(user_id, *args):
 @login_required
 def projects():
     form = DeleteProjectForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "GET":
@@ -1000,9 +944,7 @@ def projects():
         f = form.project.data.split(",")
         p = len(f)
         if p == 1:
-            web_url = ("https://{}/rest/api/3/project/{}"
-                       .format(current_user.instances, form.project.data))
-            data = j.delete(web_url)
+            data = LOGIN.delete(endpoint.projects(id_or_key=form.project.data, enable_undo=True))
             if data.status_code != 204:
                 error = "Cannot delete Project {} seems an error occurred.".format(form.project.data)
                 display_name = f"{current_user.username}".capitalize()
@@ -1020,9 +962,7 @@ def projects():
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
                 for z in f:
-                    web_url = ("https://{}/rest/api/3/project/{}"
-                               .format(current_user.instances, z))
-                    data = j.delete(web_url)
+                    data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=True))
                 if data.status_code != 204:
                     error = "Cannot Delete Multiple Projects {} because an error occurred.".format(form.project.data)
                     display_name = f"{current_user.username}".capitalize()
@@ -1056,15 +996,13 @@ def bulk_projects(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for z in args[0]:
-                web_url = ("https://{}/rest/api/3/project/{}"
-                           .format(current_user.instances, z))
-                data = j.delete(web_url)
+                data = LOGIN.delete(endpoint.projects(z, enable_undo=True))
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
@@ -1089,6 +1027,7 @@ def bulk_projects(user_id, *args):
 @login_required
 def delete_issue():
     form = DeleteIssuesForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "GET":
@@ -1107,10 +1046,10 @@ def delete_issue():
         if p == 1:
             # TODO: this doesn't work well, it can delete up to a particular number then leave the
             #  remaining. need to understand why it behaves that way.
+            #  [Update] The loop is not sufficient, need to expand on it for this to work properly.
             if m is not None:
-                web_url = ("https://{}/rest/api/3/search?jql={}&startAt={}&maxResults={}"
-                           .format(current_user.instances, r, start_at, max_results))
-                data = j.get(web_url)
+                data = LOGIN.get(endpoint.search_issues_jql(query="{}".format(r), start_at=start_at,
+                                                            max_results=max_results))
                 if data.status_code != 200:
                     error = "Unable to fetch JQL Issues due to {}".format(data.reason)
                     flash(error)
@@ -1134,9 +1073,8 @@ def delete_issue():
                             flash(success)
                             db.session.commit()
             else:
-                web_url = ("https://{}/rest/api/3/issue/{}?deleteSubtasks={}"
-                           .format(current_user.instances, form.issues.data, form.sub_task.data))
-                data = j.delete(web_url)
+                data = LOGIN.delete(endpoint.issues(issue_key_or_id=form.issues.data,
+                                                    query="deleteSubtasks={}".format(sub_task)))
                 if data.status_code != 204:
                     error = "Cannot delete Issue {} something went wrong!".format(form.issues.data)
                     display_name = f"{current_user.username}".capitalize()
@@ -1170,7 +1108,7 @@ def bulk_delete_issues(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         q = args[0]
         sub_task = args[1]
         try:
@@ -1178,9 +1116,7 @@ def bulk_delete_issues(user_id, *args):
             i = 0
             count = len(q)
             for z in q:
-                web_url = ("https://{}/rest/api/3/issue/{}?deleteSubtasks={}"
-                           .format(user.instances, z, sub_task))
-                data = j.delete(web_url)
+                data = LOGIN.delete(endpoint.issues(issue_key_or_id=z, query="deleteSubtasks={}".format(sub_task)))
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
@@ -1206,7 +1142,7 @@ def bulk_schedule_delete(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         total = args[0]
         r = args[1]
         start_at = args[2]
@@ -1221,15 +1157,13 @@ def bulk_schedule_delete(user_id, *args):
                 nonlocal start_at, i
                 while max_results < total or max_results > total:
                     if start_at < full_number:
-                        web_ex = ("https://{}/rest/api/3/search?jql={}&startAt={}&maxResults={}"
-                                  .format(user.instances, r, start_at, max_results))
-                        info = j.get(web_ex)
+                        info = LOGIN.get(endpoint.search_issues_jql(query="{}".format(r), start_at=start_at,
+                                                                    max_results=max_results))
                         wjson = json.loads(info.content)
                         count = len(list(wjson["issues"]))
                         for w in list(wjson["issues"]):
-                            web_url = ("https://{}/rest/api/3/issue/{}?deleteSubtasks={}"
-                                       .format(user.instances, w["key"], sub_task))
-                            data = j.delete(web_url)
+                            data = LOGIN.delete(endpoint.issues(issue_key_or_id=w["key"],
+                                                                query="deleteSubtasks={}".format(sub_task)))
                             i += 1
                             set_job_progress(100 * i // count)
                             if data.status_code != 204:
@@ -1242,8 +1176,7 @@ def bulk_schedule_delete(user_id, *args):
                                 activity = "Multiple Issues were deleted"
                                 audit_log = "SUCCESS: {}".format(data.status_code)
                                 auto_commit_jobs(display_name, activity, audit_log, user)
-
-                    start_at += 50
+                            start_at += 50
                     if start_at > (full_number - 1):
                         break
 
@@ -1260,12 +1193,10 @@ def bulk_schedule_delete(user_id, *args):
 @login_required
 def project_lead():
     form = ChangeProjectLeadForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     if request.method == "POST" and form.validate_on_submit():
-        web_url = ("https://{}/rest/api/3/project/{}"
-                   .format(current_user.instances, form.project.data))
         payload = (
             {
                 "leadAccountId": form.aaid.data,
@@ -1274,7 +1205,7 @@ def project_lead():
 
             }
         )
-        data = j.put(web_url, payload=payload)
+        data = LOGIN.put(endpoint.projects(form.project.data), payload=payload)
         if data.status_code != 200:
             error = "Cannot change Project Lead Project {} due to an error.".format(form.project.data)
             display_name = f"{current_user.username}".capitalize()
@@ -1298,7 +1229,7 @@ def project_lead():
 @login_required
 def bulk_lead():
     form = UploadForm()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     user_dir = current_user.username
@@ -1330,8 +1261,6 @@ def bulk_lead():
                 number_of_loop = len(loop_count)
                 if 1 < number_of_loop < 10:
                     for u in loop_count:
-                        web_url = ("https://{}/rest/api/3/project/{}"
-                                   .format(current_user.instances, u[1]))
                         payload = (
                             {
                                 "leadAccountId": u[0],
@@ -1340,7 +1269,7 @@ def bulk_lead():
 
                             }
                         )
-                        data = j.put(web_url, payload=payload)
+                        data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
                     if data.status_code != 200:
                         error = "Cannot change Multiple Project Lead Project due to an error!"
                         display_name = f"{current_user.username}".capitalize()
@@ -1373,14 +1302,12 @@ def bulk_project_lead(user_id, *args):
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-        j.make_session(email=user.email, token=user.token)
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for u in args[0]:
-                web_url = ("https://{}/rest/api/3/project/{}"
-                           .format(user.instances, u[1]))
                 payload = (
                     {
                         "leadAccountId": u[0],
@@ -1389,7 +1316,7 @@ def bulk_project_lead(user_id, *args):
 
                     }
                 )
-                data = j.put(web_url, payload=payload)
+                data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
@@ -1625,12 +1552,11 @@ def config():
     load_data = None
     form = TokenForm()
     r_msg = user.received_messages.order_by(Messages.timestamp.desc()).count()
-    j.make_session(email=current_user.email, token=current_user.token)
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     if request.method == "GET":
         form.token.data = current_user.token
         form.notify_me.data = current_user.notify_me
-        web_url = ("https://{}/rest/api/3/myself".format(current_user.instances))
-        data = j.get(web_url)
+        data = LOGIN.get(endpoint.myself())
         if data.status_code == 200:
             load_data = json.loads(data.content)
     return render_template("/config/config.html",
@@ -1712,6 +1638,5 @@ def auto_commit_jobs(display_name, activity, audit_log, user):
 
 
 def check_token_valid():
-    web_url = ("https://{}/rest/api/3/myself".format(current_user.instances))
-    data = j.get(web_url)
+    data = LOGIN.get(endpoint.myself())
     return data

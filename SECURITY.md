@@ -4,11 +4,12 @@ Please help to report any issues with this App.
 
 ## Supported Versions
 
-The below Initial release version is supported.
+The below release version is supported.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| v2.0.5    | :white_check_mark: |
+| v2.0.6    | :white_check_mark: |
+| v2.0.5    | :x: |
 | v2.0.4    | :x: |
 | v2.0.3    | :x: |
 | v2.0.2    | :x: |
