@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v2.0.6 - (10 January 2021)
+### Update
+* Removed `JiraUsers` Class
+* removed unused f string.
+
+### Added
+* Added `jiraone` module to handle the Authentication and API endpoints.
+
 ## v2.0.5 - (29 December 2020)
 ### Update
 * Removed auth_request and headers from global variables in `JiraUsers` Class
