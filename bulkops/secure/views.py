@@ -89,7 +89,7 @@ def signup():
         elif len(form.username.data) > 30:
             flash("Your Username is too long, it must be within 30 Characters in length")
         elif y.startswith("http") or y.startswith("www"):
-            flash(f"Please remove the \"http://\" or \"https://\" or \"www\" from the URL")
+            flash("Please remove the \"http://\" or \"https://\" or \"www\" from the URL")
             # return redirect(request.url) - this clears the form
         elif i < 8:
             flash("Your Password must be equal or greater than 8 Characters in length")
@@ -199,10 +199,10 @@ def version_checker():
             and user.username != admin.username:
         upgrade_url = bulk.config["APP_UPGRADE_URL"]
         head_subject = phrase
-        upgrade = f"Hi {user.username.capitalize()},\n" \
-                  f"It seems that you are probably using a lower version of this App\n" \
-                  f"Please upgrade by visiting this URL {upgrade_url}\n" \
-                  f"Thanks {admin.username.capitalize()}"
+        upgrade = f"""Hi {user.username.capitalize()},\n
+                  It seems that you are probably using a lower version of this App\n
+                  Please upgrade by visiting this URL {upgrade_url}\n 
+                  Thanks {admin.username.capitalize()}"""
         send = Messages(subject=head_subject, body=upgrade, receiver_id=user.id, sender_id=admin.id)
         db.session.add(send)
         db.session.commit()
@@ -219,8 +219,7 @@ def welcome_message(extract):
               Thanks for signing up for {bulk.config["APP_NAME"]}.\n 
               You can start by using any one of our features on the home screen; also don't\n
               forget to update your API token before you begin.\n
-              Cheers, {admin.username.capitalize()}.
-"""
+              Cheers, {admin.username.capitalize()}."""
     send = Messages(subject=subject, body=message, receiver_id=user.id, sender_id=admin.id)
     db.session.add(send)
     db.session.commit()
