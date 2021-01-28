@@ -159,6 +159,7 @@ def users():
 @login_required
 def bulk_users():
     form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
     success = None
     error = None
     user_dir = current_user.username
