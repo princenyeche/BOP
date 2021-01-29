@@ -16,6 +16,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
 from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message
+from collections import deque
 from jiraone import LOGIN, endpoint
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -164,10 +165,7 @@ def bulk_users():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    if not os.path.exists(our_dir):
-        os.mkdir(our_dir)
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
             error = "Your Token seems to be Incorrect. Please check it out"
@@ -355,10 +353,7 @@ def bulk_delete():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    if not os.path.exists(our_dir):
-        os.mkdir(our_dir)
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
             error = "Your Token seems to be Incorrect. Please check it out"
@@ -699,10 +694,7 @@ def bulk_add():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    if not os.path.exists(our_dir):
-        os.mkdir(our_dir)
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
             error = "Your Token seems to be Incorrect. Please check it out"
@@ -836,10 +828,7 @@ def bulk_remove():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    if not os.path.exists(our_dir):
-        os.mkdir(our_dir)
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
             error = "Your Token seems to be Incorrect. Please check it out"
@@ -1045,9 +1034,6 @@ def delete_issue():
         max_results = 50
         sub_task = form.sub_task.data
         if p == 1:
-            # TODO: this doesn't work well, it can delete up to a particular number then leave the
-            #  remaining. need to understand why it behaves that way.
-            #  [Update] The loop is not sufficient, need to expand on it for this to work properly.
             if m is not None:
                 data = LOGIN.get(endpoint.search_issues_jql(query="{}".format(r), start_at=start_at,
                                                             max_results=max_results))
@@ -1140,6 +1126,7 @@ def bulk_delete_issues(user_id, *args):
 
 @bulk.route("/bulk_schedule_delete")
 def bulk_schedule_delete(user_id, *args):
+    issue_list = deque()
     with bulk.app_context():
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
@@ -1161,25 +1148,29 @@ def bulk_schedule_delete(user_id, *args):
                         info = LOGIN.get(endpoint.search_issues_jql(query="{}".format(r), start_at=start_at,
                                                                     max_results=max_results))
                         wjson = json.loads(info.content)
-                        count = len(list(wjson["issues"]))
+
                         for w in list(wjson["issues"]):
-                            data = LOGIN.delete(endpoint.issues(issue_key_or_id=w["key"],
-                                                                query="deleteSubtasks={}".format(sub_task)))
-                            i += 1
-                            set_job_progress(100 * i // count)
-                            if data.status_code != 204:
-                                display_name = f"{user.username}".capitalize()
-                                activity = "Failure in JQL, Issue deletion returned error"
-                                audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit_jobs(display_name, activity, audit_log, user)
-                            else:
-                                display_name = f"{user.username}".capitalize()
-                                activity = "Multiple Issues were deleted"
-                                audit_log = "SUCCESS: {}".format(data.status_code)
-                                auto_commit_jobs(display_name, activity, audit_log, user)
-                            start_at += 50
+                            issue_list.append([w["key"]])
+                        start_at += 50
                     if start_at > (full_number - 1):
                         break
+
+                count = len(issue_list)
+                for key in issue_list:
+                    data = LOGIN.delete(endpoint.issues(issue_key_or_id=key[0],
+                                                        query="deleteSubtasks={}".format(sub_task)))
+                    i += 1
+                    set_job_progress(100 * i // count)
+                    if data.status_code != 204:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Failure in JQL, Issue deletion returned error"
+                        audit_log = "ERROR: {}".format(data.status_code)
+                        auto_commit_jobs(display_name, activity, audit_log, user)
+                    else:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Multiple Issues were deleted"
+                        audit_log = "SUCCESS: {}".format(data.status_code)
+                        auto_commit_jobs(display_name, activity, audit_log, user)
 
             schedule_delete()
             send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
@@ -1235,10 +1226,7 @@ def bulk_lead():
     error = None
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
-    if not os.path.exists(our_dir):
-        os.mkdir(our_dir)
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
             error = "Your Token seems to be Incorrect. Please check it out"
@@ -1641,3 +1629,10 @@ def auto_commit_jobs(display_name, activity, audit_log, user):
 def check_token_valid():
     data = LOGIN.get(endpoint.myself())
     return data
+
+
+def create_dir(direct, path):
+    if not os.path.exists(direct):
+        os.mkdir(direct)
+    if not os.path.exists(path):
+        os.mkdir(path)

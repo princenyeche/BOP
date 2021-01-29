@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v2.0.7 - (29 January 2021)
+### Update
+* rewrote directory creation into functions
+* rewrote JSD to JSM inline with new changes by Atlassian
+* corrected few text grammer.
+
+### Fixed
+* Fixed bulk delete issue - now it's possible to delete > 1K issues at a time
+* Issue with 401 error with bulk user feature when less than 10 users.
+
 ## v2.0.6 - (10 January 2021)
 ### Update
 * Removed `JiraUsers` Class
