@@ -2,14 +2,14 @@
 The below documentation outlines, the basic use cases of the App and how you can perform various operations. The feature includes the below
 
 ## Features
-* Bulk creating Jira users or Jira Service Desk users
+* Bulk creating Jira users or Jira Service Management customer users
 * Bulk creation of Groups
 * Bulk deletion of Groups
 * Bulk Add users to groups (multiple users & groups)
 * Bulk remove users from groups (multiple users & groups)
 * Bulk delete Projects
 * Bulk change Project leads
-* Bulk delete issues [experimental]
+* Bulk delete issues 
 
 ## Use cases
 ### Cloud to Cloud Import of Users
@@ -18,8 +18,8 @@ The below documentation outlines, the basic use cases of the App and how you can
 ### Change of Multiple Project Leads
 * You can easily now change Project lead but we didn’t stop there, you can do this in bulk for multiple projects.
 
-### Create Jira Service Desk Customers
-* Not only can you create Jira users but you can create Jira Service Desk customers properly with their display Name.
+### Create Jira Service Management Customers
+* Not only can you create Jira users but you can create Jira Service Management customers properly with their display Name.
 
 ### Deleting multiple Users
 * Let’s say you made a mistake during user import, fear not you can easily bulk delete those users.
@@ -31,7 +31,7 @@ The below documentation outlines, the basic use cases of the App and how you can
 ### Deactivating Multiple Users
 * The concept of deactivating a user, basically just means to remove the user from a group that has product access. So using the remove user from group feature, you can actually deactivate users.
 
-### Deleting the nth number of issues [EXPERIMENTAL]
+### Deleting the nth number of issues
 * You know how when you want to bulk delete thousands of issues and you’re limited to 1K issues and the multiple clicks. well now all you just have to do is use a JQL that returns those thousands of issues and just delete all the way. (please always make sure when using this, that you take the utmost care, if in doubt you can navigate away from the page to stop the process)
 
 
