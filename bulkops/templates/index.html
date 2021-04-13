@@ -432,6 +432,27 @@ $(document).ready(function(){
   });
 
 </script>
+<script type="text/javascript">
+var sys_idle = 0;
+$(document).ready(function () {
+    //increase the idle time counter every minute.
+    var idleInterval = setInterval(IncrementTime, 60000);
+
+    $(this).mousemove(function (e) {
+        sys_idle = 0;
+    });
+    $(this).keypress(function (e) {
+        sys_idle = 0;
+    });
+});
+
+function IncrementTime() {
+    sys_idle = sys_idle + 1;
+    if (sys_idle > 9) {
+        window.location.href="{{ url_for('logout') }}";
+    }
+}
+</script>
 {% endif %}
 </body>
 </html>
