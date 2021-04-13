@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v2.0.8 - (13 April 2021)
+### Update
+* Added a timeout function, so when a user is inactive for 10 mins the system logs them out.
+* You can't be able to change instance url as it's made into read only
+
+
 ## v2.0.7 - (29 January 2021)
 ### Update
 * rewrote directory creation into functions

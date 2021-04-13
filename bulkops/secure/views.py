@@ -195,7 +195,7 @@ def version_checker():
     message_exist = user.received_messages.order_by(Messages.subject.desc()).all()
     check_sub = [m.subject for m in message_exist]
     phrase = f"You need to Upgrade to {lookup_version}!"
-    if current_version != lookup_version and phrase not in check_sub \
+    if current_version < lookup_version and phrase not in check_sub \
             and user.username != admin.username:
         upgrade_url = bulk.config["APP_UPGRADE_URL"]
         head_subject = phrase
