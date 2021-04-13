@@ -12,7 +12,7 @@ Jinja2==2.11.3
 Mako==1.1.4
 Markdown==3.3.4
 MarkupSafe==1.1.1
-SQLAlchemy==1.4.6
+SQLAlchemy==1.4.7
 urllib3==1.26.4
 WTForms==2.3.3
 PyJWT==2.0.1
@@ -27,4 +27,4 @@ email_validator
 Werkzeug==1.0.1
 redis==3.5.3
 rq==1.8.0
-jiraone==0.3.0
+jiraone==0.3.1
