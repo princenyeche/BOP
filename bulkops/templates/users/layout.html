@@ -44,7 +44,7 @@
       <h5 class="card-title">Groups</h5>
       <p class="card-text"> User Management feature to control users and groups in bulk</p>
     <ul class="list-group list-group-flush">
-    <li class="list-group-item">Add Users to Group</li>
+    <li class="list-group-item">Add users to group</li>
     <li class="list-group-item">Remove Users from Group</li>
      <li class="list-group-item">Create or Delete Groups</li>
   </ul><br />
@@ -60,11 +60,11 @@
     <div class="card-body">
         <i class="fa fa-5x fa-folder text-primary" aria-hidden="true"></i>
       <h5 class="card-title">Projects</h5>
-      <p class="card-text">Jira Project feature in bulk.</p>
+      <p class="card-text">Jira project feature in bulk.</p>
       <ul class="list-group list-group-flush">
-    <li class="list-group-item">Delete Projects</li>
-    <li class="list-group-item">Delete Issues</li>
-    <li class="list-group-item">Change Project Lead</li>
+    <li class="list-group-item">Delete projects</li>
+    <li class="list-group-item">Delete issues</li>
+    <li class="list-group-item">Change project lead</li>
   </ul> <br />
         {% if current_user.is_anonymous %}
           <a href="{{ url_for('signin') }}" class="btn btn-primary">Get Started</a>
@@ -88,32 +88,32 @@
         </button>
       </div>
       <div class="modal-body">
-          <div> <b><u>What can I do with this App?</u></b> <br />
+          <div> <b><u>What can I do with this app?</u></b> <br />
           <ul type="list">
-          <li> You can Create Users, either single user or Multiple users</li>
-          <li> You can create not just Jira users, but also Jira Service Desk Users.</li>
+          <li> You can create users, either single user or multiple users</li>
+          <li> You can create not just Jira users, but also Jira Service Management users.</li>
           <li> You can also delete users, single or multiple users.</li>
           <li> You can create users groups, singles or multiple groups.</li>
           <li> You can add or remove users from group and in bulk.</li>
-          <li> You can delete a Project or delete in bulk.</li>
+          <li> You can delete a project or delete in bulk.</li>
           <li> You can delete issues in bulk</li>
-          <li> You can change Project lead also in bulk.</li>
+          <li> You can change project lead also in bulk.</li>
       </ul>
           </div>
-           <div> <b><u>Where do I get a Token From?</u></b> <br />
+           <div> <b><u>Where do I get a token from?</u></b> <br />
           <ul type="list">
           <li> You can generate a token by visiting <a href="https://id.atlassian.com/manage/api-tokens" target="_blank">https://id.atlassian.com/manage/api-tokens</a></li>
       </ul>
           </div>
            <div> <b><u>How do all these work?</u></b> <br />
           <ul type="list">
-          <li> By using your API token, the App is able to access Atlassian API's</li>
+          <li> By using your API token, the app is able to access Atlassian API's</li>
           <li> You make an action and we send a request to Atlassian's API and capture the response.</li>
       </ul>
           </div>
-           <div> <b><u>Is this App Secure?</u></b> <br />
+           <div> <b><u>Is this app secure?</u></b> <br />
           <ul type="list">
-          <li> This App uses Basic Authentication, which is secure enough to access your Atlassian Instance</li>
+          <li> This app uses basic authentication, which is secure enough to access your Atlassian instance</li>
           <li> We have also taken the steps to ensure that we encode certain Information that we send.</li>
       </ul>
           </div>

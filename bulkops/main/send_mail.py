@@ -5,7 +5,7 @@ from bulkops import bulk
 
 
 def send_app_messages(admin, user, form):
-    send_user_message(f"[{bulk.config['APP_NAME']}] Requested Jobs Completed",
+    send_user_message(f"[{bulk.config['APP_NAME']}] {form.get('job')}",
                       sender=admin.id,
                       recipients=user.id,
                       text_body=render_template("email/app_notice_form.txt", user=user, form=form),
@@ -13,7 +13,7 @@ def send_app_messages(admin, user, form):
 
 
 def send_error_messages(admin, user, form):
-    send_user_message(f"[{bulk.config['APP_NAME']}] Requested Jobs Failed",
+    send_user_message(f"[{bulk.config['APP_NAME']}] {form.get('job')}",
                       sender=admin.id,
                       recipients=user.id,
                       text_body=render_template("email/app_error_form.txt", user=user, form=form),
@@ -26,4 +26,13 @@ def send_admin_message(admin, user, form):
                  recipients=[admin.email],
                  text_body=render_template("email/send_admin_message.txt", user=user, form=form),
                  html_body=render_template("email/send_admin_message.html", user=user, form=form)
+                 )
+
+
+def send_goodbye_message(user):
+    send_message(f"[{bulk.config['APP_NAME']}] account deletion confirmation!",
+                 sender=bulk.config["ADMINS"][0],
+                 recipients=[user.email],
+                 text_body=render_template("email/app_goodbye_email.txt", user=user),
+                 html_body=render_template("email/app_goodbye_email.html", user=user)
                  )

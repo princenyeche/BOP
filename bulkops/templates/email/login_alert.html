@@ -1,10 +1,10 @@
 <p>Hi {{user.username.capitalize()}},</p>
 
-This is to inform you that a login was initiated to your BulkOps Account:
+This is to inform you that a login was initiated to your BulkOps account:
 <div>
     <b>IP Address:</b> {{ ip_address }} <br />
 
-    <b>Date:</b> {{ date }} <br />
+    <b>Date:</b> {{ date }} <br /> in UTC
 
 </div>
 <p>If you did not perform the login, we advise that you reset your password <a href="{{ url_for('reset_request', _external=True) }}">here</a>

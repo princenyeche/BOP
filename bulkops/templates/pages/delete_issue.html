@@ -64,8 +64,8 @@
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
       <label class="sr-only" for="issues">Delete Issues</label>
-      <input class="form-control" name="issues" id="issues" placeholder="Delete an Issue. For Multiple delete you can use Issue Key separated by comma, e.g. AB-12,T2-20 or Type a valid JQL Query to search Issues">
-            <small id="jqlHelp" class="form-text text-muted">For a valid JQL Type in Format: "JQL:Project = ABC AND type in (Bug)" without the quotes.</small>
+      <input class="form-control" name="issues" id="issues" placeholder="Delete an issue. For multiple delete you can use Issue key separated by comma, e.g. AB-12,T2-20 or type a valid JQL query to search issues">
+            <small id="jqlHelp" class="form-text text-muted">For a valid JQL type in format: "JQL:Project = ABC AND type in (Bug)" without the quotes.</small>
 
     </div>
            <div class="form-group mx-sm-3 mb-2">
@@ -96,7 +96,7 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-        Are you sure you want to proceed with Issue Deletion? This will delete all the Issues selected and it can't be stopped once started?<br />
+        Are you sure you want to proceed with issue deletion? This will delete all the issues selected and it can't be stopped once started?<br />
 
         <button type="submit" id="bulkprogress" class="btn-success"> YES </button>
         <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
@@ -132,16 +132,16 @@
         </button>
       </div>
       <div class="modal-body">
-        <div> <b><u>How can I delete an Issue?</u></b> <br />
+        <div> <b><u>How can I delete an issue?</u></b> <br />
           <ul type="list">
-          <li> Start by entering either the Issue key or Issue id, both values are accepted. e.g AT-123 or 10034</li>
-          <li> If the Issue contains a sub-task, remember to select "Yes" from the option if not the delete will fail.</li>
+          <li> Start by entering either the issue key or issue id, both values are accepted. e.g AT-123 or 10034</li>
+          <li> If the issue contains a sub-task, remember to select "Yes" from the option if not the delete will fail.</li>
       </ul>
           </div>
          <div> <b><u>How can I delete off multiple issues</u></b> <br />
           <ul type="list">
           <li> You can delete multiple issues by separating the issue key with a comma e.g. AT-123,AT-45,BT-21</li>
-          <li> Alternatively, you can run a valid JQL search to delete off Multiple issues.</li>
+          <li> Alternatively, you can run a valid JQL search to delete off multiple issues.</li>
           <li> A valid JQL would look like this e.g. JQL:project in (AT) AND type in (Bug)</li>
       </ul>
           </div>

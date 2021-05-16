@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-  <strong>Change your Site settings!</strong> You can update your API token & Notification Configuration.
+  <strong>Change your site settings!</strong> You can update your API token & notification configuration.
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -95,7 +95,7 @@
     <span class="btn btn-primary"> {{ r_msg }}
     </span>
     {% else %}
-    <span class="btn btn-warning"> No Data </span>
+    <span class="btn btn-warning"> No data </span>
     {% endif %}
   </div>
         </div>
@@ -151,17 +151,17 @@ window.location.href="{{ url_for('logout') }}"
         <div> <b><u>What can I change?</u></b> <br />
           <ul type="list">
           <li> You can update your token here</li>
-          <li> You can toggle the option to receive notification anytime you login to the App.</li>
+          <li> You can toggle the option to receive notification anytime you login to the app.</li>
       </ul>
           </div>
-          <div> <b><u>Where do I get a Token From?</u></b> <br />
+          <div> <b><u>Where do I get a token from?</u></b> <br />
           <ul type="list">
           <li> You can generate a token by visiting <a href="https://id.atlassian.com/manage/api-tokens" target="_blank">https://id.atlassian.com/manage/api-tokens</a></li>
       </ul>
           </div>
            <div> <b><u>How do all these work?</u></b> <br />
           <ul type="list">
-          <li> By using your API token, the App is able to access Atlassian API's</li>
+          <li> By using your API token, the app is able to access Atlassian API's</li>
           <li> You make an action and we send a request to Atlassian's API and capture the response.</li>
       </ul>
           </div>
@@ -186,7 +186,7 @@ window.location.href="{{ url_for('logout') }}"
  <!-- Modal body -->
 
       <div class="modal-body">
-        Please enter your New token on the form below<br />
+        Please enter your new token on the form below<br />
      {% include 'users/token.html' %}
 
       </div>
