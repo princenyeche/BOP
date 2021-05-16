@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v3.0.0 - (16 May 2021)
+### Update
+* Corrected unnecessary capitalization of text on frontend UI.
+* Added a `goodbye message` when a user account is deleted.
+
 ## v2.0.8 - (13 April 2021)
 ### Update
 * Added a timeout function, so when a user is inactive for 10 mins the system logs them out.
