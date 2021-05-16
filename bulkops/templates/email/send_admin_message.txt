@@ -1,6 +1,6 @@
-Hi Admin,
+Hi admin,
 
-This User {{user.username.capitalize() }} has sent the below Message
+This User {{user.username.capitalize() }} has sent the below message
     Subject: {{ form.subject.data }}
     Message:
     {{ form.messages.data }}
