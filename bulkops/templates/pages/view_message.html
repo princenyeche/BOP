@@ -109,7 +109,7 @@
       <div class="modal-body">
         <div> <b><u>What can I do while viewing a Message?</u></b> <br />
           <ul type="list">
-          <li> Click on New Messages button to write a new message</li>
+          <li> Click on new messages button to write a new message</li>
           <li> Type your message and send it to us for any feedbacks or comments.</li>
       </ul>
           </div>
@@ -142,17 +142,17 @@
             {% if current_user.username == 'admin'  %}
            <input type="text" class="form-control send_back" id="receiver" name="receiver" value="" required readonly>
              {% else %}
-             <input type="text" class="form-control" id="receiver-name" name="receiver-name" value="@BulkOps Team" readonly>
+             <input type="text" class="form-control" id="receiver-name" name="receiver-name" value="@BulkOps team" readonly>
              <input type="hidden" class="form-control" id="receiver" name="receiver" value="{{ admin.username }}" readonly>
              {% endif %}
           </div>
           <div class="form-group">
             <label for="subject" class="col-form-label">Subject:</label>
-            <input type="text" class="form-control" name="subject" id="subject" placeholder="Enter a Subject" required>
+            <input type="text" class="form-control" name="subject" id="subject" placeholder="Enter a subject" required>
           </div>
           <div class="form-group">
             <label for="messages" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="messages" name="messages" placeholder="Type a Message, that you want to send!" required></textarea>
+            <textarea class="form-control" id="messages" name="messages" placeholder="Type the message, that you want to send!" required></textarea>
           </div>
 
       </div>
