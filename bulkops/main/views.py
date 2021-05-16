@@ -15,7 +15,7 @@ from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
-from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message
+from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message
 from collections import deque
 from jiraone import LOGIN, endpoint
 
@@ -1576,6 +1576,7 @@ def account_delete():
                 os.remove(f)
             os.rmdir(save_path)
         db.session.delete(user)
+        send_goodbye_message(user)
         db.session.commit()
         flash("You have been signed out")
         return redirect(url_for("logout"))
