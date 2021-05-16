@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="alert alert-info alert-dismissible fade show" role="alert">
-  <strong>View the Audit Log!</strong> You can view the changes that you have performed, by searching below
+  <strong>View the audit log!</strong> You can view the changes that you have performed, by searching below
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -34,7 +34,7 @@
   {% endfor %}
   {% else %}
   <tr>
-      <td> <b>No Data is Available</b></td>
+      <td> <b>No data is available</b></td>
   </tr>
   {% endif %}
   </tbody>
@@ -67,31 +67,31 @@
         </button>
       </div>
       <div class="modal-body">
-        <div> <b><u>Where is this Data Stored?</u></b> <br />
+        <div> <b><u>Where is this data stored?</u></b> <br />
           <ul type="list">
-          <li> The Logs from the Audit is stored to the database associated with this App.</li>
-          <li> Each request that is sent out, is logged so you can know the changes done with the App.</li>
+          <li> The logs from the audit is stored to the database associated with this app.</li>
+          <li> Each request that is sent out, is logged so you can know the changes done with the app.</li>
       </ul>
           </div>
-         <div> <b><u>What are those codes on Events Column?</u></b> <br />
+         <div> <b><u>What are those codes on events column?</u></b> <br />
           <ul type="list">
-          <li> These codes are called Status codes and they represent responses to changes.</li>
+          <li> These codes are called status codes and they represent responses to changes.</li>
         <ul type="square">
           <li>  Status <span class="badge badge-success">200</span> means a request is successful</li>
            <li>  Status <span class="badge badge-primary">201</span> means a request fulfilled or completed</li>
            <li>  Status <span class="badge badge-secondary">204</span> means a request is done</li>
             <li>  Status <span class="badge badge-danger">400</span> means request will not be processed</li>
-           <li>  Status <span class="badge badge-danger">401</span> means request is<i class="text-danger"> Unauthorized</i></li>
+           <li>  Status <span class="badge badge-danger">401</span> means request is <i class="text-danger">unauthorized</i></li>
            <li>  Status <span class="badge badge-light">403</span>means the request is not accepted</li>
            <li>  Status <span class="badge badge-warning">404</span> means the request cannot be found</li>
            <li>  Status <span class="badge badge-dark">500</span> means an Internal Server Error occurred</li>
-            <li>  Status <span class="badge badge-info">503</span> means a Service is unavailable</li>
+            <li>  Status <span class="badge badge-info">503</span> means a service is unavailable</li>
       </ul>
       </ul>
           </div>
-         <div> <b><u>What is the Activity Column?</u></b> <br />
+         <div> <b><u>What is the activity column?</u></b> <br />
           <ul type="list">
-          <li> This shows what action was done on the App.</li>
+          <li> This shows what action was done on the app.</li>
           <li> This information is stored against your user profile.</li>
       </ul>
           </div>
