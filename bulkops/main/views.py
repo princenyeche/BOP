@@ -115,16 +115,16 @@ def users():
             )
             data = LOGIN.post(endpoint.jira_user(), payload=payload)
             if data.status_code != 201:
-                error = "Unable to Create user, probably due to an error"
+                error = "Unable to create user, probably due to an error"
                 display_name = f"{current_user.username}".capitalize()
-                activity = "Failure creating JIRA User"
+                activity = "Failure creating JIRA user"
                 audit_log = "ERROR: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
-                success = "User Created Successfully, Please check your Admin hub to confirm."
+                success = "User created successfully,please check your admin hub to confirm."
                 display_name = f"{current_user.username}".capitalize()
-                activity = "Created JIRA User successfully"
+                activity = "Created JIRA user successfully"
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
@@ -138,16 +138,16 @@ def users():
             )
             data = LOGIN.post(endpoint.create_customer(), payload=payload)
             if data.status_code != 201:
-                error = "Unable to Create Customer, check the audit log."
+                error = "Unable to create customer, check the audit log."
                 display_name = f"{current_user.username}".capitalize()
-                activity = "Failure creating JSD User"
+                activity = "Failure creating JSM User"
                 audit_log = "ERROR: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
-                success = "Customer user created Successfully."
+                success = "Customer user created successfully."
                 display_name = f"{current_user.username}".capitalize()
-                activity = "JSD User created"
+                activity = "JSM user created"
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
@@ -168,7 +168,7 @@ def bulk_users():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect.Please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -178,7 +178,7 @@ def bulk_users():
         delimiter = form.delimiter.data
         form_selection = form.upload_opt.data
         if current_user.get_job_in_progress("bulk_users_creation"):
-            error = "A Bulk User Job is in Progress, Please wait till it's finished."
+            error = "A bulk user job is in progress, please wait till it's finished."
             flash(error)
         else:
             with open(o, "r") as csv_file:
@@ -199,17 +199,17 @@ def bulk_users():
                             )
                             data = LOGIN.post(endpoint.create_customer(), payload=payload)
                         if data.status_code != 201:
-                            error = "Unable to Create Multiple Customer, an error occurred."
+                            error = "Unable to create multiple customer, an error occurred."
                             display_name = f"{current_user.username}".capitalize()
-                            activity = "Failure creating Bulk JSD Users {}".format(u[0])
+                            activity = "Failure creating bulk JSM users {}".format(u[0])
                             audit_log = "ERROR: {}".format(data.status_code)
                             auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(error)
                         else:
-                            success = "Multiple Customer users created Successfully."
+                            success = "Multiple customer users created successfully."
                             display_name = f"{current_user.username}".capitalize()
-                            activity = "Success in creating Bulk JSD Users"
+                            activity = "Success in creating bulk JSM users"
                             audit_log = "SUCCESS: {}".format(data.status_code)
                             auto_commit(display_name, activity, audit_log)
                             os.remove(o)
@@ -225,27 +225,26 @@ def bulk_users():
                             )
                             data = LOGIN.post(endpoint.jira_user(), payload=payload)
                         if data.status_code != 201:
-                            error = "Unable to Create Multiple Jira users, something went wrong."
+                            error = "Unable to create multiple Jira users, something went wrong."
                             display_name = f"{current_user.username}".capitalize()
-                            activity = "Failure in creating Bulk JIRA Users {}".format(u[0])
+                            activity = "Failure in creating bulk JIRA users {}".format(u[0])
                             audit_log = "ERROR: {}".format(data.status_code)
                             auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(error)
                         else:
-                            success = "Multiple Jira users created Successfully."
+                            success = "Multiple Jira users created successfully."
                             display_name = f"{current_user.username}".capitalize()
-                            activity = "Success in creating Bulk JIRA Users"
+                            activity = "Success in creating bulk JIRA users"
                             audit_log = "SUCCESS: {}".format(data.status_code)
                             auto_commit(display_name, activity, audit_log)
                             os.remove(o)
                             flash(success)
                 elif number_of_loops > 10:
-                    current_user.launch_jobs("bulk_users_creation", "Bulk Creation of Users", loop_count,
+                    current_user.launch_jobs("bulk_users_creation", "Bulk creation of users", loop_count,
                                              form_selection)
-                    success = "A Job has been submitted for Bulk User Creation, please check the Audit log page " \
-                              "for the " \
-                              "updated result..."
+                    success = "A Job has been submitted for bulk user creation, please check the audit log page " \
+                              "for the updated result..."
                     db.session.commit()
                     os.remove(o)
                     flash(success)
@@ -278,12 +277,12 @@ def bulk_users_creation(user_id, *args):
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure creating Bulk JSD Users {}".format(u[0])
+                        activity = "Failure creating bulk JSM users {}".format(u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Success in creating Bulk JSD Users"
+                        activity = "Success in creating bulk JSM users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
             elif args[1] == "JIRA":
@@ -301,18 +300,18 @@ def bulk_users_creation(user_id, *args):
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure in creating Bulk JIRA Users {}".format(u[0])
+                        activity = "Failure in creating bulk JIRA users {}".format(u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Success in creating Bulk JIRA Users"
+                        activity = "Success in creating bulk JIRA users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
-                send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+                send_app_messages(admin, user, {"success": "Successful", "job": "Bulk creation of Jira users"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk creation of Jira users"})
         finally:
             set_job_progress(100)
 
@@ -356,7 +355,7 @@ def bulk_delete():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect. please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -365,7 +364,7 @@ def bulk_delete():
         o = os.path.join(save_path, filename)
         delimiter = form.delimiter.data
         if current_user.get_job_in_progress("bulk_users_deletion"):
-            error = "A Bulk User Deletion Job is in Progress, Please wait till it's finished."
+            error = "A bulk user deletion job is in progress, please wait till it's finished."
             flash(error)
         else:
             with open(o, "r") as csv_file:
@@ -378,24 +377,24 @@ def bulk_delete():
                     for u in loop_count:
                         data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
                     if data.status_code != 204:
-                        error = "Unable to  delete Multiple users, check the audit log for the cause."
+                        error = "Unable to  delete multiple users, check the audit log for the cause."
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Failure in Bulk user deletion of {}".format(u[1])
+                        activity = "Failure in bulk user deletion of {}".format(u[1])
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
-                        success = "Multiple User deletion completed."
+                        success = "Multiple user deletion completed."
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Executed successfully, Bulk User Deletion"
+                        activity = "Executed successfully, bulk user deletion"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
-                    current_user.launch_jobs("bulk_users_deletion", "Bulk Deletion of Users", loop_count)
-                    success = "A Job has been submitted for Bulk User Deletion"
+                    current_user.launch_jobs("bulk_users_deletion", "Bulk deletion of users", loop_count)
+                    success = "A Job has been submitted for bulk user deletion"
                     db.session.commit()
                     os.remove(o)
                     flash(success)
@@ -420,18 +419,18 @@ def bulk_users_deletion(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in Bulk user deletion of {}".format(u[1])
+                    activity = "Failure in bulk user deletion of {}".format(u[1])
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Executed successfully, Bulk User Deletion"
+                    activity = "Executed successfully, bulk user deletion"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk user deletion"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk user deletion"})
         finally:
             set_job_progress(100)
 
@@ -445,7 +444,7 @@ def create_groups():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect. please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary statement to ensure our with statement works
@@ -466,14 +465,14 @@ def create_groups():
             if data.status_code != 201:
                 error = "Cannot Create Group \"{}\", failure encountered".format(form.group.data)
                 display_name = f"{current_user.username}".capitalize()
-                activity = "Failure in creating user Group"
+                activity = "Failure in creating user group"
                 audit_log = "ERROR: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
-                success = "Group \"{}\" Created Successfully.".format(form.group.data)
+                success = "Group \"{}\" created successfully.".format(form.group.data)
                 display_name = f"{current_user.username}".capitalize()
-                activity = "Successfully Created user Group"
+                activity = "Successfully created user group"
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
@@ -488,26 +487,26 @@ def create_groups():
                     )
                     data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 if data.status_code != 201:
-                    error = "Cannot Create Multiple Groups, check the Audit log for more detail."
+                    error = "Cannot create multiple groups, check the audit log for more detail."
                     display_name = f"{current_user.username}".capitalize()
-                    activity = "Failure in creating Groups {} in Bulk".format(uc)
+                    activity = "Failure in creating groups {} in bulk".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
-                    success = "Multiple Groups Created Successfully."
+                    success = "Multiple groups created successfully."
                     display_name = f"{current_user.username}".capitalize()
-                    activity = "Bulk Group creation successful"
+                    activity = "Bulk group creation successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(success)
         elif p > 10:
             if current_user.get_job_in_progress("bulk_create_groups"):
-                error = "A Bulk Group Creation Job is in Progress, Please wait till it's finished."
+                error = "A Bulk group creation job is in progress, please wait till it's finished."
                 flash(error)
             else:
-                current_user.launch_jobs("bulk_create_groups", "Bulk Creation of Groups", k)
-                success = "A Job has been submitted for Bulk Creation of Groups, Please check the " \
+                current_user.launch_jobs("bulk_create_groups", "Bulk creation of groups", k)
+                success = "A Job has been submitted for bulk creation of groups, please check the " \
                           "Audit log for a completion message..."
                 db.session.commit()
                 flash(success)
@@ -537,18 +536,18 @@ def bulk_create_groups(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 201:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in creating Groups {} in Bulk".format(uc)
+                    activity = "Failure in creating groups {} in bulk".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Bulk Group creation successful"
+                    activity = "Bulk group creation successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk group creation"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk group creation"})
         finally:
             set_job_progress(100)
 
@@ -562,7 +561,7 @@ def delete_groups():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect, please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary expression to ensure our with statement works
@@ -575,14 +574,14 @@ def delete_groups():
         if p == 1:
             data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(form.delete_gp.data)))
             if data.status_code != 200:
-                error = "Removing Group \"{}\" failed, check the Audit log for more detail".format(form.delete_gp.data)
+                error = "Removing group \"{}\" failed, check the audit log for more detail".format(form.delete_gp.data)
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Failure in deleting group"
                 audit_log = "ERROR: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
-                success = "Group \"{}\" Removed Successfully".format(form.delete_gp.data)
+                success = "Group \"{}\" removed successfully".format(form.delete_gp.data)
                 display_name = f"{current_user.username}".capitalize()
                 activity = "Group deleted successfully"
                 audit_log = "SUCCESS: {}".format(data.status_code)
@@ -593,14 +592,14 @@ def delete_groups():
                 for uc in k:
                     data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
                 if data.status_code != 200:
-                    error = "Removing multiple Groups failed, please check the log to know why."
+                    error = "Removing multiple groups failed, please check the log to know why."
                     display_name = f"{current_user.username}".capitalize()
-                    activity = "Failure in deleting Multiple groups {}".format(uc)
+                    activity = "Failure in deleting multiple groups {}".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
-                    success = "Multiple Group Removal Successful."
+                    success = "Multiple group removal successful."
                     display_name = f"{current_user.username}".capitalize()
                     activity = "Multiple groups deletion successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
@@ -608,12 +607,12 @@ def delete_groups():
                     flash(success)
         elif p > 10:
             if current_user.get_job_in_progress("bulk_delete_groups"):
-                error = "A Bulk Group Deletion Job is in Progress, Please wait till it's finished."
+                error = "A bulk group deletion job is in progress, please wait till it's finished."
                 flash(error)
             else:
-                current_user.launch_jobs("bulk_delete_groups", "Bulk Deletion of Groups", k)
-                success = "A Job has been submitted for Bulk Deletion of Groups, Please check the " \
-                          "Audit log for a completion message..."
+                current_user.launch_jobs("bulk_delete_groups", "Bulk deletion of groups", k)
+                success = "A job has been submitted for bulk deletion of groups, please check the " \
+                          "audit log for a completion message..."
                 db.session.commit()
                 flash(success)
     return render_template("/pages/delete_grp.html", title=f"Remove Group :: {bulk.config['APP_NAME_SINGLE']}",
@@ -636,7 +635,7 @@ def bulk_delete_groups(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in deleting Multiple groups {}".format(uc)
+                    activity = "Failure in deleting multiple groups {}".format(uc)
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
@@ -644,10 +643,10 @@ def bulk_delete_groups(user_id, *args):
                     activity = "Multiple groups deletion successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, form={"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, form={"success": "Successful", "job": "Bulk deletion of groups"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, form={"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, form={"error": f"{e}", "job": "Failure in bulk deletion of groups"})
         finally:
             set_job_progress(100)
 
@@ -668,16 +667,16 @@ def add_groups():
         )
         data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(form.group_name.data)), payload=payload)
         if data.status_code != 201:
-            error = "Unable to Add user, it seems there's a problem."
+            error = "Unable to add user, it seems there's a problem."
             display_name = f"{current_user.username}".capitalize()
-            activity = "Failure in adding user to Group"
+            activity = "Failure in adding user to group"
             audit_log = "ERROR: {}".format(data.status_code)
             auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
-            success = "User Added to Group Successfully."
+            success = "User added to group successfully."
             display_name = f"{current_user.username}".capitalize()
-            activity = "Added user successfully to Group"
+            activity = "Added user successfully to group"
             audit_log = "SUCCESS: {}".format(data.status_code)
             auto_commit(display_name, activity, audit_log)
             flash(success)
@@ -697,7 +696,7 @@ def bulk_add():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect, please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -707,7 +706,7 @@ def bulk_add():
         o = os.path.join(save_path, filename)
         delimiter = form.delimiter.data
         if current_user.get_job_in_progress("bulk_add_users"):
-            error = "A Bulk Addition of Users to Group Job is in Progress, Please wait till it's finished."
+            error = "A bulk addition of users to group job is in progress, please wait till it's finished."
             flash(error)
         else:
             with open(o, "r") as csv_file:
@@ -726,9 +725,9 @@ def bulk_add():
                         )
                         data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(u[0])), payload=payload)
                     if data.status_code != 201:
-                        error = "Unable to Add Multiple Users to group because an error occurred."
+                        error = "Unable to add multiple users to group because an error occurred."
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Failure adding users {} to Groups {} in Bulk".format(u[2], u[0])
+                        activity = "Failure adding users {} to groups {} in bulk".format(u[2], u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
@@ -736,15 +735,15 @@ def bulk_add():
                     else:
                         success = "Multiple users has been added to your group, Yay!"
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Bulk addition of users to Groups successful"
+                        activity = "Bulk addition of users to groups successful"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
-                    current_user.launch_jobs("bulk_add_users", "Bulk Add users to Groups", loop_count)
-                    success = "A Job has been submitted for Bulk addition of users to Groups, Please check the " \
-                              "Audit log for a completion message..."
+                    current_user.launch_jobs("bulk_add_users", "Bulk add users to groups", loop_count)
+                    success = "A Job has been submitted for bulk addition of users to groups, please check the " \
+                              "audit log for a completion message..."
                     db.session.commit()
                     os.remove(o)
                     flash(success)
@@ -775,18 +774,18 @@ def bulk_add_users(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 201:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure adding users {} to Groups {} in Bulk".format(u[2], u[0])
+                    activity = "Failure adding users {} to groups {} in bulk".format(u[2], u[0])
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Bulk addition of users to Groups successful"
+                    activity = "Bulk addition of users to groups successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk addition of users to groups"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk addition of users to groups"})
         finally:
             set_job_progress(100)
 
@@ -801,16 +800,16 @@ def remove_groups():
     if request.method == "POST" and form.validate_on_submit():
         data = LOGIN.delete(endpoint.group_jira_users(group_name=form.group_name.data, account_id=form.aaid.data))
         if data.status_code != 200:
-            error = "Unable to Remove user from Group, please check the log."
+            error = "Unable to remove user from group, please check the log."
             display_name = f"{current_user.username}".capitalize()
-            activity = "Failure in removing user from Group"
+            activity = "Failure in removing user from group"
             audit_log = "ERROR: {}".format(data.status_code)
             auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
-            success = "User removed from Group successfully."
+            success = "User removed from group successfully."
             display_name = f"{current_user.username}".capitalize()
-            activity = "Successfully removed user from Group"
+            activity = "Successfully removed user from group"
             audit_log = "SUCCESS: {}".format(data.status_code)
             auto_commit(display_name, activity, audit_log)
             flash(success)
@@ -831,7 +830,7 @@ def bulk_remove():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect, please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -841,7 +840,7 @@ def bulk_remove():
         o = os.path.join(save_path, filename)
         delimiter = form.delimiter.data
         if current_user.get_job_in_progress("bulk_remove_users"):
-            error = "A Bulk Removal of Users from Group Job is in Progress, Please wait till it's finished."
+            error = "A bulk removal of users from group job is in progress, please wait till it's finished."
             flash(error)
         else:
             with open(o, "r") as csv_file:
@@ -854,26 +853,26 @@ def bulk_remove():
                     for u in loop_count:
                         data = LOGIN.delete(endpoint.group_jira_users(group_name=u[0], account_id=u[1]))
                     if data.status_code != 200:
-                        error = "Unable to Remove Multiple Users {} from group {}. Something went wrong!".format(
+                        error = "Unable to remove multiple users {} from group {}. Something went wrong!".format(
                             u[2], u[0])
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Failure removing multiple users {} from Group {}".format(u[2], u[0])
+                        activity = "Failure removing multiple users {} from group {}".format(u[2], u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
-                        success = "Multiple Users removed from group successfully."
+                        success = "Multiple users removed from group successfully."
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Successfully removed Multiple users from Group"
+                        activity = "Successfully removed multiple users from group"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
-                    current_user.launch_jobs("bulk_remove_users", "Bulk Remove users from Groups", loop_count)
-                    success = "A Job has been submitted for Bulk removal of users from Groups, Please check the " \
-                              "Audit log for a completion message..."
+                    current_user.launch_jobs("bulk_remove_users", "Bulk remove users from groups", loop_count)
+                    success = "A Job has been submitted for bulk removal of users from groups, please check the " \
+                              "audit log for a completion message..."
                     db.session.commit()
                     os.remove(o)
                     flash(success)
@@ -898,18 +897,18 @@ def bulk_remove_users(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure removing multiple users {} from Group {}".format(u[2], u[0])
+                    activity = "Failure removing multiple users {} from group {}".format(u[2], u[0])
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Successfully removed Multiple users from Group"
+                    activity = "Successfully removed multiple users from group"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk removal of users from group"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in removing multiple users from group"})
         finally:
             set_job_progress(100)
 
@@ -923,7 +922,7 @@ def projects():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect, please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary statement to ensure our with statement works
@@ -936,16 +935,16 @@ def projects():
         if p == 1:
             data = LOGIN.delete(endpoint.projects(id_or_key=form.project.data, enable_undo=True))
             if data.status_code != 204:
-                error = "Cannot delete Project {} seems an error occurred.".format(form.project.data)
+                error = "Cannot delete project {} seems an error occurred.".format(form.project.data)
                 display_name = f"{current_user.username}".capitalize()
                 activity = f"Failure in deleting Project, {form.project.data}"
                 audit_log = "ERROR: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(error)
             else:
-                success = "Project {} Deleted successfully,".format(form.project.data)
+                success = "Project {} deleted successfully,".format(form.project.data)
                 display_name = f"{current_user.username}".capitalize()
-                activity = f"Successfully deleted Project, {form.project.data}"
+                activity = f"Successfully deleted project, {form.project.data}"
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
@@ -954,27 +953,27 @@ def projects():
                 for z in f:
                     data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=True))
                 if data.status_code != 204:
-                    error = "Cannot Delete Multiple Projects {} because an error occurred.".format(form.project.data)
+                    error = "Cannot delete multiple projects {} because an error occurred.".format(form.project.data)
                     display_name = f"{current_user.username}".capitalize()
-                    activity = f"Failure deleting these Projects {z}"
+                    activity = f"Failure deleting these projects {z}"
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
-                    success = "Projects {} Deleted completely.".format(form.project.data)
+                    success = "Projects {} deleted completely.".format(form.project.data)
                     display_name = f"{current_user.username}".capitalize()
-                    activity = f"Success in deleting off these Projects {z}"
+                    activity = f"Success in deleting off these projects {z}"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(success)
         elif p > 10:
             if current_user.get_job_in_progress("bulk_projects"):
-                error = "A Bulk deletion of Project Job is in Progress, Please wait till it's finished."
+                error = "A bulk deletion of project job is in progress, please wait till it's finished."
                 flash(error)
             else:
-                current_user.launch_jobs("bulk_projects", "Bulk Project deletion", f)
-                success = "A Job has been submitted for Bulk deletion of Projects, Please check the " \
-                          "Audit log for a completion message..."
+                current_user.launch_jobs("bulk_projects", "Bulk project deletion", f)
+                success = "A job has been submitted for bulk deletion of projects, please check the " \
+                          "audit log for a completion message..."
                 db.session.commit()
                 flash(success)
     return render_template("/pages/projects.html", title=f"Delete Projects :: {bulk.config['APP_NAME_SINGLE']}",
@@ -997,18 +996,18 @@ def bulk_projects(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
                     display_name = f"{user.username}".capitalize()
-                    activity = f"Failure deleting these Projects {z}"
+                    activity = f"Failure deleting these projects {z}"
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
-                    activity = f"Success in deleting off these Projects {z}"
+                    activity = f"Success in deleting off these projects {z}"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Projects deleted"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in deleting projects"})
         finally:
             set_job_progress(100)
 
@@ -1022,7 +1021,7 @@ def delete_issue():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect, please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         q = form.issues.data.split(",")
@@ -1038,39 +1037,39 @@ def delete_issue():
                 data = LOGIN.get(endpoint.search_issues_jql(query="{}".format(r), start_at=start_at,
                                                             max_results=max_results))
                 if data.status_code != 200:
-                    error = "Unable to fetch JQL Issues due to {}".format(data.reason)
+                    error = "Unable to fetch JQL issues due to {}".format(data.reason)
                     flash(error)
                 else:
                     jql_data = json.loads(data.content)
                     total = jql_data["total"]
                     full_number = int(total / 1)
                     if str(jql_data["issues"]) == "[]":
-                        error = "JQL: {} Issues returned, Please use another Query" \
+                        error = "JQL: {} issues returned, please use another query." \
                             .format(total)
                         flash(error)
                     else:
                         if current_user.get_job_in_progress("bulk_schedule_delete"):
-                            error = "A Bulk deletion using JQL Job is in Progress, Please wait till it's finished."
+                            error = "A bulk deletion using JQL job is in progress, please wait till it's finished."
                             flash(error)
                         else:
                             current_user.launch_jobs("bulk_schedule_delete", "Bulk deletion with JQL", total, r,
                                                      start_at, max_results, full_number, sub_task)
-                            success = "A Job has been submitted for Bulk deletion of Issues using JQL, " \
-                                      "Please check the Audit log for a completion message..."
+                            success = "A job has been submitted for bulk deletion of issues using JQL, " \
+                                      "please check the audit log for a completion message..."
                             flash(success)
                             db.session.commit()
             else:
                 data = LOGIN.delete(endpoint.issues(issue_key_or_id=form.issues.data,
                                                     query="deleteSubtasks={}".format(sub_task)))
                 if data.status_code != 204:
-                    error = "Cannot delete Issue {} something went wrong!".format(form.issues.data)
+                    error = "Cannot delete issue {} something went wrong!".format(form.issues.data)
                     display_name = f"{current_user.username}".capitalize()
                     activity = f"Failure deleting single issue {form.issues.data}"
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(error)
                 else:
-                    success = "Issue {} Deleted with success".format(form.issues.data)
+                    success = "Issue {} deleted with success".format(form.issues.data)
                     display_name = f"{current_user.username}".capitalize()
                     activity = f"Deleted off single issue {form.issues.data}"
                     audit_log = "SUCCESS: {}".format(data.status_code)
@@ -1078,12 +1077,12 @@ def delete_issue():
                     flash(success)
         elif p > 1:
             if current_user.get_job_in_progress("bulk_delete_issues"):
-                error = "A Bulk deletion of issues Job is in Progress, Please wait till it's finished."
+                error = "A bulk deletion of issues job is in progress, please wait till it's finished."
                 flash(error)
             else:
-                current_user.launch_jobs("bulk_delete_issues", "Bulk Issue deletion", q, sub_task)
-                success = "A Job has been submitted for Bulk deletion of Issues, Please check the " \
-                          "Audit log for a completion message..."
+                current_user.launch_jobs("bulk_delete_issues", "Bulk issue deletion", q, sub_task)
+                success = "A job has been submitted for bulk deletion of issues, please check the " \
+                          "audit log for a completion message..."
                 flash(success)
                 db.session.commit()
     return render_template("/pages/delete_issue.html", title=f"Delete Issues :: {bulk.config['APP_NAME_SINGLE']}",
@@ -1116,10 +1115,10 @@ def bulk_delete_issues(user_id, *args):
                     activity = "Multiple issue deletion successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Deletion of multiple issues"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in deleting multiple issues"})
         finally:
             set_job_progress(100)
 
@@ -1163,20 +1162,20 @@ def bulk_schedule_delete(user_id, *args):
                     set_job_progress(100 * i // count)
                     if data.status_code != 204:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure in JQL, Issue deletion returned error"
+                        activity = "Failure in JQL, issue deletion returned error"
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Multiple Issues were deleted"
+                        activity = "Multiple issues were deleted"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
 
             schedule_delete()
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Multiple issues deleted"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in multiple issue deletion"})
         finally:
             set_job_progress(100)
 
@@ -1199,16 +1198,16 @@ def project_lead():
         )
         data = LOGIN.put(endpoint.projects(form.project.data), payload=payload)
         if data.status_code != 200:
-            error = "Cannot change Project Lead Project {} due to an error.".format(form.project.data)
+            error = "Cannot change project lead project {} due to an error.".format(form.project.data)
             display_name = f"{current_user.username}".capitalize()
-            activity = "Failed updating Project Lead"
+            activity = "Failed updating project lead"
             audit_log = "ERROR: {}".format(data.status_code)
             auto_commit(display_name, activity, audit_log)
             flash(error)
         else:
-            success = "Project Lead changed for Project {} is completed.".format(form.project.data)
+            success = "Project lead changed for project {} is completed.".format(form.project.data)
             display_name = f"{current_user.username}".capitalize()
-            activity = "Project Lead updated successfully"
+            activity = "Project lead updated successfully"
             audit_log = "SUCCESS: {}".format(data.status_code)
             auto_commit(display_name, activity, audit_log)
             flash(success)
@@ -1229,7 +1228,7 @@ def bulk_lead():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your Token seems to be Incorrect. Please check it out"
+            error = "Your token seems to be incorrect, please check it out"
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -1239,7 +1238,7 @@ def bulk_lead():
         o = os.path.join(save_path, filename)
         delimiter = form.delimiter.data
         if current_user.get_job_in_progress("bulk_project_lead"):
-            error = "A Bulk Change of Project Lead Job is in Progress, Please wait till it's finished."
+            error = "A bulk change of project lead job is in progress, please wait till it's finished."
             flash(error)
         else:
             with open(o, "r") as csv_file:
@@ -1260,25 +1259,25 @@ def bulk_lead():
                         )
                         data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
                     if data.status_code != 200:
-                        error = "Cannot change Multiple Project Lead Project due to an error!"
+                        error = "Cannot change multiple project lead project due to an error!"
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Error, Bulk changing Project Lead"
+                        activity = "Error, bulk changing project lead"
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(error)
                     else:
-                        success = "Multiple Project Lead change completed."
+                        success = "Multiple project lead change completed."
                         display_name = f"{current_user.username}".capitalize()
-                        activity = "Bulk Project Lead Change successful"
+                        activity = "Bulk project lead change successful"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit(display_name, activity, audit_log)
                         os.remove(o)
                         flash(success)
                 elif number_of_loop > 10:
-                    current_user.launch_jobs("bulk_project_lead", "Bulk Change Project lead", loop_count)
-                    success = "A Job has been submitted for Bulk Change of Project Leads, Please check the " \
-                              "Audit log for a completion message..."
+                    current_user.launch_jobs("bulk_project_lead", "Bulk change project lead", loop_count)
+                    success = "A job has been submitted for bulk change of project leads, please check the " \
+                              "audit log for a completion message..."
                     db.session.commit()
                     flash(success)
     return render_template("pages/sub_pages/_change_lead.html",
@@ -1310,18 +1309,18 @@ def bulk_project_lead(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Error, Bulk changing Project Lead"
+                    activity = "Error, bulk changing project lead"
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Bulk Project Lead Change successful"
+                    activity = "Bulk project lead change successful"
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit_jobs(display_name, activity, audit_log, user)
-            send_app_messages(admin, user, {"success": "Job Completed", "job": "Successful"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk project leads changed"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
-            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure"})
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in changing project leads"})
         finally:
             set_job_progress(100)
 
@@ -1362,7 +1361,7 @@ def messages():
         db.session.commit()
         if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
             send_admin_message(admin, user, form)
-        success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
+        success = f"Your message has been sent to the {bulk.config['APP_NAME_SINGLE']} team"
         flash(success)
     return render_template("/pages/messages.html",
                            title=f"Messages - Preview Messages::{bulk.config['APP_NAME_SINGLE']}",
@@ -1397,7 +1396,7 @@ def i_messages(id):
         db.session.commit()
         if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
             send_admin_message(admin, user, form)
-        success = "Your Message has been sent Successfully"
+        success = "Your message has been sent successfully"
         flash(success)
     return render_template("/pages/view_message.html",
                            title=f"Messages - View Inbox Messages ::{bulk.config['APP_NAME_SINGLE']}",
@@ -1436,7 +1435,7 @@ def sent_messages():
         db.session.commit()
         if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
             send_admin_message(admin, user, form)
-        success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
+        success = f"Your message has been sent to the {bulk.config['APP_NAME_SINGLE']} team"
         flash(success)
     return render_template("/pages/send_message.html",
                            title=f"Messages - Send Messages::{bulk.config['APP_NAME_SINGLE']}",
@@ -1474,7 +1473,7 @@ def s_messages(id):
         db.session.commit()
         if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
             send_admin_message(admin, user, form)
-        success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
+        success = f"Your message has been sent to the {bulk.config['APP_NAME_SINGLE']} team"
         flash(success)
     return render_template("/pages/view_message.html",
                            title=f"Messages - View Sent Messages ::{bulk.config['APP_NAME_SINGLE']}",
@@ -1510,7 +1509,7 @@ def stats():
         db.session.commit()
         if form.receiver.data == bulk.config["APP_ADMIN_USERNAME"]:
             send_admin_message(admin, user, form)
-        success = f"Your Message has been sent to the {bulk.config['APP_NAME_SINGLE']} Team"
+        success = f"Your message has been sent to the {bulk.config['APP_NAME_SINGLE']} team"
         flash(success)
     return render_template("/pages/stats.html",
                            title=f"Messages - Stats ::{bulk.config['APP_NAME_SINGLE']}", r_msg=r_msg,
@@ -1529,6 +1528,13 @@ def notifications():
         "data": n.run_data(),
         "timestamp": n.timestamp
     } for n in notification])
+
+
+@bulk.route("/auto_logout", methods=["GET", "POST"])
+@login_required
+def auto_logout():
+    flash("You have been logged out due to inactivity for 10 minutes.", "success")
+    return redirect(url_for("logout"), code=302)
 
 
 @bulk.route("/settings/config", methods=["GET", "POST"])
@@ -1585,7 +1591,7 @@ def tokens():
     if form.validate_on_submit():
         current_user.token = form.token.data
         db.session.commit()
-        flash("Your API token has been Saved!")
+        flash("Your API token has been saved!")
         return redirect(url_for("config"))
 
 
