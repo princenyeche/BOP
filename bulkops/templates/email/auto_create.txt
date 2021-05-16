@@ -1,6 +1,6 @@
 Hi {{default.username.capitalize()}},
 
-This is to inform you that your account has been Generated:
+This is to inform you that your account has been generated:
 Username: {{ default.username }}
 
 Password: {{ x }}
