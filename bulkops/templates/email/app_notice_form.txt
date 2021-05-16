@@ -1,7 +1,10 @@
 Hi {{ user.username.capitalize() }},
 
-This is to inform you that your requested Bulkops Task are {{ form["job"] }}:
+This is to inform you that your requested bulkops task are {{ form["job"] }}:
 Detail: {{ form["success"] }}
+
+You should check the audit log page to ensure if the tasks have any errors or were
+fully completed.
 
 Cheers,
 The BulkOps App Team
