@@ -1,6 +1,6 @@
 Hi {{user.username.capitalize()}},
 
-This is to inform you that your requested Jobs failed due to {{ form["error"] }}:
+This is to inform you that your requested jobs failed due to {{ form["error"] }}:
 Outcome: {{ form["job"] }}
 
 Cheers,
