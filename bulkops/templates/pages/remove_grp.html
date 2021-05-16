@@ -53,7 +53,7 @@
          <div class="form-group mx-sm-3 mb-2">
       <i class="fa fa-users" aria-hidden="true"></i>
     <label for="group_name" class="sr-only">Group Name</label>
-    <input type="text" class="form-control" id="group_name" name="group_name" placeholder="Enter the Group name">
+    <input type="text" class="form-control" id="group_name" name="group_name" placeholder="Enter the group name">
     </div>
            <div class="form-group mx-sm-3 mb-2">
            {% for error in form.group_name.errors %}
@@ -69,8 +69,8 @@
        <div class="form-group mx-sm-3 mb-2">
       <i class="fa fa-address-card-o" aria-hidden="true"></i>
     <label for="aaid" class="sr-only">AccountId</label>
-    <input type="text" class="form-control" id="aaid" name="aaid" placeholder="Enter your Atlassian AccountId">
-            <small id="cloudHelp" class="form-text text-muted">Format of AccountId is in alphanumeric e.g 5e0a04330242870e996e6221</small>
+    <input type="text" class="form-control" id="aaid" name="aaid" placeholder="Enter your Atlassian accountId">
+            <small id="cloudHelp" class="form-text text-muted">Format of accountId is in alphanumeric e.g 5e0a04330242870e996e6221</small>
     </div>
 
            <div class="form-group mx-sm-3 mb-2">
@@ -107,7 +107,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <div><b><u>Removing User from Group?</u></b> <br />
+        <div><b><u>Removing user from group?</u></b> <br />
           <ul type="list">
           <li> You can remove only Jira users</li>
           <li> you would need to specify the user's accountId prior to removal</li>
@@ -115,12 +115,12 @@
           </div>
          <div><b><u>Where can I get an accountId?</u></b> <br />
           <ul type="list">
-          <li> You can get one from the Admin hub page or use a JQL search of assignee or reporters in order to return an accountId.</li>
+          <li> You can get one from the admin hub page or use a JQL search of assignee or reporters in order to return an accountId.</li>
       </ul>
           </div>
          <div><b><u>Will any user in group  be removed?</u></b> <br />
           <ul type="list">
-          <li> Depending on what String is used to create the group, it can be removed. however there's a bug that causes users with Apostrophe not to be removed.</li>
+          <li> Depending on what string is used to create the group, it can be removed. however there's a bug that causes users with apostrophe not to be removed.</li>
       </ul>
           </div>
       </div>
