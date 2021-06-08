@@ -8,7 +8,7 @@ Flask-Migrate==2.7.0
 Flask-SQLAlchemy==2.5.1
 Flask-Uploads==0.2.1
 Flask-WTF==0.14.3
-Jinja2==2.11.3
+Jinja2==3.0.1
 Mako==1.1.4
 Markdown==3.3.4
 MarkupSafe==1.1.1
