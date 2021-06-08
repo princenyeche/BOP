@@ -8,12 +8,12 @@ Flask-Migrate==2.7.0
 Flask-SQLAlchemy==2.5.1
 Flask-Uploads==0.2.1
 Flask-WTF==0.14.3
-Jinja2==2.11.3
+Jinja2==3.0.1
 Mako==1.1.4
 Markdown==3.3.4
 MarkupSafe==1.1.1
 SQLAlchemy==1.4.17
-urllib3==1.26.4
+urllib3==1.26.5
 WTForms==2.3.3
 PyJWT==1.7.1
 virtualenv==20.4.6
@@ -26,5 +26,5 @@ pymysql
 email_validator
 Werkzeug==2.0.1
 redis==3.5.3
-rq==1.8.0
+rq==1.8.1
 jiraone==0.3.4
