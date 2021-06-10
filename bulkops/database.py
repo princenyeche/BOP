@@ -6,6 +6,7 @@ from bulkops import login
 from hashlib import sha256
 from time import time
 from flask import current_app
+from itsdangerous import URLSafeTimedSerializer
 import jwt
 import json
 from bulkops import bulk
@@ -21,6 +22,9 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     instances = db.Column(db.String(140), index=True)
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    register_date = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    confirm_user = db.Column(db.Boolean, nullable=False, default=False)
+    confirm_period = db.Column(db.DateTime, nullable=True)
     token = db.Column(db.String(64), index=True)
     notify_me = db.Column(db.String(5), index=True)
     audit = db.relationship("Audit", backref="audits", lazy="dynamic", cascade="all,delete")
@@ -73,8 +77,25 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
     
+    @staticmethod
+    def create_user_confirmation(email):
+        parsers = URLSafeTimedSerializer(bulk.config['SECRET_KEY'])
+        return parsers.dumps(email, salt=bulk.config['SECURITY_SALT'])
+
+    @staticmethod
+    def getuser_confirmation_token(token, expiration=3600):
+        parsers = URLSafeTimedSerializer(bulk.config['SECRET_KEY'])
+        try:
+            email = parsers.loads(
+                token,
+                salt=bulk.config['SECURITY_SALT'],
+                max_age=expiration)
+        except:
+            return False
+        return email
+    
     def launch_jobs(self, name, description, *args, **kwargs):
-        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, **kwargs, job_timeout="1h")
+        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, job_timeout="1h", **kwargs)
         jobs = Jobs(id=req_job.get_id(), name=name, description=description, user=self)
         db.session.add(jobs)
         return jobs
