@@ -6,6 +6,7 @@ import os
 # from dotenv import load_dotenv
 
 rand = os.urandom(16)
+randa = os.urandom(20)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # if running on a linux server, uncomment below
 # load_dotenv(os.path.join(basedir, '.env'))
@@ -17,6 +18,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
                               "sqlite:///" + os.path.join(basedir, "bulkops.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECURITY_SALT = os.environ.get("SECURITY_SALT") or f"{randa}"
 
     # mail configuration
     MAIL_SERVER = os.environ.get("MAIL_SERVER")
@@ -43,6 +45,6 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = "v3.0.0\n"
+    APP_VERSION = "v3.5.2\n"
     APP_UPGRADE_URL = "https://github.com/princenyeche/BOP"
     APP_VERSION_URL = "https://raw.githubusercontent.com/princenyeche/BOP/master/VERSION"
