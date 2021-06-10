@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v3.5.2 - (10 June 2021)
+### Update
+* Added a confirmation feature to validate email address upon sign up
+* Added a means to resend confirmation email in the event the user didn't receive it.
+* Updated dependencies.
+
+
 ## v3.0.0 - (16 May 2021)
 ### Update
 * Corrected unnecessary capitalization of text on frontend UI.
