@@ -4,16 +4,17 @@ import string
 import random
 from flask import render_template, flash, redirect, url_for
 from bulkops.database import User, Messages
-from flask_login import current_user, login_user
+from flask_login import current_user, login_user, login_required
 from flask import request
 from flask_login import logout_user
 from werkzeug.urls import url_parse
 from bulkops import db
 from bulkops.secure.forms import RegistrationForm, LoginForm, ResetPasswordForm, ForgetEmailForm, ContactForm
 from bulkops.secure.notifier import send_reset_password, send_contact_form, login_alert, pre_config, \
-    send_welcome_email
+    send_welcome_email, send_confirm_email
 from bulkops import bulk
 from datetime import datetime as dt
+from time import sleep
 
 # display Fri, 10 Jul 2020 - 05:22 PM
 date = dt.now().strftime("%a, %d %b %Y - %I:%M %p")
@@ -49,6 +50,7 @@ def signin():
         version_checker()
         # send a notification for successful login if option is chosen in config
         if user.notify_me == "Yes":
+            date = dt.now().strftime("%a, %d %b %Y - %I:%M %p")
             ip_address = requests.get("https://api64.ipify.org").text
             login_alert(user, ip_address, date)
         # use if you want the user to always be redirected to login page or the link provided
@@ -85,18 +87,18 @@ def signup():
         if form.username.data.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")
         elif len(form.username.data) < 4:
-            flash("Your Username must be minimum 4 Characters in length")
+            flash("Your username must be minimum 4 characters in length")
         elif len(form.username.data) > 30:
-            flash("Your Username is too long, it must be within 30 Characters in length")
+            flash("Your username is too long, it must be within 30 characters in length")
         elif y.startswith("http") or y.startswith("www"):
             flash("Please remove the \"http://\" or \"https://\" or \"www\" from the URL")
             # return redirect(request.url) - this clears the form
         elif i < 8:
-            flash("Your Password must be equal or greater than 8 Characters in length")
+            flash("Your password must be equal or greater than 8 characters in length")
         elif i > 64:
-            flash("Your Password is too long, it must be within 64 Characters in length")
+            flash("Your password is too long, it must be within 64 characters in length")
         elif a is None:
-            flash("You must use at least one of this Special Characters (!, @, #, $, %, &, or *) in your Password!")
+            flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             user = User(username=form.username.data.lower(),
@@ -104,9 +106,15 @@ def signup():
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
-            success = "Congratulations, you have been registered successfully. We also sent you a welcome message!😉"
+            token = User.create_user_confirmation(user.email)
+            confirm_url = url_for("confirmation_email", token=token, _external=True)
+            subject = "Confirm Your Email Address"
+            success = "Congratulations, you have been registered successfully. we also sent you a welcome message!😉" \
+                      " and please verify your email as we sent a verification link too. "
             flash(success, category="alert-success")
             welcome_message(extract=form.username.data.lower())
+            sleep(10)
+            send_confirm_email(user, subject, confirm_url)
             return redirect(url_for("signin"))
         else:
             flash("Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\"")
@@ -144,12 +152,12 @@ def reset_password(token):
         a = re.search("[!@#$%&*]", s)
         y = len(s)
         if y < 8:
-            error = "Your Password must be equal or greater than 8 Characters in length"
+            error = "Your password must be equal or greater than 8 characters in length"
             flash(error)
         elif y > 64:
-            flash("Your Password is too long, it must be within 64 Characters in length")
+            flash("Your password is too long, it must be within 64 characters in length")
         elif a is None:
-            error = "You must use at least one of this Special Characters (!, @, #, $, %, &, or *) in your Password!"
+            error = "You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!"
             flash(error)
         else:
             user.set_password(form.password.data)
@@ -158,6 +166,40 @@ def reset_password(token):
             flash(success, category="alert-success")
             return redirect(url_for("signin"))
     return render_template("secure/password_reset.html", title="Recover Password", form=form, error=error, copy=copy)
+
+
+@bulk.route("/confirm_email/<token>", methods=["GET", "POST"])
+@login_required
+def confirmation_email(token):
+    try:
+        email = User.getuser_confirmation_token(token)
+        user = User.query.filter_by(email=email).first_or_404()
+        user.confirm_period = dt.utcnow()
+        user.confirm_user = True
+        db.session.add(user)
+        db.session.commit()
+    except:
+        flash("Your activation link isn't valid or has expired or you're not logged in", "danger")
+    return redirect(url_for("index"))
+
+
+@bulk.route("/unconfirmed", methods=["GET", "POST"])
+@login_required
+def unconfirmed():
+    if current_user.confirm_user is True:
+        return redirect(url_for("index"))
+    return render_template("secure/unconfirmed.html", Messages=Messages, title="Verification of your account!")
+
+
+@bulk.route("/resend", methods=["GET", "POST"])
+@login_required
+def resend():
+    token = User.create_user_confirmation(current_user.email)
+    confirm_url = url_for("confirmation_email", token=token, _external=True)
+    subject = "Resending verification link"
+    send_confirm_email(current_user, subject, confirm_url)
+    flash("A new confirmation email has been sent!", "success")
+    return redirect(url_for("unconfirmed"))
 
 
 @bulk.route("/contact", methods=["GET", "POST"])
