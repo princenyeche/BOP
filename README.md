@@ -61,6 +61,7 @@ In the environment variables, you will need to set it up as below, so python kno
 |ADMINS      | no-reply@example.com |
 |CONTACT_EMAIL | admin@example.com |
 |SECRET_KEY | secretkey |  
+|SECURITY_SALT | anothersecretkey | 
 |REDIS_URL | redis://url | 
 
 If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application.
