@@ -11,8 +11,8 @@ Flask-WTF==0.14.3
 Jinja2==2.11.3
 Mako==1.1.4
 Markdown==3.3.4
-MarkupSafe==1.1.1
-SQLAlchemy==1.4.14
+MarkupSafe==2.0.1
+SQLAlchemy==1.4.17
 urllib3==1.26.5
 WTForms==2.3.3
 PyJWT==1.7.1
