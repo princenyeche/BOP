@@ -7,7 +7,7 @@ def validate_account(control):
     @wraps(control)
     def allow_accounts(*args, **kwargs):
         if current_user.confirm_user is False or current_user.confirm_user is None:
-            flash("Please verify your account!", "warning")
+            flash("Please verify your account!", "alert-warning")
             return redirect(url_for("unconfirmed"))
         return control(*args, **kwargs)
 
