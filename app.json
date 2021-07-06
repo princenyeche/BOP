@@ -1,0 +1,46 @@
+{
+  "name": "Bulkops app",
+  "description": "Bulk operations app for Jira is a cloud based add-on, which helps in performing bulk operational features not available on Jira cloud.",
+  "repository": "https://github.com/princenyeche/BOP",
+  "logo": "https://elfapp.website/bulkops-assets/bulkops_logo.png",
+  "keywords": ["bulkops", "jira-cloud", "bulk-delete-jira-users", "bulk-create-jira-users"],
+  "website": "https://elfapp.website",
+  "env": {
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "The number of processes to run.",
+      "value": "1"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "image": "heroku/python",
+  "addons": [
+    "redis",
+    {
+      "plan": "hobby-dev",
+      "as": "REDIS"
+    },
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "9.5"
+      }
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
