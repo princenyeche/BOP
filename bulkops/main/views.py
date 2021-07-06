@@ -7,7 +7,7 @@ import time
 from flask import render_template, flash, redirect, url_for, current_app, request, \
     jsonify, Response
 from bulkops.database import User, Audit, Messages, Notification
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, fresh_login_required
 from bulkops import db, bulk
 from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
     DeleteUserForm, CreateUsersForm, AddUserGroupForm, RemoveUserGroupForm, DeleteGroupForm, \
@@ -16,6 +16,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
 from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message
+from bulkops.secure.user_checker import validate_account
 from collections import deque
 from jiraone import LOGIN, endpoint
 
@@ -31,6 +32,7 @@ if not os.path.exists(our_dir):
 @bulk.route("/", methods=["GET", "POST"])
 @bulk.route("/index", methods=["GET", "POST"])
 @login_required
+@validate_account
 def index():
     data = None
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -50,7 +52,8 @@ def before_request():
 
 
 @bulk.route("/settings", methods=["GET", "POST"])
-@login_required
+@fresh_login_required
+@validate_account
 def settings():
     form = SettingsForm()
     success = None
@@ -65,13 +68,13 @@ def settings():
             error = "Please remove the \"http://\" or \"https://\" or \"www\" from the URL"
             flash(error)
         elif i < 8:
-            error = "Your Password must be equal or greater than 8 Characters in length"
+            error = "Your password must be equal or greater than 8 characters in length"
             flash(error)
         elif i > 64:
-            error = "Your Password is too long, it must be within 64 Characters in length"
+            error = "Your password is too long, it must be within 64 characters in length"
             flash(error)
         elif a is None:
-            error = "You must use at least one of this Special Characters (!, @, #, $, %, &, or *) in your Password!"
+            error = "You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!"
             flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
@@ -99,6 +102,7 @@ def settings():
 
 @bulk.route("/users", methods=["GET", "POST"])
 @login_required
+@validate_account
 def users():
     form = CreateUsersForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -158,6 +162,7 @@ def users():
 
 @bulk.route("/users/bulk_users", methods=["GET", "POST"])
 @login_required
+@validate_account
 def bulk_users():
     form = UploadForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -318,6 +323,7 @@ def bulk_users_creation(user_id, *args):
 
 @bulk.route("/delete_users", methods=["GET", "POST"])
 @login_required
+@validate_account
 def delete_users():
     form = DeleteUserForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -345,6 +351,7 @@ def delete_users():
 
 @bulk.route("/delete_users/bulk_delete", methods=["GET", "POST"])
 @login_required
+@validate_account
 def bulk_delete():
     form = UploadForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -437,6 +444,7 @@ def bulk_users_deletion(user_id, *args):
 
 @bulk.route("/create_groups", methods=["GET", "POST"])
 @login_required
+@validate_account
 def create_groups():
     form = CreateGroupForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -554,6 +562,7 @@ def bulk_create_groups(user_id, *args):
 
 @bulk.route("/delete_groups", methods=["GET", "POST"])
 @login_required
+@validate_account
 def delete_groups():
     form = DeleteGroupForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -653,6 +662,7 @@ def bulk_delete_groups(user_id, *args):
 
 @bulk.route("/add_groups", methods=["GET", "POST"])
 @login_required
+@validate_account
 def add_groups():
     form = AddUserGroupForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -686,6 +696,7 @@ def add_groups():
 
 @bulk.route("/add_groups/bulk_add", methods=["GET", "POST"])
 @login_required
+@validate_account
 def bulk_add():
     form = UploadForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -792,6 +803,7 @@ def bulk_add_users(user_id, *args):
 
 @bulk.route("/remove_groups", methods=["GET", "POST"])
 @login_required
+@validate_account
 def remove_groups():
     form = RemoveUserGroupForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -820,6 +832,7 @@ def remove_groups():
 
 @bulk.route("/remove_groups/bulk_remove", methods=["GET", "POST"])
 @login_required
+@validate_account
 def bulk_remove():
     form = UploadForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -915,6 +928,7 @@ def bulk_remove_users(user_id, *args):
 
 @bulk.route("/projects", methods=["GET", "POST"])
 @login_required
+@validate_account
 def projects():
     form = DeleteProjectForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -1014,6 +1028,7 @@ def bulk_projects(user_id, *args):
 
 @bulk.route("/delete_issue", methods=["GET", "POST"])
 @login_required
+@validate_account
 def delete_issue():
     form = DeleteIssuesForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -1182,6 +1197,7 @@ def bulk_schedule_delete(user_id, *args):
 
 @bulk.route("/project_lead", methods=["GET", "POST"])
 @login_required
+@validate_account
 def project_lead():
     form = ChangeProjectLeadForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -1218,6 +1234,7 @@ def project_lead():
 
 @bulk.route("/project_lead/bulk_lead", methods=["GET", "POST"])
 @login_required
+@validate_account
 def bulk_lead():
     form = UploadForm()
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
@@ -1327,6 +1344,7 @@ def bulk_project_lead(user_id, *args):
 
 @bulk.route("/audit", methods=["GET", "POST"])
 @login_required
+@validate_account
 def audit():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     page = request.args.get("page", 1, type=int)
@@ -1339,6 +1357,7 @@ def audit():
 
 @bulk.route("/messages/inbox", methods=["GET", "POST"])
 @login_required
+@validate_account
 def messages():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
@@ -1381,6 +1400,7 @@ def receiver(recipient):
 # view inbox messages
 @bulk.route("/messages/inbox/<int:id>/view", methods=["GET", "POST"])
 @login_required
+@validate_account
 def i_messages(id):
     form = MessageForm()
     error = None
@@ -1417,6 +1437,7 @@ def trigger_msg(id):
 
 @bulk.route("/messages/sent", methods=["GET", "POST"])
 @login_required
+@validate_account
 def sent_messages():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
@@ -1446,6 +1467,7 @@ def sent_messages():
 # delete sent messages
 @bulk.route("/messages/sent/<int:id>/delete", methods=["GET", "POST"])
 @login_required
+@validate_account
 def delete_messages(id):
     msg = Messages.query.get(id)
     db.session.delete(msg)
@@ -1457,6 +1479,7 @@ def delete_messages(id):
 # view sent messages
 @bulk.route("/messages/sent/<int:id>/view", methods=["GET", "POST"])
 @login_required
+@validate_account
 def s_messages(id):
     user = User.query.filter_by(username=current_user.username).first_or_404()
     admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
@@ -1494,6 +1517,7 @@ def trigger_rmsg(id):
 
 @bulk.route("/messages/stats", methods=["GET", "POST"])
 @login_required
+@validate_account
 def stats():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
@@ -1562,6 +1586,7 @@ def config():
 
 @bulk.route("/settings/delete", methods=["GET", "POST"])
 @login_required
+@validate_account
 def account_delete():
     success = None
     error = None

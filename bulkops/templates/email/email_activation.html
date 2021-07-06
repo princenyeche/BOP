@@ -1,0 +1,12 @@
+<div class="card">
+  <h5 class="card-header">Welcome and thank you!</h5>
+  <p class="card-body">
+    <h5 class="card-title">Hi {{user.username.capitalize()}},</h5>
+    <p class="card-text"> Glad to have you sign up with us, before you can proceed further, we'll need to verify your email
+        Please click on the link below to verify your email address:</p>
+
+    <a href="{{ confirm_url }}" class="btn btn-primary">Confirm email</a>
+
+<p>Cheers,</p>
+<p>The BulkOps App Team</p>
+  </div>

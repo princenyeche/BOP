@@ -49,3 +49,11 @@ def send_welcome_email(user):
                  text_body=render_template("email/app_welcome_email.txt", user=user),
                  html_body=render_template("email/app_welcome_email.html", user=user)
                  )
+
+    
+def send_confirm_email(user, subject, confirm_url):
+    send_message(f"[{bulk.config['APP_NAME']}] {subject}",
+                 sender=bulk.config["ADMINS"][0],
+                 recipients=[user.email],
+                 text_body=render_template("email/email_activation.txt", user=user, confirm_url=confirm_url),
+                 html_body=render_template("email/email_activation.html", user=user, confirm_url=confirm_url))
