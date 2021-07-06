@@ -14,7 +14,7 @@ function systemCheck() {
      exit $SUCCESS
    elif [[ $PYENV -eq 3 ]]; then
      echo "Detected python version ${PYENV}"
-     # create our App folder
+     # create our app folder
      createInstallFolder
   fi
 }
