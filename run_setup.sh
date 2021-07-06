@@ -11,10 +11,10 @@ function systemCheck() {
      printf 'Checking python version. \n'
      printf 'Python version is lesser than 3, please upgrade and try again. \n'
      createInstallFolder
-     # exit $SUCCESS
+     exit $SUCCESS
    elif [[ $PYENV -eq 3 ]]; then
      echo "Detected python version ${PYENV}"
-     # create our App folder
+     # create our app folder
      createInstallFolder
   fi
 }
