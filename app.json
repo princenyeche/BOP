@@ -5,6 +5,7 @@
   "logo": "https://elfapp.website/bulkops-assets/bulkops_logo.png",
   "keywords": ["bulkops", "jira-cloud", "bulk-delete-jira-users", "bulk-create-jira-users"],
   "website": "https://elfapp.website",
+  "success_url": "/signin",
   "env": {
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
