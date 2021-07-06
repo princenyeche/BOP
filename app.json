@@ -42,5 +42,8 @@
     {
       "url": "heroku/python"
     }
-  ]
+  ],
+  "scripts": {
+    "postdeploy": "flask db init; flask db migrate"
+  }
 }
