@@ -25,6 +25,16 @@ You can be able to launch the application in various ways. either you host it yo
 
 ### Heroku
 Heroku is an easier hosting platform which you can get for free to host this app, simply create an account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own app running in no time. Assuming you've already logged in to Heroku on your terminal. You need to have git, if you don't, download it. If on macOS use "homebrew", for windows use **[Git for Windows](https://git-for-windows.github.io)**
+
+You can use the below methods to deploy to heroku
+
+#### Using the deploy button
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/princenyeche/BOP)
+
+#### Using a shell script
+- Deploy by running the `run_setup.sh` located in the root folder
+
+#### Signup and configure heroku yourself
 ```bash
 # create our app folder
 mkdir app && cd app
