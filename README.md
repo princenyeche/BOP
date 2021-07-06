@@ -32,7 +32,7 @@ You can use the below methods to deploy to heroku
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/princenyeche/BOP)
 
 #### Using a shell script
-- Deploy by running the `run_setup.sh` located in the root folder
+- Deploy by running the `run_setup.sh` file located in the root folder
 
 #### Signup and configure heroku yourself
 ```bash
@@ -77,10 +77,12 @@ In the environment variables, you will need to set it up as below, so python kno
 If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application.
 
 ### Local
-Make sure python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have `pip` on your computer with the download. check by using 
+Make sure python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have `pip` on your computer with the download. Check by using 
 ```bash
 pip --version
 ```
+
+You can also run the `run_setup.sh` file located in the root folder to install the app on your device automatically. 
 
 If you installed python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
 
