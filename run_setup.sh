@@ -95,7 +95,7 @@ function runHeroku {
     git config --global user.name "$app_name"
 
     heroku buildpacks:set heroku/python -a "$app_name"
-    git push heroku main
+    # git push heroku main
     # Add the files which includes Procfile, startup.py, bulkops-folder
     git add Procfile startup.py requirements.txt bulkops
     heroku addons:create heroku-postgresql:hobby-dev -a "$app_name"
