@@ -10,9 +10,9 @@
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
     },
-    "WEB_CONCURRENCY": {
-      "description": "The number of processes to run.",
-      "value": "1"
+    "FLASK_APP": {
+      "description": "Startup file for bulkops",
+      "value": "startup.py"
     }
   },
   "formation": {
@@ -23,7 +23,6 @@
   },
   "image": "heroku/python",
   "addons": [
-    "redis",
     {
       "plan": "heroku-redis",
       "as": "REDIS"
