@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v3.5.5 - (8 July 2021)
+### Update
+* Corrected auto deploy variable
+* Added more variables to `app.json` file
+* Added new variable to control queue time out.
+
 ## v3.5.2 - (10 June 2021)
 ### Update
 * Added a confirmation feature to validate email address upon sign up

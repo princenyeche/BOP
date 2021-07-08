@@ -18,11 +18,10 @@ bulk.config.from_object(Config)
 bulk.config.update(
     SESSION_REFRESH_EACH_REQUEST=True,
     SESSION_COOKIE_NAME="bulkops",
-    # remove the below if running online
-    # else comment out the lines not needed
-    # SESSION_COOKIE_SECURE=True,
-    # SESSION_COOKIE_HTTPONLY=True,
-    # SESSION_COOKIE_SAMESITE=None,
+    # add a comment to block the below arguments if running locally
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE=None,
 )
 
 

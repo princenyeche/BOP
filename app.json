@@ -7,13 +7,21 @@
   "website": "https://elfapp.website",
   "success_url": "/signin",
   "env": {
-    "SECRET_TOKEN": {
+    "SECRET_KEY": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
     },
     "FLASK_APP": {
       "description": "Startup file for bulkops",
       "value": "startup.py"
+    },
+    "SECURITY_SALT": {
+      "description": "A security key for user authentication",
+      "generator": "secret"
+    },
+    "QUEUE_TIMEOUT": {
+      "description": "A time out value to tell the queue system how long it can run for a task.",
+      "value": "1h"
     }
   },
   "formation": {
