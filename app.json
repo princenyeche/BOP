@@ -18,6 +18,10 @@
     "SECURITY_SALT": {
       "description": "A security key for user authentication",
       "generator": "secret"
+    },
+    "QUEUE_TIMEOUT": {
+      "description": "A time out value to tell the queue system how long it can run for a task.",
+      "value": "1h"
     }
   },
   "formation": {
