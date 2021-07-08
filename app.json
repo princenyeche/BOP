@@ -22,6 +22,38 @@
     "QUEUE_TIMEOUT": {
       "description": "A time out value to tell the queue system how long it can run for a task.",
       "value": "1h"
+    },
+    "MAIL_SERVER": {
+      "description": "A mail server connection for sending emails, please change value to your own server.",
+      "value": "smtp.example.com"
+    },
+    "MAIL_PORT": {
+      "description": "A mail server connection port.",
+      "value": "587"
+    },
+     "MAIL_USE_TLS": {
+      "description": "A secure connect to your mail server. use 1 for TLS enabled, 0 for disabled.",
+      "value": "1"
+    },
+    "MAIL_USERNAME": {
+      "description": "A username to connect to your email server",
+      "value": "youremail@example.com"
+    },
+    "MAIL_PASSWORD": {
+      "description": "A password to validate your connection to your email server",
+      "value": "youremail@example.com"
+    },
+    "MAIL_SUFFIX": {
+      "description": "This refers to the domain name which is used to send email onbehalf, should be the same domain as your mail server",
+      "value": "example.com"
+    },
+    "ADMINS": {
+      "description": "An automated user account, which bulkops sends notification to and from",
+      "value": "no-reply@example.com"
+    },
+    "CONTACT_EMAIL": {
+      "description": "The contact address where bulkops delivers any message that uses the contact us button.",
+      "value": "admin@example.com"
     }
   },
   "formation": {
