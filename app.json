@@ -32,7 +32,7 @@
       "value": "587"
     },
      "MAIL_USE_TLS": {
-      "description": "A secure connect to your mail server. use 1 for TLS enabled, 0 for disabled.",
+      "description": "A secure connection to your mail server. use 1 for TLS enabled, 0 for disabled.",
       "value": "1"
     },
     "MAIL_USERNAME": {
