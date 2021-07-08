@@ -45,6 +45,9 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = "v3.5.2\n"
+    APP_VERSION = "v3.5.5\n"
     APP_UPGRADE_URL = "https://github.com/princenyeche/BOP"
     APP_VERSION_URL = "https://raw.githubusercontent.com/princenyeche/BOP/master/VERSION"
+    
+    # queue time out
+    QUEUE_TIMEOUT = os.environ.get("QUEUE_TIMEOUT") or "1h"
