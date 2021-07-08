@@ -84,6 +84,6 @@
     }
   ],
   "scripts": {
-    "postdeploy": "flask db init; flask db migrate"
+    "postdeploy": "flask db init; flask db migrate; heroku ps:scale worker=1;"
   }
 }
