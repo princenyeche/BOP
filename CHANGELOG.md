@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v3.5.6 - (9 July 2021)
+### Update
+* minor patches
+* remove unused f string
+
 ## v3.5.5 - (8 July 2021)
 ### Update
 * Corrected auto deploy variable
