@@ -113,7 +113,7 @@ def signup():
                       " and please verify your email as we sent a verification link too. "
             flash(success, category="alert-success")
             welcome_message(extract=form.username.data.lower())
-            sleep(10)
+            sleep(1.0)
             send_confirm_email(user, subject, confirm_url)
             return redirect(url_for("signin"))
         else:

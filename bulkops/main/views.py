@@ -83,7 +83,7 @@ def settings():
             user.set_password(form.password.data)
             display_name = f"{current_user.username}".capitalize()
             activity = f"Changes made to Settings From:{v}  To:{current_user.instances}"
-            audit_log = f"CHANGES: Configuration"
+            audit_log = "CHANGES: Configuration"
             ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
             db.session.add(ad)
             db.session.add(user)
