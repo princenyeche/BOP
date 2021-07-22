@@ -101,7 +101,7 @@ def signup():
         elif a is None:
             flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
         elif y.startswith(mistake[0]):
-            flash(f"Your URL is not the expected value. Do you mean {y.lstrip(mistake[0])} instead?")
+            flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake[0])} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             user = User(username=form.username.data.lower(),
