@@ -60,7 +60,6 @@ def settings():
     success = None
     error = None
     v = current_user.instances
-    validate: dict = {"validate": False}
     if form.validate_on_submit() and request.method == "POST":
         s = form.password.data
         a = re.search("[!@#$%&*]", s)
