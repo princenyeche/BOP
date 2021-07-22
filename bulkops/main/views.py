@@ -66,13 +66,7 @@ def settings():
         a = re.search("[!@#$%&*]", s)
         y = form.instances.data
         i = len(s)
-        mistake = [e for e in string.punctuation if y.startswith(e)]
-        try:
-            if y.startswith(mistake[0]):
-                validate["validate"] = True
-            validate["validate"] = False
-        except IndexError:
-            validate["validate"] = True
+        mistake = {"validate": e for e in string.punctuation if y.startswith(e)}
         if y.startswith("http") or y.startswith("www"):
             error = "Please remove the \"http://\" or \"https://\" or \"www\" from the URL"
             flash(error)
@@ -85,9 +79,10 @@ def settings():
         elif a is None:
             error = "You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!"
             flash(error)
-        elif validate["validate"] is True:
-            error = f"Your URL \"{y}\" is not the expected value."
-            flash(error)
+        elif "validate" in mistake:
+            if mistake.get("validate") is not None:
+                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake['validate'])} instead?"
+                flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             user = User.query.filter_by(username=current_user.username).first()

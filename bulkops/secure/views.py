@@ -84,13 +84,7 @@ def signup():
         a = re.search("[!@#$%&*]", s)
         y = form.instances.data
         i = len(s)
-        mistake = [e for e in string.punctuation if y.startswith(e)]
-        try:
-            if y.startswith(mistake[0]):
-                validate["validate"] = True
-            validate["validate"] = False
-        except IndexError:
-            validate["validate"] = True
+        mistake = {"validate": e for e in string.punctuation if y.startswith(e)}
         # additional mechanism, to reserve usernames
         if form.username.data.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")
@@ -107,8 +101,9 @@ def signup():
             flash("Your password is too long, it must be within 64 characters in length")
         elif a is None:
             flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
-        elif validate["validate"] is True:
-            flash(f"Your URL \"{y}\" is not the expected value.")
+        elif "validate" in mistake:
+            if mistake.get('validate') is not None:
+                flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake['validate'])} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             user = User(username=form.username.data.lower(),
