@@ -76,7 +76,6 @@ def signup():
     form = RegistrationForm()
     # check if a default user exist, if not create one
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-    validate: dict = {"validate": False}
     if default is None:
         default_user()
     if form.validate_on_submit():
