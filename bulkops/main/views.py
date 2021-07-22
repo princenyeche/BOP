@@ -86,8 +86,7 @@ def settings():
             error = "You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!"
             flash(error)
         elif validate["validate"] is True:
-            error = f"Your URL \"{y}\" is not the expected value. Do you mean " \
-                        f"{y.lstrip(mistake[0]) if validate['validate'] is True else None} instead?"
+            error = f"Your URL \"{y}\" is not the expected value."
             flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
