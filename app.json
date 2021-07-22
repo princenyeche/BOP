@@ -16,7 +16,7 @@
       "value": "startup.py"
     },
     "SECURITY_SALT": {
-      "description": "A security key for user authentication after they've registered an account.",
+      "description": "A security key for user authentication on user account.",
       "generator": "secret"
     },
     "QUEUE_TIMEOUT": {
