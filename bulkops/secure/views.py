@@ -76,7 +76,6 @@ def signup():
     form = RegistrationForm()
     # check if a default user exist, if not create one
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
-    validate: dict = {"validate": False}
     if default is None:
         default_user()
     if form.validate_on_submit():
@@ -103,7 +102,7 @@ def signup():
             flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
         elif "validate" in mistake:
             if mistake.get('validate') is not None:
-                flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake['validate'])} instead?")
+                flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             user = User(username=form.username.data.lower(),

@@ -60,7 +60,6 @@ def settings():
     success = None
     error = None
     v = current_user.instances
-    validate: dict = {"validate": False}
     if form.validate_on_submit() and request.method == "POST":
         s = form.password.data
         a = re.search("[!@#$%&*]", s)
@@ -81,7 +80,7 @@ def settings():
             flash(error)
         elif "validate" in mistake:
             if mistake.get("validate") is not None:
-                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake['validate'])} instead?"
+                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} instead?"
                 flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
