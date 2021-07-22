@@ -80,7 +80,7 @@ def settings():
             flash(error)
         elif "validate" in mistake:
             if mistake.get("validate") is not None:
-                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake['validate'])} instead?"
+                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} instead?"
                 flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
