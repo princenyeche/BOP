@@ -16,11 +16,11 @@
       "value": "startup.py"
     },
     "SECURITY_SALT": {
-      "description": "A security key for user authentication",
+      "description": "A security key for user authentication after they've registered an account.",
       "generator": "secret"
     },
     "QUEUE_TIMEOUT": {
-      "description": "A time out value to tell the queue system how long it can run for a task.",
+      "description": "A time out value to tell the queue system how long it can run for on a task.",
       "value": "1h"
     },
     "MAIL_SERVER": {
@@ -41,7 +41,7 @@
     },
     "MAIL_PASSWORD": {
       "description": "A password to validate your connection to your email server",
-      "value": "youremail@example.com"
+      "value": "apassword"
     },
     "MAIL_SUFFIX": {
       "description": "This refers to the domain name which is used to send email onbehalf, should be the same domain as your mail server",
