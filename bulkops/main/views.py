@@ -4,6 +4,7 @@ import re
 import csv
 import sys
 import time
+import string
 from flask import render_template, flash, redirect, url_for, current_app, request, \
     jsonify, Response
 from bulkops.database import User, Audit, Messages, Notification
@@ -64,6 +65,7 @@ def settings():
         a = re.search("[!@#$%&*]", s)
         y = form.instances.data
         i = len(s)
+        mistake = [e for e in string.punctuation if y.startswith(e)]
         if y.startswith("http") or y.startswith("www"):
             error = "Please remove the \"http://\" or \"https://\" or \"www\" from the URL"
             flash(error)
@@ -75,6 +77,9 @@ def settings():
             flash(error)
         elif a is None:
             error = "You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!"
+            flash(error)
+        elif y.startswith(mistake[0]):
+            error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake[0])} instead?"
             flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
