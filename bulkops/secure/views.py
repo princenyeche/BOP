@@ -88,11 +88,9 @@ def signup():
         try:
             if y.startswith(mistake[0]):
                 validate = True
-                return validate
             validate = False
-            return validate
         except IndexError:
-            pass
+            validate = True
         # additional mechanism, to reserve usernames
         if form.username.data.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")

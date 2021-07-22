@@ -70,11 +70,9 @@ def settings():
         try:
             if y.startswith(mistake[0]):
                 validate = True
-                return validate
             validate = False
-            return validate
         except IndexError:
-            pass
+            validate = True
         if y.startswith("http") or y.startswith("www"):
             error = "Please remove the \"http://\" or \"https://\" or \"www\" from the URL"
             flash(error)
