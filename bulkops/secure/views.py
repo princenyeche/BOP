@@ -100,7 +100,7 @@ def signup():
             flash("Your password is too long, it must be within 64 characters in length")
         elif a is None:
             flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
-        elif y.startswith(mistake[0]):
+        elif y.startswith(mistake[0] or " "):
             flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake[0])} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
