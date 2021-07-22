@@ -78,7 +78,7 @@ def settings():
         elif a is None:
             error = "You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!"
             flash(error)
-        elif y.startswith(mistake[0]):
+        elif y.startswith(mistake[0] or " "):
             error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake[0])} instead?"
             flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
