@@ -76,6 +76,7 @@ def signup():
     form = RegistrationForm()
     # check if a default user exist, if not create one
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+    validate: bool = False
     if default is None:
         default_user()
     if form.validate_on_submit():
@@ -84,6 +85,14 @@ def signup():
         y = form.instances.data
         i = len(s)
         mistake = [e for e in string.punctuation if y.startswith(e)]
+        try:
+            if y.startswith(mistake[0]):
+                validate = True
+                return validate
+            validate = False
+            return validate
+        except IndexError:
+            pass
         # additional mechanism, to reserve usernames
         if form.username.data.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")
@@ -100,8 +109,9 @@ def signup():
             flash("Your password is too long, it must be within 64 characters in length")
         elif a is None:
             flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
-        elif y.startswith(mistake[0] or " "):
-            flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(mistake[0])} instead?")
+        elif validate is True:
+            flash(f"Your URL \"{y}\" is not the expected value. Do you mean "
+                  f"{y.lstrip(mistake[0]) if validate is True else None} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             user = User(username=form.username.data.lower(),
