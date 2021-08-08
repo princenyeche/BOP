@@ -50,26 +50,5 @@
 
      </form>
 
-<!-- This is used to correctly get an ipaddress if your alert notification is turned on -->
-<script type="application/javascript">
-  function getIP(json) {
-    document.getElementById('ipaddress').value = json.ip;
-  }
-  function getDate() {
-    var dates = new Date();
-    const year = dates.getFullYear();
-    const month = dates.getMonth();
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const day = dates.getDate();
-    const hour = dates.getHours();
-    const minutes = dates.getMinutes();
-    const seconds = dates.getSeconds();
-    return day+' '+months[month]+' '+year+' '+hour+':'+minutes+':'+seconds;
-  }
-  document.getElementById('datetime').value = getDate();
-</script>
-
-<script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
-
 {% endblock %}
 
