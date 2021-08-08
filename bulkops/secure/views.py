@@ -37,6 +37,7 @@ def signin():
     form = LoginForm()
     # check if a default user exist, if not create one
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+    ipaddress = form.ipaddress.data
     if default is None:
         default_user()
     if form.validate_on_submit():
@@ -50,9 +51,8 @@ def signin():
         version_checker()
         # send a notification for successful login if option is chosen in config
         if user.notify_me == "Yes":
-            date = dt.now().strftime("%a, %d %b %Y - %I:%M %p")
-            ip_address = requests.get("https://api64.ipify.org").text
-            login_alert(user, ip_address, date)
+            date = form.datetime.data
+            login_alert(user, ipaddress, date)
         # use if you want the user to always be redirected to login page or the link provided
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != "":
