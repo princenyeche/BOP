@@ -83,14 +83,21 @@ def signup():
         a = re.search("[!@#$%&*]", s)
         y = form.instances.data
         i = len(s)
+        k = form.username.data
         mistake = {"validate": e for e in string.punctuation if y.startswith(e)}
+        valid = {"validate": e for e in string.punctuation if k.startswith(e) or k.endswith(e)}
         # additional mechanism, to reserve usernames
-        if form.username.data.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
+        if k.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")
-        elif len(form.username.data) < 4:
+        elif len(k) < 4:
             flash("Your username must be minimum 4 characters in length")
-        elif len(form.username.data) > 30:
+        elif len(k) > 30:
             flash("Your username is too long, it must be within 30 characters in length")
+        elif "validate" in valid:
+            if valid.get('validate') is not None:
+                flash("Your username must not start or end with a special character.")
+        elif " " in k:
+            flash("Please do not use space characters in your username.")
         elif y.startswith("http") or y.startswith("www"):
             flash("Please remove the \"http://\" or \"https://\" or \"www\" from the URL")
             # return redirect(request.url) - this clears the form
