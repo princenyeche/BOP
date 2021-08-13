@@ -326,7 +326,7 @@ window.location.href="{{ url_for('index') }}"
 </script>
 
 <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
-{% else %}
+{% elif current_user.is_authenticated and current_user.confirm_user is true %}
 <!-- The Modal for Logout-->
 <div class="modal fade" id="bulkLogout">
   <div class="modal-dialog">

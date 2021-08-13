@@ -63,6 +63,7 @@ class ChangeProjectLeadForm(FlaskForm):
 
 class DeleteProjectForm(FlaskForm):
     project = StringField("Project Key", validators=[DataRequired()])
+    undo = StringField("Enable undo", validators=[DataRequired()])
 
 
 class DeleteIssuesForm(FlaskForm):
