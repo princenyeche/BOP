@@ -942,7 +942,7 @@ def projects():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect, please check it out"
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary statement to ensure our with statement works
@@ -953,7 +953,7 @@ def projects():
         f = form.project.data.split(",")
         p = len(f)
         if p == 1:
-            data = LOGIN.delete(endpoint.projects(id_or_key=form.project.data, enable_undo=True))
+            data = LOGIN.delete(endpoint.projects(id_or_key=form.project.data, enable_undo=form.undo.data))
             if data.status_code != 204:
                 error = "Cannot delete project {} seems an error occurred.".format(form.project.data)
                 display_name = f"{current_user.username}".capitalize()
@@ -971,7 +971,7 @@ def projects():
         elif 1 < p < 10:
             with open(s_path, "r") as opr:
                 for z in f:
-                    data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=True))
+                    data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=form.undo.data))
                 if data.status_code != 204:
                     error = "Cannot delete multiple projects {} because an error occurred.".format(form.project.data)
                     display_name = f"{current_user.username}".capitalize()
@@ -991,7 +991,7 @@ def projects():
                 error = "A bulk deletion of project job is in progress, please wait till it's finished."
                 flash(error)
             else:
-                current_user.launch_jobs("bulk_projects", "Bulk project deletion", f)
+                current_user.launch_jobs("bulk_projects", "Bulk project deletion", f, form.undo.data)
                 success = "A job has been submitted for bulk deletion of projects, please check the " \
                           "audit log for a completion message..."
                 db.session.commit()
@@ -1006,12 +1006,13 @@ def bulk_projects(user_id, *args):
         user = User.query.get(user_id)
         admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
         LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        undo = args[1]
         try:
             set_job_progress(0)
             i = 0
             count = len(args[0])
             for z in args[0]:
-                data = LOGIN.delete(endpoint.projects(z, enable_undo=True))
+                data = LOGIN.delete(endpoint.projects(z, enable_undo=undo))
                 i += 1
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
@@ -1569,6 +1570,7 @@ def auto_logout():
 
 @bulk.route("/settings/config", methods=["GET", "POST"])
 @login_required
+@validate_account
 def config():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     error = None
