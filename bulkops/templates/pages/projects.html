@@ -46,10 +46,23 @@
 
  <form class="form-group" action=""  method="post">
            {{ form.hidden_tag() }}
+   <br />
+     <div class="form-group mx-sm-3 mb-2">
+  <div class="input-group-prepend">
+      <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+    <label for="undo" class="sr-only">Options</label>
+  </div>
+  <select class="custom-select" id="undo" name="undo">
+      <option selected value="True">Choose to enable undo delete </option>
+    <option value="True">Yes</option>
+    <option value="None">No</option>
+  </select>
+                 <small id="undoHelp" class="form-text text-muted">If no option is selected, enable undo delete is set to "Yes" by default!</small>
+</div>
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
-      <label class="sr-only" for="project">Delete Groups</label>
-      <input class="form-control" id="project" name="project" placeholder="Delete a project using project key or id.For multiple project deletion, separate by comma ">
+      <label class="sr-only" for="project">Delete projects</label>
+      <input class="form-control" id="project" name="project" placeholder="Delete a project using project key or id. For multiple project deletion, separate by comma ">
     <small id="cloudHelp" class="form-text text-muted">Format for multiple project deletion e.g NB,NGT</small>
         </div>
 
@@ -109,7 +122,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+<div class="modal fade" id="modQuestion" tabindex="2" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -133,6 +146,7 @@
          <div> <b><u>I made a mistake with the delete?</u></b> <br />
           <ul type="list">
           <li> Once you initiate a delete of project, it cannot be reversed.</li>
+            <li> If you set enable undo delete to 'Yes', the project will be deleted to your project trash folder.</li>
           <li> If you hope to restore the deleted project, please contact <a class="btn btn-primary" href="https://support.atlassian.com" target="_blank">Atlassian Support</a> </li>
       </ul>
           </div>
