@@ -190,7 +190,8 @@ def confirmation_email(token):
         db.session.add(user)
         db.session.commit()
     except:
-        flash("Your activation link isn't valid or has expired or you're not logged in", "danger")
+        error = "Your activation link isn't valid or it has expired."
+        flash(error, "alert-danger")
     return redirect(url_for("index"))
 
 
@@ -209,7 +210,8 @@ def resend():
     confirm_url = url_for("confirmation_email", token=token, _external=True)
     subject = "Resending verification link"
     send_confirm_email(current_user, subject, confirm_url)
-    flash("A new confirmation email has been sent!", "success")
+    success = "A new confirmation email has been sent!"
+    flash(success, "alert-success")
     return redirect(url_for("unconfirmed"))
 
 
