@@ -75,9 +75,10 @@ In the environment variables, you will need to set it up as below, so python kno
 |SECRET_KEY | secretkey |  
 |SECURITY_SALT | anothersecretkey | 
 |QUEUE_TIMEOUT | 1h | 
-|REDIS_URL | redis://url | 
+|REDIS_URL | redis://url |
+|MAX_CONTENT_LENGTH| 2 * 1024 * 1024 |
 
-If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application. The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells Bulkops how long a request can run.
+If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application. The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells Bulkops how long a request can run for using redis.
 
 ### Local
 Make sure python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have `pip` on your computer with the download. Check by using 
