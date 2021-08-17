@@ -24,7 +24,6 @@ from jiraone import LOGIN, endpoint
 basedir = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = "Files"
 our_dir = os.path.join(basedir, UPLOAD_FOLDER)
-file_limit = bulk.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 if not os.path.exists(our_dir):
     os.mkdir(our_dir)
