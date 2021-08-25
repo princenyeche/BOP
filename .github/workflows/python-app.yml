@@ -5,7 +5,9 @@ name: PythonTest
 
 on:
   push:
-    branches: code-review
+    branches: [ code-review ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
