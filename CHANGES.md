@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v3.8.5 - (11 September 2021)
+### Update
+* Added column validations for uploaded file. Users will need to upload the right format of expected columns for bulk operation.
+* Added the ability to create users and add the users to multiple groups.
+* Added the ability to add users to multiple groups and remove users from multiple groups. This way, you can now remove a user from groups or add to groups at the same time.
+
+
 ## v3.5.7 - (22 July 2021)
 ### Update
 * Validation update on form URLs 
