@@ -161,7 +161,6 @@ def users():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-
     return render_template("pages/users.html", title=f"User Creation :: {bulk.config['APP_NAME_SINGLE']}",
                            form=form, error=error, success=success, Messages=Messages)
 
@@ -840,7 +839,7 @@ def bulk_add():
                 width = [len(k) for k in another_read if k]  # get the number of columns
                 number_of_loop = len(loop_count)
                 if width[0] > 3:
-                    error = "Your column should not be greater than max 3. Please recheck your file."
+                    error = "Your column should not be greater than 3 max. Please recheck your file."
                     flash(error)
                 elif width[0] < 3:
                     error = "Your column length is not expected. Did you check the required file format and how many" \
@@ -857,6 +856,7 @@ def bulk_add():
                     else:
                         error = "Unable to run task, you must at least submit more than 1 entity of data."
                         flash(error)
+                        os.remove(o)
     return render_template("pages/sub_pages/_add_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -983,6 +983,7 @@ def bulk_remove():
                     else:
                         error = "Unable to run task, you must at least submit more than 1 entity of data."
                         flash(error)
+                        os.remove(o)
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1404,6 +1405,7 @@ def bulk_lead():
                                   "audit log for a completion message..."
                         db.session.commit()
                         flash(success)
+                        os.remove(o)
     return render_template("pages/sub_pages/_change_lead.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
