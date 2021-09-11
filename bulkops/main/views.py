@@ -847,41 +847,16 @@ def bulk_add():
                             " columns are needed?"
                     flash(error)
                 elif width[0] == 3:
-                    if 1 < number_of_loop < 4:
-                        for u in loop_count:
-                            group_names = u[0].split("~>")
-                            for y in group_names:
-                                payload = (
-                                    {
-                                        "accountId": u[1]
-
-                                    }
-                                )
-                                data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(y)),
-                                                  payload=payload)
-                            if data.status_code != 201:
-                                error = "Unable to add multiple users to group because an error occurred."
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Failure adding users {} to groups {} in bulk".format(u[2], u[0])
-                                audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(error)
-                            else:
-                                success = "Multiple users has been added to your group, Yay!"
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Bulk addition of users to groups successful"
-                                audit_log = "SUCCESS: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(success)
-                    elif number_of_loop > 4:
+                    if number_of_loop > 1:
                         current_user.launch_jobs("bulk_add_users", "Bulk add users to groups", loop_count)
                         success = "A Job has been submitted for bulk addition of users to groups, please check the " \
                                   "audit log for a completion message..."
                         db.session.commit()
                         os.remove(o)
                         flash(success)
+                    else:
+                        error = "Unable to run task, you must at least submit more than 1 entity of data."
+                        flash(error)
     return render_template("pages/sub_pages/_add_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -998,35 +973,16 @@ def bulk_remove():
                             " Please click the \"Need help\" button to see the format."
                     flash(error)
                 elif width[0] == 3:
-                    if 1 < number_of_loop < 4:
-                        for u in loop_count:
-                            group_names = u[0].split("~>")
-                            for y in group_names:
-                                data = LOGIN.delete(endpoint.group_jira_users(group_name=y, account_id=u[1]))
-                            if data.status_code != 200:
-                                error = "Unable to remove multiple users {} from group {}. Something went wrong!" \
-                                    .format(u[2], u[0])
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Failure removing multiple users {} from group {}".format(u[2], u[0])
-                                audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(error)
-                            else:
-                                success = "Multiple Users removed from group successfully."
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Successfully removed multiple users from group."
-                                audit_log = "SUCCESS: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(success)
-                    elif number_of_loop > 4:
+                    if number_of_loop > 1:
                         current_user.launch_jobs("bulk_remove_users", "Bulk remove users from groups", loop_count)
                         success = "A Job has been submitted for bulk removal of users from groups, please check the " \
                                   "audit log for a completion message."
                         db.session.commit()
                         os.remove(o)
                         flash(success)
+                    else:
+                        error = "Unable to run task, you must at least submit more than 1 entity of data."
+                        flash(error)
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
