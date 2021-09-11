@@ -14,7 +14,7 @@ Bulk operations app for Jira is a cloud based addon, which helps in performing b
   * Bulk delete issues
 
 ## **Configuration**
-You can be able to launch the application in various ways. either you host it yourself or you can easily run it locally on your machine or download it from **[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=support)** and run it on your Cloud Instance. 
+You can be able to launch the application in various ways. Either you host it yourself or you can easily run it locally on your machine or download it from **[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=support)** and run it on your cloud instance. 
 
    * Check out the online version of bulkOps app **[here](https://elfapp.website/bulkops)**
 
@@ -24,14 +24,14 @@ You can be able to launch the application in various ways. either you host it yo
 ## **Hosting**
 
 ### Heroku
-Heroku is an easier hosting platform which you can get for free to host this app, simply create an account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own app running in no time. Assuming you've already logged in to Heroku on your terminal. You need to have git, if you don't, download it. If on macOS use "homebrew", for windows use **[Git for Windows](https://git-for-windows.github.io)**
+Heroku is an easier hosting platform which you can get for free to host this app. Simply create an account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own app running in no time. Assuming you've already logged in to Heroku on your terminal. You need to have git, if you don't, download it. If on macOS use "homebrew", for windows use **[Git for Windows](https://git-for-windows.github.io)**
 
 You can use the below methods to deploy to heroku
 
 #### Using the deploy button
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/princenyeche/BOP)
 
-Remember to add a mail support variable as it is required to send you verification link during the app configuration. The names of the environment variables are provided, so update the mail attributes with your own details. Once that is done, please scale up the redis worker using `heroku ps:scale worker=1 -a "app_name"` from your terminal or from the app console.
+Remember to add a mail support variable as it is required to send you verification link during the app configuration. The names of the environment variables are provided below, so update the mail attributes with your own details. Once that is done, please scale up the redis worker using `heroku ps:scale worker=1 -a "app_name"` from your terminal or from the app console.
 
 #### Using a shell script
 - Deploy by running the `run_setup.sh` file located in the root folder
@@ -57,7 +57,7 @@ heroku addons:create heroku-postgresql:hobby-dev -a <appname>
 heroku addons:create heroku-redis:hobby-dev -a <appname>
 git push heroku master
 ```
-Your `requirements.txt` file should download all the necessary modules needed by python framework on Heroku. The procfile is needed by Heroku to start up the application, one is already available for this App. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should be configured for you from the above command.
+Your `requirements.txt` file should download all the necessary modules needed by python framework on Heroku. The procfile is needed by Heroku to start up the application, one is already available for this app. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should be configured for you from the above command.
 
 In the environment variables, you will need to set it up as below, so python knows what to use anytime you stop or start the application.
 | <!-- -->    | <!-- -->    |
@@ -78,7 +78,7 @@ In the environment variables, you will need to set it up as below, so python kno
 |REDIS_URL | redis://url |
 |MAX_CONTENT_LENGTH| 2 * 1024 * 1024 |
 
-If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application. The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells Bulkops how long a request can run for using redis.
+If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application. The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells bulkops how long a request can run for using redis.
 
 ### Local
 Make sure python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have `pip` on your computer with the download. Check by using 
@@ -90,7 +90,7 @@ You can also run the `run_setup.sh` file located in the root folder to install t
 
 If you installed python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
 
-This is the most easiest way to have this app, by running it locally on your device. use the `requirements.txt` file to ensure you have all the modules installed on your machine.
+This is the most easiest way to have this app, by running it locally on your device. Use the `requirements.txt` file to ensure you have all the modules installed on your machine.
 ```python
 pip install -r requirements.txt
 ```
@@ -105,7 +105,7 @@ SET FLASK_APP=startup.py
 SET FLASK_ENV=development
 ```
 #### Providing Mail Support
-In order for you to get the mail running locally, you will need to `export` the variable on terminal or use `SET` command for windows users.
+For you to get the mail running locally, you will need to `export` the variable on terminal or use `SET` command for windows users.
 ```bash
 export MAIL_SERVER=smtp.example.com
 export MAIL_PORT=587
@@ -117,7 +117,7 @@ export ADMINS=no-reply@example.com
 ```
 
 #### Initialize the database
-You will need to start up the database, else the app will result in an error. run the below commands sequentially.
+You will need to start up the database during initial setup, else the app will result in an error. Run the below commands sequentially to begin.
 ```bash
 flask db init
 flask db migrate
@@ -134,7 +134,7 @@ OR simply use
 python startup.py
 ```
 
-if you would like to run the app on another IP or port local to you, you can specify the host and port number. So it can be accessed locally on your network. Find your local machine IPv4 address by using the `ifconfig` (linux/macOS) or `ipconfig` if on windows.
+If you would like to run the app on another IP or port local to you, you can specify the host and port number. So it can be accessed locally on your network. Find your local machine IPv4 address by using the `ifconfig` (linux/macOS) or `ipconfig` if on windows.
 ```bash
 flask run -h 192.168.1.100 -p 8080
 ```
