@@ -121,7 +121,7 @@
           <ul type="list">
           <li> This is done using a csv file, which needs to be uploaded</li>
           <li> you will need to prepare the format, so it includes the required fields</li>
-              <li> Please your csv file should be in the format - "groupname | accountId | displayName" </li>
+               <li> Please your csv file should be in the below format and have "groupname | accountId | displayName" as columns.</li>
            </ul>
            <table class="table table-sm table-responsive table-bordered">
   <thead>
@@ -144,6 +144,29 @@
           <ul type="list">
           <li> You can get one from the admin hub page or use a JQL search of assignee or reporters in order to return an accountId.</li>
       </ul>
+          </div>
+        <div><b><u>How to bulk add users to multiple groups?</u></b> <br />
+          <ul type="list">
+         <li> Using a csv file, please format the CSV file into the below format.</li>
+              <li> Your csv file should be in the format: "groupname |accountId |displayName" </li>
+              <li> Use these symbols as delimiter <pre><code>~></code></pre> between each groupname. </li>
+      </ul>
+              <table class="table table-sm table-responsive table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">groupname</th>
+      <th scope="col">accountId</th>
+      <th scope="col">displayName</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td>star-trek~>Managers~>QA Staff~>IT Managers</td>
+        <td>5233711atgxsay72812bc</td>
+      <td>Prince Nyeche</td>
+    </tr>
+  </tbody>
+</table>
           </div>
          <div><b><u>Which User will be added to the group?</u></b> <br />
           <ul type="list">
