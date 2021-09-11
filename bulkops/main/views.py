@@ -5,6 +5,7 @@ import csv
 import sys
 import time
 import string
+from copy import deepcopy
 from flask import render_template, flash, redirect, url_for, current_app, request, \
     jsonify, Response
 from bulkops.database import User, Audit, Messages, Notification
@@ -20,7 +21,6 @@ from bulkops.main.send_mail import send_app_messages, send_error_messages, send_
 from bulkops.secure.user_checker import validate_account
 from collections import deque
 from jiraone import LOGIN, endpoint
-from copy import deepcopy
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = "Files"
