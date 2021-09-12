@@ -486,7 +486,7 @@ def bulk_delete():
                     error = "Please check the format for the required file upload, incorrect column detected."
                     flash(error)
                 elif width[0] > 2:
-                    error = "You column length is not expected, please check the required format by clicking" \
+                    error = "Your column length is not expected, please check the required format by clicking" \
                             " the \"Need help\" button above."
                     flash(error)
                 elif width[0] == 2:
@@ -1369,7 +1369,7 @@ def bulk_lead():
                             "the \"Need help\" button above."
                     flash(error)
                 elif width[0] < 3:
-                    error = "A minimum of 3 columns is required in your uploaded file, please check again."
+                    error = "A minimum of 3 columns are required in your uploaded file, please check again."
                     flash(error)
                 elif width[0] == 3:
                     if 1 < number_of_loop < 10:
