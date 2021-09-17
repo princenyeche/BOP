@@ -1,4 +1,4 @@
-alembic==1.7.1
+alembic==1.7.3
 chardet==4.0.0
 Click==8.0.1
 Flask==2.0.1
