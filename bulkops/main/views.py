@@ -84,18 +84,25 @@ def settings():
                 flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
-            user = User.query.filter_by(username=current_user.username).first()
-            current_user.instances = form.instances.data
-            user.set_password(form.password.data)
-            display_name = f"{current_user.username}".capitalize()
-            activity = f"Changes made to Settings From:{v}  To:{current_user.instances}"
-            audit_log = "CHANGES: Configuration"
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.add(user)
-            db.session.commit()
-            success = "Your changes have been saved."
-            flash(success)
+            pattern = r"[^\w\d||\.||-]"
+            sanity_url = re.findall(pattern, y)
+            if len(sanity_url) > 0:
+                # The URL must contain an invalid character here, so we don't accept it.
+                flash(f"Your URL \"{y}\" doesn't seem valid, please check it again.")
+            elif len(sanity_url) == 0:
+                # Sanity check for valid urls
+                user = User.query.filter_by(username=current_user.username).first()
+                current_user.instances = form.instances.data
+                user.set_password(form.password.data)
+                display_name = f"{current_user.username}".capitalize()
+                activity = f"Changes made to Settings From:{v}  To:{current_user.instances}"
+                audit_log = "CHANGES: Configuration"
+                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
+                db.session.add(ad)
+                db.session.add(user)
+                db.session.commit()
+                success = "Your changes have been saved."
+                flash(success)
         else:
             error = "Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\""
             flash(error)
