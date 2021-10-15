@@ -84,7 +84,7 @@ def settings():
                 flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
-            pattern = r"[^\w\d||\.||-]"
+            pattern = r"[^\w\d\|\|\.\|\|-]"
             sanity_url = re.findall(pattern, y)
             if len(sanity_url) > 0:
                 # The URL must contain an invalid character here, so we don't accept it.
