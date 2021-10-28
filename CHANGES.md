@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v3.8.7 - (28 October 2021)
+## Update
+* Added a clear task feature - The ability to clear pending jobs from the audit page.
+* Dependency update
+
+
 ## v3.8.6 - (28 September 2021)
 ## Update
 * Dependency update
