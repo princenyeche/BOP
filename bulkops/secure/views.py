@@ -35,7 +35,7 @@ def signin():
         return redirect(url_for("index"))
     error = None
     form = LoginForm()
-    # check if a default user exist, if not create one
+    # Check if a default user exist, if not create one
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
     ipaddress = form.ipaddress.data
     if default is None:
@@ -47,13 +47,13 @@ def signin():
             flash(error, category="alert-danger")
             return redirect(url_for("signin"))
         login_user(user, remember=form.remember_me.data)
-        # check if the App version is the latest, then send a notification
+        # Check if the app version is not the latest, then send a notification
         version_checker()
         # send a notification for successful login if option is chosen in config
         if user.notify_me == "Yes":
             date = form.datetime.data
             login_alert(user, ipaddress, date)
-        # use if you want the user to always be redirected to login page or the link provided
+        # Use if you want the user to always be redirected to login page or the link provided
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != "":
             next_page = url_for("index")
@@ -74,7 +74,7 @@ def signup():
     if current_user.is_authenticated:
         return redirect(url_for("index"))
     form = RegistrationForm()
-    # check if a default user exist, if not create one
+    # Check if a default user exist, if not create one
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
     if default is None:
         default_user()
@@ -86,7 +86,7 @@ def signup():
         k = form.username.data
         mistake = {"validate": e for e in string.punctuation if y.startswith(e)}
         valid = {"validate": e for e in string.punctuation if k.startswith(e) or k.endswith(e)}
-        # additional mechanism, to reserve usernames
+        # Additional mechanism, to check reserved usernames
         if k.lower() in bulk.config["APP_RESERVED_KEYWORDS"]:
             flash("This username is already taken, choose another")
         elif len(k) < 4:
@@ -112,21 +112,28 @@ def signup():
                 flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
-            user = User(username=form.username.data.lower(),
+            pattern = r"[^\w\d\|\|\.\|\|-]"
+            sanity_url = re.findall(pattern, y)
+            if len(sanity_url) > 0:
+                # The URL must contain an invalid character here, so we don't accept it.
+                flash(f"Your URL \"{y}\" doesn't seem valid, please check it again.")
+            elif len(sanity_url) == 0:
+                # Sanity check for valid urls
+                user = User(username=form.username.data.lower(),
                         email=form.email.data.lower(), instances=form.instances.data.lower())
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()
-            token = User.create_user_confirmation(user.email)
-            confirm_url = url_for("confirmation_email", token=token, _external=True)
-            subject = "Confirm Your Email Address"
-            success = "Congratulations, you have been registered successfully. we also sent you a welcome message!😉" \
+                user.set_password(form.password.data)
+                db.session.add(user)
+                db.session.commit()
+                token = User.create_user_confirmation(user.email)
+                confirm_url = url_for("confirmation_email", token=token, _external=True)
+                subject = "Confirm Your Email Address"
+                success = "Congratulations, you have been registered successfully. we also sent you a welcome message!😉" \
                       " and please verify your email as we sent a verification link too. "
-            flash(success, category="alert-success")
-            welcome_message(extract=form.username.data.lower())
-            sleep(1.0)
-            send_confirm_email(user, subject, confirm_url)
-            return redirect(url_for("signin"))
+                flash(success, category="alert-success")
+                welcome_message(extract=form.username.data.lower())
+                sleep(1.0)
+                send_confirm_email(user, subject, confirm_url)
+                return redirect(url_for("signin"))
         else:
             flash("Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\"")
             # return redirect(request.url) - this clears the form

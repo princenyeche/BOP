@@ -8,7 +8,7 @@ import string
 from copy import deepcopy
 from flask import render_template, flash, redirect, url_for, current_app, request, \
     jsonify, Response
-from bulkops.database import User, Audit, Messages, Notification
+from bulkops.database import User, Audit, Messages, Notification, Jobs
 from flask_login import current_user, login_required, fresh_login_required
 from bulkops import db, bulk
 from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
@@ -84,18 +84,25 @@ def settings():
                 flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
-            user = User.query.filter_by(username=current_user.username).first()
-            current_user.instances = form.instances.data
-            user.set_password(form.password.data)
-            display_name = f"{current_user.username}".capitalize()
-            activity = f"Changes made to Settings From:{v}  To:{current_user.instances}"
-            audit_log = "CHANGES: Configuration"
-            ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-            db.session.add(ad)
-            db.session.add(user)
-            db.session.commit()
-            success = "Your changes have been saved."
-            flash(success)
+            pattern = r"[^\w\d\|\|\.\|\|-]"
+            sanity_url = re.findall(pattern, y)
+            if len(sanity_url) > 0:
+                # The URL must contain an invalid character here, so we don't accept it.
+                flash(f"Your URL \"{y}\" doesn't seem valid, please check it again.")
+            elif len(sanity_url) == 0:
+                # Sanity check for valid urls
+                user = User.query.filter_by(username=current_user.username).first()
+                current_user.instances = form.instances.data
+                user.set_password(form.password.data)
+                display_name = f"{current_user.username}".capitalize()
+                activity = f"Changes made to Settings From:{v}  To:{current_user.instances}"
+                audit_log = "CHANGES: Configuration"
+                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
+                db.session.add(ad)
+                db.session.add(user)
+                db.session.commit()
+                success = "Your changes have been saved."
+                flash(success)
         else:
             error = "Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\""
             flash(error)
@@ -1457,11 +1464,15 @@ def bulk_project_lead(user_id, *args):
 def audit():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     page = request.args.get("page", 1, type=int)
+    tasks = {
+        "task": current_user.jobs.filter_by(completion=False).all(),
+        "task_count": current_user.jobs.filter_by(completion=False).count()
+    }
     logs = user.audit.order_by(Audit.timestamp.desc()).paginate(page, current_app.config["AUDIT_PER_PAGE"], False)
     next_url = url_for("audit", page=logs.next_num) if logs.has_next else None
     prev_url = url_for("audit", page=logs.prev_num) if logs.has_prev else None
     return render_template("/config/audit.html", title=f"Audit Log :: {bulk.config['APP_NAME_SINGLE']}",
-                           logs=logs.items, next_url=next_url, prev_url=prev_url, Messages=Messages)
+                           logs=logs.items, next_url=next_url, prev_url=prev_url, Messages=Messages, tasks=tasks)
 
 
 @bulk.route("/messages/inbox", methods=["GET", "POST"])
@@ -1778,3 +1789,15 @@ def create_dir(direct, path):
         os.mkdir(direct)
     if not os.path.exists(path):
         os.mkdir(path)
+
+
+@bulk.route("/audit/task/<task_id>", methods=["GET", "POST"])
+@login_required
+def clear_task(task_id):
+    task = Jobs.query.get(task_id)
+    if request.method == "POST":
+        task.completion = True
+        db.session.add(task)
+        db.session.commit()
+        flash("Cleared pending task!", "alert-success")
+        return redirect(url_for('audit'))

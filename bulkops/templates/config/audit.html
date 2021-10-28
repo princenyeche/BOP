@@ -5,6 +5,31 @@
 {% endblock %}
 
 {% block content %}
+{% for message in get_flashed_messages() %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ message }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endfor %}
+{% if tasks.task_count > 0 %}
+<div class="alert alert-warning" role="alert">
+  <strong>Running Task!</strong> <i class="fa fa-refresh" aria-hidden="true"></i>
+    <br />
+    A pending task is running below, you can clear it with the below button.
+   <div class="dropdown">
+  <a class="btn btn-danger dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Pending Task <span class="badge badge-primary">{{tasks.task_count}}</span>
+  </a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modTask">View all tasks</a>
+  </div>
+</div>
+
+</div>
+{% endif %}
 <div class="alert alert-info alert-dismissible fade show" role="alert">
   <strong>View the audit log!</strong> You can view the changes that you have performed, by searching below
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -25,7 +50,7 @@
   {% if logs %}
   {% for a in logs %}
     <tr>
-      <td><span class="badge badge-light">{{ a.display_name }}</span></td>
+      <th scope="row"><span class="badge badge-light">{{ a.display_name }}</span></th>
       <td> <span class="badge badge-light">{{ a.activity}}</span></td>
       <td> <span class="badge badge-light">{{ a.audit_log }} </span></td>
       <td> <span class="badge badge-light">{{ moment(a.timestamp).format('LLL') }}</span></td>
@@ -57,7 +82,7 @@
 </nav>
 
 <!-- Modal -->
-<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+<div class="modal fade" id="modQuestion" tabindex="3" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -102,4 +127,5 @@
     </div>
   </div>
 </div>
+{% include 'users/pending_task.html' %}
 {% endblock %}

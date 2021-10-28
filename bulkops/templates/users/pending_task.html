@@ -1,0 +1,77 @@
+<!-- Pending task modal -->
+<div class="modal fade" id="modTask" tabindex="5" role="dialog" aria-labelledby="modTask" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="tasks">Pending tasks <i class="fa fa-refresh text-danger" aria-hidden="true"></i></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+ {% if tasks.task_count > 0 %}
+          {% for task in tasks.task %}
+  <form action="{{ url_for('clear_task', task_id=task.id) }}" name="clearTask" id="Form-{{task.id}}" method="post">
+      <div class="list-group">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ task.description }} </h5>
+      <small><a href="#" data-toggle="modal" data-target="#clear-{{task.id}}"><i class="fa fa-trash text-danger"></i> </a></small>
+    </div>
+    <p class="mb-1">Task id: {{ task.id }}</p>
+    <small>Task name: {{ task.name }}</small>
+
+      </div>
+  </form>
+          <hr />
+          {% endfor %}
+          {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% if tasks.task_count > 0 %}
+          {% for task in tasks.task %}
+<!-- The Modal for delete task-->
+<div class="modal fade" id="clear-{{task.id}}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">CONFIRMATION</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+ <!-- Modal body -->
+      <div class="modal-body">
+        Are you sure you want to clear this task?<br />
+
+        <button type="button" class="btn-success" id="Btn-{{ task.id }}"> YES </button>
+        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end delete task tab -->
+
+<script>
+   $(document).ready(function() {
+   $('#Btn-{{task.id}}').on('click', function() {
+      $('#Form-{{task.id}}').submit();
+      });
+   });
+
+</script>
+
+ {% endfor %}
+          {% endif %}

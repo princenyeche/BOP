@@ -45,11 +45,11 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = "v3.8.6\n"
+    APP_VERSION = "v3.8.7\n"
     APP_UPGRADE_URL = "https://github.com/princenyeche/BOP"
     APP_VERSION_URL = "https://raw.githubusercontent.com/princenyeche/BOP/master/VERSION"
     
     # queue time out
     QUEUE_TIMEOUT = os.environ.get("QUEUE_TIMEOUT") or "1h"
     # file size limit
-    MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH")) or 2 * 1024 * 1024
+    MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH") or 2 * 1024 * 1024)
