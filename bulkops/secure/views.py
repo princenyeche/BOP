@@ -225,12 +225,13 @@ def resend():
 @bulk.route("/contact", methods=["GET", "POST"])
 def contact():
     form = ContactForm()
-    if request.method == "POST":
+    try:
+        if request.method == "POST":
         send_contact_form(form)
-        success = "Your Message was sent successfully..."
+        success = "Your Message was sent successfully."
         flash(success, category="alert-success")
-    else:
-        error = "We're unable to send your Message..."
+    except:
+        error = "We're unable to send your Message."
         flash(error, category="alert-danger")
     return redirect(url_for("signin"))
 
