@@ -86,7 +86,7 @@ Make sure python is installed! Goto https://www.python.org/downloads/ any versio
 pip --version
 ```
 
-You can also run the `run_setup.sh` file located in the root folder to install the app on your device automatically. 
+You can also run the `run_setup.sh` file located in the `BOP` folder to install the app on your device automatically. 
 
 If you installed python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
 
