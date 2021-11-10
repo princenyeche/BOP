@@ -227,7 +227,7 @@ def contact():
     form = ContactForm()
     try:
         if request.method == "POST":
-        send_contact_form(form)
+            send_contact_form(form)
         success = "Your Message was sent successfully."
         flash(success, category="alert-success")
     except:
