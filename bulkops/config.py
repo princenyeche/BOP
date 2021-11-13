@@ -15,7 +15,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Global configuration syntax
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or f"{rand}"
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL").replace("postgres://", "postgresql://", 1) or \
                               "sqlite:///" + os.path.join(basedir, "bulkops.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECURITY_SALT = os.environ.get("SECURITY_SALT") or f"{randa}"
