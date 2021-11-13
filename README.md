@@ -34,7 +34,7 @@ You can use the below methods to deploy to heroku
 Remember to add a mail support variable as it is required to send you verification link during the app configuration. The names of the environment variables are provided below, so update the mail attributes with your own details. Once that is done, please scale up the redis worker using `heroku ps:scale worker=1 -a "app_name"` from your terminal or from the app console.
 
 #### Using a shell script
-- Deploy by running the `run_setup.sh` file located in the root folder
+- Deploy by running the `run_setup.sh` file located in the `BOP` root folder
 
 #### Signup and configure heroku yourself
 ```bash
@@ -86,7 +86,7 @@ Make sure python is installed! Goto https://www.python.org/downloads/ any versio
 pip --version
 ```
 
-You can also run the `run_setup.sh` file located in the root folder to install the app on your device automatically. 
+You can also run the `run_setup.sh` file located in the `BOP` folder to install the app on your device automatically. 
 
 If you installed python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
 
