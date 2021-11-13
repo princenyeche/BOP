@@ -3,7 +3,7 @@ Hi {{ user.username.capitalize() }},
 This is to inform you that a login was initiated to your BulkOps account:
 IP Address: {{ ip_address }}
 
-Date: {{ date }} in UTC
+Date: {{ date }} 
 
 If you did not perform the login, we advise that you reset your password {{ url_for('reset_request', _external=True) }}
 
