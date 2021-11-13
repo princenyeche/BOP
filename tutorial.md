@@ -31,8 +31,8 @@ The below documentation outlines, the basic use cases of the app and how you can
 ### Deactivating multiple users
 * The concept of deactivating a user, basically just means to remove the user from a group that has product access. So using the remove user from group feature, you can actually deactivate users.
 
-### Deleting the nth number of issues
-* You know when you want to bulk delete thousands of issues and you’re limited to 1K issues and the multiple clicks? Well, now all you just have to do is use a JQL that returns those thousands of issues and just delete all the way. (Please always make sure when using this, that you take the utmost care. If in doubt, do not press the submit button. Once it start, it can't be stopped.)
+### Deleting the n-th number of issues
+* You know when you want to bulk delete thousands of issues and you’re limited to 1K issues and the multiple clicks? Well, now all you just have to do is use a JQL that returns those thousands of issues and just delete all the way. (Please always make sure when using this, that you take the utmost care. If in doubt, do not press the submit button.)
 
 
 # HOW-TO
@@ -51,12 +51,17 @@ Once you've signed in, you can view the navigation menu or you can simply go str
 
 The configuration page helps you to input your API token, it has a status bar to alert you if the token is active or inactive. Click the "Edit token" button and place your Atlassian API token. Also you can navigate to the "settings" page to change your instance URL.
 
-## Bulk Creation of Group
+## Bulk creating users and add to multiple groups
+![](https://github.com/princenyeche/BOP/blob/master/img/create_add_group.png)
+
+The above file format is required when creating Jira users and adding them to multiple groups during creation using your CSV file. You will need to use this character `~>` as a delimiter between each group. Once done simply upload the file and your users will be created and added into the specified groups.
+
+## Bulk creation of group
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulk_create_groups.png)
 
 Creating multiple groups is easy. Simply navigate to the create groups under the "Groups" button. Key in multiple group names separated by comma to begin.
 
-## Bulk Add users to Group
+## Bulk add users to group
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulk_add_users_to_groups.png)
 
 This feature requires you upload a csv file, click the "Need help" button to see an example of the csv file format. Once ready, simply upload the file.
