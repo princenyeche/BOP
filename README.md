@@ -34,7 +34,7 @@ You can use the below methods to deploy to heroku
 Remember to add a mail support variable as it is required to send you verification link during the app configuration. The names of the environment variables are provided below, so update the mail attributes with your own details. Once that is done, please scale up the redis worker using `heroku ps:scale worker=1 -a "app_name"` from your terminal or from the app console.
 
 #### Using a shell script
-- Deploy by running the `run_setup.sh` file located in the root folder
+- Deploy by running the `run_setup.sh` file located in the `BOP` root folder
 
 #### Signup and configure heroku yourself
 ```bash
