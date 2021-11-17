@@ -3,7 +3,7 @@ Hi {{user.username.capitalize()}},
 Please if you have the time, kindly drop a feedback by using our contact form to let us know what we could improve on within our app.
 
 As we try to improve the services and features that we render, we will also want to understand how users such as yourself use our application.
-Feel free to signup again with the sign up link, if you ever chose to use our services again - {{ url_for('signin', _external=True) }}
+Feel free to signup again with the sign up link, if you ever chose to use our services again - {{ url_for('signup', _external=True) }}
 
 Cheers,
 The BulkOps App Team
