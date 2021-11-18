@@ -25,6 +25,6 @@ requests
 pymysql
 email_validator
 Werkzeug==2.0.2
-redis==3.5.3
+redis==4.0.1
 rq==1.10.0
 jiraone==0.4.7
