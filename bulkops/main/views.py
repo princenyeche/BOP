@@ -17,7 +17,8 @@ from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
-from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message
+from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message, \
+     send_user_exit
 from bulkops.secure.user_checker import validate_account
 from collections import deque
 from jiraone import LOGIN, endpoint
@@ -1713,6 +1714,8 @@ def account_delete():
     error = None
     import glob
     user = User.query.filter_by(username=current_user.username).first_or_404()
+    admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+    date = datetime.now().strftime("%a, %d %b %Y - %I:%M %p")
     user_dir = current_user.username
     save_path = os.path.join(our_dir, user_dir)
     files = glob.glob(f"{save_path}/*")
@@ -1723,6 +1726,8 @@ def account_delete():
             os.rmdir(save_path)
         db.session.delete(user)
         send_goodbye_message(user)
+        time.sleep(0.5)
+        send_user_exit(user, admin, date)
         db.session.commit()
         flash("You have been signed out")
         return redirect(url_for("logout"))
