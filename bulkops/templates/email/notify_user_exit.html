@@ -9,6 +9,7 @@
       <th scope="col">Id</th>
       <th scope="col">User</th>
       <th scope="col">Instance</th>
+      <th scope="col">Domain</th>
       <th scope="col">Date</th>
     </tr>
   </thead>
@@ -17,6 +18,7 @@
       <th scope="row">{{user.id}}</th>
       <td>{{user.username}}</td>
       <td>{{user.instances}}</td>
+      <td>{{user.email.split('@')[1]}}</td>
       <td>{{date}} in UTC</td>
     </tr>
     <tr>
