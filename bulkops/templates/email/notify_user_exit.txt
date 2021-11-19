@@ -1,0 +1,13 @@
+Hi {{admin.username.capitalize()}},
+
+This is to inform you that the below user has deleted their account!
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|- ID -|-    User   -|-       Instances         -|-      Date      -|
+|{{user.id}} | {{user.username}} | {{user.instances}} | {{date}} in UTC|
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This is a confirmation of user deletion.
+
+Cheers,
+The BulkOps App Team
