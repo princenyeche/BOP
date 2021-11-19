@@ -36,3 +36,12 @@ def send_goodbye_message(user):
                  text_body=render_template("email/app_goodbye_email.txt", user=user),
                  html_body=render_template("email/app_goodbye_email.html", user=user)
                  )
+
+    
+def send_user_exit(user, admin, date):
+    send_message(f"[{bulk.config['APP_NAME']}] user deletion confirmation!",
+                 sender=bulk.config["ADMINS"][0],
+                 recipients=[admin.email],
+                 text_body=render_template("email/notify_user_exit.txt", user=user, admin=admin, date=date),
+                 html_body=render_template("email/notify_user_exit.html", user=user, admin=admin, date=date)
+                 )
