@@ -3,8 +3,8 @@ Hi {{admin.username.capitalize()}},
 This is to inform you that the below user has deleted their account!
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-|- ID -|-    User   -|-       Instances         -|-      Date      -|
-|{{user.id}} | {{user.username}} | {{user.instances}} | {{date}} in UTC|
+|- ID |-    User   |-       Instances |-   Domain    |-      Date      |
+|{{user.id}} | {{user.username}} | {{user.instances}} | {{user.email.split('@')[1]}}| {{date}} in UTC|
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 This is a confirmation of user deletion.
