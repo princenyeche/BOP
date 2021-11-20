@@ -5,6 +5,7 @@ Bulk operations app for Jira is a cloud based addon, which helps in performing b
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulkops.png)
 ## **Features**
   * Bulk create users Jira users or Jira Service Management users
+  * Bulk delete Jira users or delete Jira users or Jira Service Management users
   * Bulk creation of groups
   * Bulk deletion of groups
   * Bulk add users to groups (multiple users & groups)
@@ -31,7 +32,7 @@ You can use the below methods to deploy to heroku
 #### Using the deploy button
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/princenyeche/BOP)
 
-Remember to add a mail support variable as it is required to send you verification link during the app configuration. The names of the environment variables are provided below, so update the mail attributes with your own details. Once that is done, please scale up the redis worker using `heroku ps:scale worker=1 -a "app_name"` from your terminal or from the app console.
+Remember to add a mail support variable as it is required to send you verification link during the app configuration. The names of the environment variables are provided below, so update the mail attributes with your own details. Once that is done, please scale up the redis worker using `heroku ps:scale worker=1 -a "app_name"` from your terminal or from the Heroku UI app console.
 
 #### Using a shell script
 - Deploy by running the `run_setup.sh` file located in the `BOP` root folder
@@ -57,7 +58,7 @@ heroku addons:create heroku-postgresql:hobby-dev -a <appname>
 heroku addons:create heroku-redis:hobby-dev -a <appname>
 git push heroku master
 ```
-Your `requirements.txt` file should download all the necessary modules needed by python framework on Heroku. The procfile is needed by Heroku to start up the application, one is already available for this app. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should be configured for you from the above command.
+Your `requirements.txt` file should download all the necessary modules needed by python framework on Heroku. The procfile is needed by Heroku to start up the application, one is already available for this app. Don't forget to go to your **Heroku App > Settings > Reveal Configs vars** and set up the environment variables as shown on the table below. your DATABASE_URL should already be configured for you from the above command.
 
 In the environment variables, you will need to set it up as below, so python knows what to use anytime you stop or start the application.
 | <!-- -->    | <!-- -->    |
@@ -78,10 +79,10 @@ In the environment variables, you will need to set it up as below, so python kno
 |REDIS_URL | redis://url |
 |MAX_CONTENT_LENGTH| 2 * 1024 * 1024 |
 
-If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application. The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells bulkops how long a request can run for using redis.
+If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application(P/s To install redis plugin on Heroku requires you to add a payment system to your account if not you cannot use it). The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells bulkops how long a request job can run for using redis. This job is a queue task that is submitted and update back to the user.
 
 ### Local
-Make sure python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x will do. You will also need to ensure you have `pip` on your computer with the download. Check by using 
+Make sure python is installed! Goto https://www.python.org/downloads/ any version from v3.6.x and above will do. You will also need to ensure you have `pip` on your computer with the download. Check by using 
 ```bash
 pip --version
 ```
@@ -91,8 +92,12 @@ You can also run the `run_setup.sh` file located in the `BOP` folder to install 
 If you installed python from source, with an installer from python.org, or via [Homebrew](https://brew.sh/) you should already have pip. If you’re on Linux and installed using your OS package manager, you may have to [install pip](https://pip.pypa.io/en/stable/installing/) separately.
 
 This is the most easiest way to have this app, by running it locally on your device. Use the `requirements.txt` file to ensure you have all the modules installed on your machine.
-```python
+```bash
 pip install -r requirements.txt
+```
+OR
+```bash
+python3 -m pip install -r requirements.txt
 ```
 you will also need to export some important variables in order to get the app running in flask. Open your terminal (linux/macOS) and key in the below variables
 ```bash
@@ -140,10 +145,10 @@ flask run -h 192.168.1.100 -p 8080
 ```
 
 #### Using Redis Worker
-Using redis locally, download the software; on macOS use `brew install redis` once installed, start the service automatically by using `brew services start redis`. which will enable the app listen for Jobs. you can view this by running on terminal `rq worker bulkops-jobs`.
+Using redis locally, download the software. On macOS use `brew install redis`. Once installed start the service automatically by using `brew services start redis`. Which will enable the app listen for Jobs. You can view these jobs by running on terminal `rq worker bulkops-jobs`.
 
 ### Other Linux Hosting
-* You can use other linux servers as well to install this application online
+* You can use other linux servers as well to install this application online.
 
 ## SECURITY
 (If using the online version from Atlassian Marketplace)
