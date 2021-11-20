@@ -2,13 +2,19 @@
   <h5 class="card-header">We're sad to see you go!</h5>
   <p class="card-body">
     <h5 class="card-title">Hi {{user.username.capitalize()}},</h5>
-    <p class="card-text"> Please if you have the time, kindly drop a feedback by using our contact form to let us know what we could improve on within our app.</p>
+    <p class="card-text"> Please if you have the time, kindly drop a feedback by using our contact form on the app to let us know what we could improve.</p>
       <hr class="my-4">
       <p>As we try to improve the services and features that we render, we will also want to understand how users such as yourself use our application.
-          Feel free to signup again with the sign up link, if you ever chose to use our services again.
+          Feel free to signup again with the sign up link below, if you ever choose to use our services again.
       </p>
     <a href="{{ url_for('signup', _external=True) }}" class="btn btn-primary">Sign up</a>
 
 <p>Cheers,</p>
 <p>The BulkOps App Team</p>
   </div>
+
+<div align="center">
+       <small class="text-muted"> <a href="https://elfapp.website" target="_blank">ELFAPP</a></small> |
+      <small class="text-muted"> <a href="https://github.com/princenyeche/BOP/blob/master/tutorial.md" target="_blank"> Documentation</a></small> |
+    <small class="text-muted"> <a href="https://github.com/princenyeche/BOP" target="_blank">About BulkOps </a></small>
+    </div>

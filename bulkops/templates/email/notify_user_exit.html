@@ -1,0 +1,32 @@
+<div class="card">
+  <p class="card-body">
+    <h5 class="card-title">Hi {{admin.username.capitalize()}},</h5>
+    <p class="card-text"> This is to inform you that the below user has deleted their account!</p>
+      <hr class="my-4">
+      <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">User</th>
+      <th scope="col">Instance</th>
+      <th scope="col">Domain</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">{{user.id}}</th>
+      <td>{{user.username}}</td>
+      <td>{{user.instances}}</td>
+      <td>{{user.email.split('@')[1]}}</td>
+      <td>{{date}} in UTC</td>
+    </tr>
+    <tr>
+  </tbody>
+</table>
+
+    This is a confirmation of user deletion.
+
+<p>Cheers,</p>
+<p>The BulkOps App Team</p>
+  </div>
