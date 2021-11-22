@@ -23,7 +23,7 @@ copy = dt.now().strftime("%Y")
 
 def stringer(n: int = 15):
     char = string.ascii_lowercase
-    return "".join(random.choice(char) for j in range(n))
+    return "".join(random.choice(char) for _ in range(n))
 
 
 x = f"{stringer(19)}"
@@ -119,21 +119,29 @@ def signup():
                 flash(f"Your URL \"{y}\" doesn't seem valid, please check it again.")
             elif len(sanity_url) == 0:
                 # Sanity check for valid urls
-                user = User(username=form.username.data.lower(),
-                        email=form.email.data.lower(), instances=form.instances.data.lower())
-                user.set_password(form.password.data)
-                db.session.add(user)
-                db.session.commit()
-                token = User.create_user_confirmation(user.email)
-                confirm_url = url_for("confirmation_email", token=token, _external=True)
-                subject = "Confirm Your Email Address"
-                success = "Congratulations, you have been registered successfully. we also sent you a welcome message!😉" \
-                      " and please verify your email as we sent a verification link too. "
-                flash(success, category="alert-success")
-                welcome_message(extract=form.username.data.lower())
-                sleep(1.0)
-                send_confirm_email(user, subject, confirm_url)
-                return redirect(url_for("signin"))
+                capture = y.split(".")
+                if len(capture) == 3:
+                    if capture[1].startswith("atlassian") or capture[1].startswith("jira") \
+                            or capture[1].startswith("jira-dev"):
+                        user = User(username=form.username.data.lower(),
+                                    email=form.email.data.lower(), instances=form.instances.data.lower())
+                        user.set_password(form.password.data)
+                        db.session.add(user)
+                        db.session.commit()
+                        token = User.create_user_confirmation(user.email)
+                        confirm_url = url_for("confirmation_email", token=token, _external=True)
+                        subject = "Confirm Your Email Address"
+                        success = "Congratulations, you have been registered successfully. we also sent you a " \
+                                  "welcome message!😉 and please verify your email as we sent a verification link too. "
+                        flash(success, category="alert-success")
+                        welcome_message(extract=form.username.data.lower())
+                        sleep(0.5)
+                        send_confirm_email(user, subject, confirm_url)
+                        return redirect(url_for("signin"))
+                    else:
+                        flash("You're still typing the wrong URL.")
+                elif len(capture) != 3:
+                    flash(f"Please you need to thoroughly review what you type as URL. This URL: {y} is incorrect.")
         else:
             flash("Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\"")
             # return redirect(request.url) - this clears the form
