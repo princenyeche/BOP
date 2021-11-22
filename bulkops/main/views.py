@@ -92,18 +92,27 @@ def settings():
                 flash(f"Your URL \"{y}\" doesn't seem valid, please check it again.")
             elif len(sanity_url) == 0:
                 # Sanity check for valid urls
-                user = User.query.filter_by(username=current_user.username).first()
-                current_user.instances = form.instances.data
-                user.set_password(form.password.data)
-                display_name = f"{current_user.username}".capitalize()
-                activity = f"Changes made to Settings From:{v}  To:{current_user.instances}"
-                audit_log = "CHANGES: Configuration"
-                ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log, user_id=current_user.id)
-                db.session.add(ad)
-                db.session.add(user)
-                db.session.commit()
-                success = "Your changes have been saved."
-                flash(success)
+                capture = y.split(".")
+                if len(capture) == 3:
+                    if capture[1].startswith("atlassian") or capture[1].startswith("jira") \
+                            or capture[1].startswith("jira-dev"):
+                        user = User.query.filter_by(username=current_user.username).first()
+                        current_user.instances = form.instances.data
+                        user.set_password(form.password.data)
+                        display_name = f"{current_user.username}".capitalize()
+                        activity = f"Changes made to settings from:{v}  To:{current_user.instances}"
+                        audit_log = f"CHANGES: Configuration"
+                        ad = Audit(display_name=display_name, activity=activity, audit_log=audit_log,
+                                   user_id=current_user.id)
+                        db.session.add(ad)
+                        db.session.add(user)
+                        db.session.commit()
+                        success = "Your changes have been saved."
+                        flash(success)
+                    else:
+                        flash("You're still typing the wrong URL.")
+                elif len(capture) != 3:
+                    flash(f"Please you need to thoroughly review what you type as URL. This URL: {y} is incorrect.")
         else:
             error = "Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\""
             flash(error)
