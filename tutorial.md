@@ -3,17 +3,24 @@ The below documentation outlines, the basic use cases of the app and how you can
 
 ## Features
 * Bulk creating Jira users or Jira Service Management customer users
-* Bulk creation of Groups
-* Bulk deletion of Groups
-* Bulk Add users to groups (multiple users & groups)
+* Bulk delete Jira users or delete Jira users or Jira Service Management users
+* Bulk creation of groups
+* Bulk deletion of groups
+* Bulk add users to groups (multiple users & groups)
 * Bulk remove users from groups (multiple users & groups)
-* Bulk delete Projects
-* Bulk change Project leads
+* Bulk delete projects
+* Bulk change project leads
 * Bulk delete issues 
+
+## Issues and troubleshooting
+* [Troubleshooting BulkOps app for Jira](https://github.com/princenyeche/BOP/wiki/Troubleshooting-BulkOps-app-for-Jira)
 
 ## Use cases
 ### Cloud to cloud import of users
 * User migration (cloud to cloud or even server to cloud or DC to cloud)? Yes, you can be able to use this app to perform not just the user creation but add those users to their rightful groups as well with the click of a button and using a CSV file to design your data. Check the app help menu to see the format to creating and adding users to multiple groups at the same time.
+
+### Deleting Jira users or customer user
+* With the BulkOps app for Jira, you can delete Jira users or Jira Service Management customer only user. Simply upload your user record and you can be able to delete these set of users.
 
 ### Change of multiple project leads
 * You can easily now change Project lead but we didn’t stop there, you can do this in bulk for multiple projects.
