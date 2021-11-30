@@ -89,7 +89,8 @@ def settings():
             sanity_url = re.findall(pattern, y)
             if len(sanity_url) > 0:
                 # The URL must contain an invalid character here, so we don't accept it.
-                flash(f"Your URL \"{y}\" doesn't seem valid, please check it again.")
+                error = f"Your URL \"{y}\" doesn't seem valid, please check it again."
+                flash(error)
             elif len(sanity_url) == 0:
                 # Sanity check for valid urls
                 capture = y.split(".")
@@ -110,9 +111,11 @@ def settings():
                         success = "Your changes have been saved."
                         flash(success)
                     else:
-                        flash("You're still typing the wrong URL.")
+                        error = "You're still typing the wrong URL."
+                        flash(error)
                 elif len(capture) != 3:
-                    flash(f"Please you need to thoroughly review what you type as URL. This URL: {y} is incorrect.")
+                    error = f"Please you need to thoroughly review what you type as URL. This URL: {y} is incorrect."
+                    flash(error)
         else:
             error = "Instance URL must end with \"atlassian.net\", \"jira.com\" or \"jira-dev.com\""
             flash(error)
