@@ -21,7 +21,9 @@ def request_not_allowed(error):
 @bulk.errorhandler(500)
 def internal_server_error(error):
     db.session.rollback()
-    return render_template("error/500.html", title="500 Error: Internal Server Error", Messages=Messages), 500
+    support = bulk.config["SUPPORT_LINK"]
+    return render_template("error/500.html", title="500 Error: Internal Server Error", 
+                           Messages=Messages, support=support), 500
 
 
 @bulk.errorhandler(503)
