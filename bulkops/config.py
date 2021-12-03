@@ -53,3 +53,5 @@ class Config(object):
     QUEUE_TIMEOUT = os.environ.get("QUEUE_TIMEOUT") or "1h"
     # file size limit
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH") or 2 * 1024 * 1024)
+    # support link
+    SUPPORT_LINK = os.environ.get("SUPPORT_LINK") or "https://example.com"
