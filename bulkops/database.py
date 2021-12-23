@@ -95,8 +95,8 @@ class User(UserMixin, db.Model):
         return email
     
     def launch_jobs(self, name, description, *args, **kwargs):
-        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, job_timeout=bulk.config['QUEUE_TIMEOUT'], 
-                                                **kwargs)
+        req_job = current_app.job_queue.enqueue("bulkops.main.views." + name, self.id, *args, 
+                                                job_timeout=bulk.config['QUEUE_TIMEOUT'], **kwargs)
         jobs = Jobs(id=req_job.get_id(), name=name, description=description, user=self)
         db.session.add(jobs)
         return jobs
