@@ -170,6 +170,10 @@ display: block;
           <a class="dropdown-item" href="{{ url_for('bulk_remove') }}"><i class="fa fa-user-times text-danger"></i> Bulk Remove Users</a>
            <a class="dropdown-item" href="{{ url_for('create_groups') }}"><i class="fa fa-plus-square text-success"></i> Create Groups</a>
              <a class="dropdown-item" href="{{ url_for('delete_groups') }}"><i class="fa fa-ban text-danger"></i> Remove Groups</a>
+	       <a class="dropdown-item" href="{{ url_for('create_org') }}"><i class="fa fa-sitemap text-success"></i> Create JSM Organizations</a>
+                 <a class="dropdown-item" href="{{ url_for('delete_org') }}"><i class="fa fa-sitemap text-danger"></i></i> Delete JSM Organizations</a>
+                 <a class="dropdown-item" href="{{ url_for('add_customer') }}"><i class="fa fa-user-circle text-success"></i> Bulk Add Customers</a>
+                 <a class="dropdown-item" href="{{ url_for('remove_customer') }}"><i class="fa fa-user-circle text-danger"></i> Bulk Remove Customers</a>
         </div>
       </li>
          <li class="nav-item dropdown">
@@ -179,6 +183,8 @@ display: block;
                  <a class="dropdown-item" href="{{ url_for('delete_issue') }}"><i class="fa fa-times text-danger"></i> Delete Issues</a>
           <a class="dropdown-item" href="{{ url_for('project_lead') }}"><i class="fa fa-check text-success"></i> Change Project Lead</a>
                  <a class="dropdown-item" href="{{ url_for('bulk_lead') }}"><i class="fa fa-check-square text-success"></i> Bulk Change Project Lead</a>
+		     <a class="dropdown-item" href="{{ url_for('add_org') }}"><i class="fa fa-cubes text-success"></i> Add Organizations to JSM Project</a>
+                 <a class="dropdown-item" href="{{ url_for('remove_org') }}"><i class="fa fa-cubes text-danger"></i> Remove Organizations from JSM Project</a>
 
         </div>
       </li>
@@ -341,8 +347,8 @@ window.location.href="{{ url_for('index') }}"
       <div class="modal-body">
         Are you sure you want to logout?<br />
 
-        <button type="button" class="btn-success" onclick="javascript:logOut()"> YES </button>
-        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+        <button type="button" class="btn-success" style="cursor: pointer;" onclick="javascript:logOut()"> YES </button>
+        <button type="button" class="btn-danger" style="cursor: pointer;" data-dismiss="modal"> NO</button>
 
       </div>
 
@@ -369,8 +375,8 @@ window.location.href="{{ url_for('index') }}"
       <div class="modal-body">
         You're about to leave this page to an external link, would you like to proceed?<br />
 
-        <button type="button" class="btn-success" onclick="javascript:leaveLink()"> YES </button>
-        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+        <button type="button" class="btn-success" style="cursor: pointer;" onclick="javascript:leaveLink()"> YES </button>
+        <button type="button" class="btn-danger" style="cursor: pointer;" data-dismiss="modal"> NO</button>
 
       </div>
 
@@ -501,8 +507,8 @@ function IncrementTime() {
       <div class="modal-body">
         Are you sure you want to logout?<br />
 
-        <button type="button" class="btn-success" onclick="javascript:logOut()"> YES </button>
-        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+        <button type="button" class="btn-success" style="cursor: pointer;" onclick="javascript:logOut()"> YES </button>
+        <button type="button" class="btn-danger" style="cursor: pointer;" data-dismiss="modal"> NO</button>
 
       </div>
 
