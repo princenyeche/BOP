@@ -1,0 +1,115 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+  {% for message in get_flashed_messages() %}
+     {% if success %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+       {% endfor %}
+ {% include 'users/job_progress.html' %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('create_org') }}"><i class="fa fa-sitemap"></i>&nbsp;CREATE ORGANIZATIONS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('delete_org') }}"><i class="fa fa-sitemap"></i>&nbsp;DELETE ORGANIZATIONS</a>
+    </li>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+
+
+       <div class="tab-pane container show active" id="credorg">
+           <br />
+
+       <form class="form-group" action=""  method="post">
+           {{ form.hidden_tag() }}
+        <div class="form-group mx-sm-3 mb-2">
+            <i class="fa fa-users" aria-hidden="true"></i>
+      <label class="sr-only" for="org_field">Create Organizations</label>
+      <textarea class="form-control" name="org_field" id="org_field" placeholder="Create a JSM organization. For multiple creation of organizations, separate by comma" style="height: 100px;"></textarea>
+             <small id="cloudHelp" class="form-text text-muted">Format for multiple organization creation e.g. Cosmos,BigQuery,Azure</small>
+    </div>
+           <div class="form-group mx-sm-3 mb-2">
+           {% for error in form.org_field.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+           </div>
+
+    <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" id="bulkprogress" class="btn btn-success"> Create Organization </button>
+ </div>
+
+ </form>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="2" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div> <b><u>How can I create a JSM organization?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> You can start by typing the name of the organization you want to create</li>
+          <li> Avoid using &lt;space&gt; characters in the word.</li>
+            <li> Please note that organization are case sensitive. Creating an organization e.g. "Azure" is different from "AZURE".</li>
+      </ul>
+          </div>
+         <div> <b><u>How can I create multiple organizations?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> To create multiple organization, separate the words by a comma e.g.Cosmos,Jenkins,NewOrigin</li>
+      </ul>
+          </div>
+         <div> <b><u>Can I use special characters in the organization name?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> Yes, you can use special characters such as "@", "$", "#". However this might cause undesirable behaviour when adding customers to the organization.</li>
+          <li> We can nicely format the special characters but try not to depend on it.</li>
+      </ul>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
