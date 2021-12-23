@@ -13,6 +13,14 @@ Bulk operations app for Jira is a cloud based addon, which helps in performing b
   * Bulk delete projects
   * Bulk change project leads
   * Bulk delete issues
+  * Bulk creation of JSM organizations.
+  * Bulk deletion of JSM organizations.
+  * Bulk add a JSM organizations to a service desk.
+  * Bulk remove a JSM organizations from a service desk.
+  * Bulk addition of customers into JSM organization.
+  * Bulk removal of customers from JSM organization.
+  * Bulk addition of customers to specific JSM projects e.g. ITSM or SD
+  * Bulk removal of customers from specific JSM projects e.g. ITSM or SD
 
 ## **Configuration**
 You can be able to launch the application in various ways. Either you host it yourself or you can easily run it locally on your machine or download it from **[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=support)** and run it on your cloud instance. 
