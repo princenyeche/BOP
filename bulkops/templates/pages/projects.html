@@ -62,7 +62,7 @@
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
       <label class="sr-only" for="project">Delete projects</label>
-      <input class="form-control" id="project" name="project" placeholder="Delete a project using project key or id. For multiple project deletion, separate by comma ">
+      <textarea class="form-control" id="project" name="project" placeholder="Delete a project using project key or id. For multiple project deletion, separate by comma." style="height: 100px;"></textarea>
     <small id="cloudHelp" class="form-text text-muted">Format for multiple project deletion e.g NB,NGT</small>
         </div>
 
@@ -97,8 +97,8 @@
       <div class="modal-body">
         Are you sure you want to proceed with project deletion? This process cannot be reversed; once it starts, there's no "STOP" button?<br />
 
-        <button type="submit" id="bulkprogress" class="btn-success"> YES </button>
-        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+        <button type="submit" id="bulkprogress" class="btn-success" style="cursor: pointer;"> YES </button>
+        <button type="button" class="btn-danger mouse_pointer" style="cursor: pointer;" data-dismiss="modal"> NO</button>
 
       </div>
 
@@ -133,20 +133,20 @@
       </div>
       <div class="modal-body">
         <div> <b><u>How can I delete a project?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Just specify the project key and the project will be deleted.</li>
           <li> There's a confirmation button, however note that this process is irreversible.</li>
       </ul>
           </div>
          <div> <b><u>What do I do to delete multiple projects?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Separate multiple project deletion by comma if you would like to delete it off.</li>
       </ul>
           </div>
          <div> <b><u>I made a mistake with the delete?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Once you initiate a delete of project, it cannot be reversed.</li>
-            <li> If you set enable undo delete to 'Yes', the project will be deleted to your project trash folder.</li>
+            <li> If you set enable undo delete to <b>"Yes"</b>, the project will be deleted to your project <b>trash</b> folder.</li>
           <li> If you hope to restore the deleted project, please contact <a class="btn btn-primary" href="https://support.atlassian.com" target="_blank">Atlassian Support</a> </li>
       </ul>
           </div>
