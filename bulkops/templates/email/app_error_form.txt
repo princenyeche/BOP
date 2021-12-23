@@ -1,9 +1,8 @@
 Hi {{user.username.capitalize()}},
 
-This is to inform you that your requested jobs failed due to {{ form["error"] }}:
-Outcome: {{ form["job"] }}
+This is to inform you that your requested jobs failed due to: {{ form["error"] }}.
+Outcome: {{ form["job"] }}. You should check the audit log page for any additional info.
 
-You should check the audit log page for any additional info.
 
 Cheers,
 The BulkOps App Team
