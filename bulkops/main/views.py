@@ -7,6 +7,8 @@ import time
 import string
 import typing as t
 from copy import deepcopy
+from datetime import datetime, timedelta
+from collections import deque, namedtuple
 from flask import render_template, flash, redirect, url_for, current_app, request, \
     jsonify, Response
 from bulkops.database import User, Audit, Messages, Notification, Jobs
@@ -16,13 +18,11 @@ from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
     DeleteUserForm, CreateUsersForm, AddUserGroupForm, RemoveUserGroupForm, DeleteGroupForm, \
     ChangeProjectLeadForm, DeleteProjectForm, DeleteIssuesForm, UploadForm, MessageForm, \
     OrgForm
-from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
 from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message, \
     send_user_exit
 from bulkops.secure.user_checker import validate_account
-from collections import deque, namedtuple
 from jiraone import LOGIN, endpoint
 
 basedir = os.path.abspath(os.path.dirname(__file__))
