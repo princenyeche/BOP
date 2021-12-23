@@ -16,7 +16,7 @@ from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
     DeleteUserForm, CreateUsersForm, AddUserGroupForm, RemoveUserGroupForm, DeleteGroupForm, \
     ChangeProjectLeadForm, DeleteProjectForm, DeleteIssuesForm, UploadForm, MessageForm, \
     OrgForm
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
 from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message, \
@@ -40,12 +40,21 @@ if not os.path.exists(our_dir):
 def index():
     data = None
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    today = "2021-12-23 15:39:07.437753"
+    today_parse = datetime.strptime(today, "%Y-%m-%d %H:%M:%S.%f")
+    next_thirty = timedelta(days=30)
+    now = datetime.today()
+    time_factor = None
     if request.method == "GET":
         data = LOGIN.get(endpoint.myself())
         if data.status_code != 200:
             flash("Your API Token is invalid, please go to the Settings > Configurations page to have it sorted")
+        if now > today_parse + next_thirty:
+            time_factor = True
+        else:
+            time_factor = False
     return render_template("/users/layout.html", title=f"Home page :: {bulk.config['APP_NAME_SINGLE']}",
-                           Messages=Messages, data=data)
+                           Messages=Messages, data=data, time_factor=time_factor)
 
 
 @bulk.before_request
