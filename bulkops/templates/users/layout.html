@@ -2,7 +2,7 @@
 
 
 {% block header %}
-  <h1>{% block title %} Home Layout:: Bulk Ops{% endblock %}</h1>
+  <h1>{% block title %} {{title}} {% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -113,7 +113,7 @@
           </div>
            <div> <b><u>Is this app secure?</u></b> <br />
           <ul type="list">
-          <li> This app uses basic authentication, which is secure enough to access your Atlassian instance</li>
+          <li> This app uses basic authentication, which is secure enough to access your Atlassian instance.</li>
           <li> We have also taken the steps to ensure that we encode certain Information that we send.</li>
       </ul>
           </div>
