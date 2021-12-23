@@ -1420,23 +1420,23 @@ def bulk_remove_org(user_id, *args):
         try:
             set_job_progress(0)
             i = 0
-            add_org_project = args[0]
-            list_of_col = deque()
-            org_collection = deque()
-            get_sd = filter_jsm(LOGIN.get(endpoint.get_service_desks(0, 100)).json(), list_of_col, types=False)
-            get_orgs = filter_jsm(LOGIN.get(endpoint.get_organizations(0, 100)).json(), org_collection)
-            count = len(add_org_project)
-            list_of_col.clear()
-            org_collection.clear()
-            for orgs in add_org_project:
+            remove_org_project = args[0]
+            cols = deque()
+            org_cols = deque()
+            fetch_sd = filter_jsm(LOGIN.get(endpoint.get_service_desks(0, 100)).json(), cols, types=False)
+            fetch_orgs = filter_jsm(LOGIN.get(endpoint.get_organizations(0, 100)).json(), org_cols)
+            count = len(remove_org_project)
+            cols.clear()
+            org_cols.clear()
+            for orgs in remove_org_project:
                 row_data = data_dog._make(orgs)
                 columns = row_data.project_data.split("~>")
                 for rows in columns:
-                    for ids in get_orgs:
-                        for desk in get_sd:
+                    for ids in fetch_orgs:
+                        for desk in fetch_sd:
                             if rows == desk.get("project_key") and row_data.name == ids.get("name"):
                                 payload = {"organizationId": ids.get("id")}
-                                data = LOGIN.delete(endpoint.add_sd_organization(desk.get("id")), json=payload)
+                                data = LOGIN.delete(endpoint.remove_sd_organization(desk.get("id")), json=payload)
                                 i += 1
                                 set_job_progress(100 * i // count)
                                 if data.status_code < 300:
