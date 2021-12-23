@@ -15,8 +15,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Global configuration syntax
 class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or f"{rand}"
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL").replace("postgres://", "postgresql://", 1) or \
-                              "sqlite:///" + os.path.join(basedir, "bulkops.db")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL").replace("postgres://", "postgresql://", 1) \
+        if os.environ.get("DATABASE_URL") is not None else os.environ.get("DATABASE_URL") or \
+                                                       "sqlite:///" + os.path.join(basedir, "bulkops.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECURITY_SALT = os.environ.get("SECURITY_SALT") or f"{randa}"
 
@@ -45,7 +46,7 @@ class Config(object):
     APP_DEFAULT_INSTANCE = "nexusfive.atlassian.net"
     
     # version checker
-    APP_VERSION = "v3.8.7\n"
+    APP_VERSION = "v4.0.0\n"
     APP_UPGRADE_URL = "https://github.com/princenyeche/BOP"
     APP_VERSION_URL = "https://raw.githubusercontent.com/princenyeche/BOP/master/VERSION"
     

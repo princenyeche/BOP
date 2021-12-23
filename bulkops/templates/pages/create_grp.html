@@ -55,7 +55,7 @@
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
       <label class="sr-only" for="group">Create Groups</label>
-      <input class="form-control" name="group" id="group" placeholder="Create a Group. for multiple Groups, separate by comma">
+      <textarea class="form-control" name="group" id="group" placeholder="Create a Group. For multiple groups, separate by comma" style="height: 100px;"></textarea>
              <small id="cloudHelp" class="form-text text-muted">Format for multiple group creation e.g. man,woman,cat</small>
     </div>
            <div class="form-group mx-sm-3 mb-2">
@@ -92,18 +92,18 @@
       </div>
       <div class="modal-body">
         <div> <b><u>How can I create a group?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> You can start by typing the name of the group you want to create</li>
           <li> Avoid using &lt;space&gt; characters in the word.</li>
       </ul>
           </div>
          <div> <b><u>How can I create multiple groups?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> To create multiple groups, separate the words by a comma e.g.nexusfive,atlassian,space-walk</li>
       </ul>
           </div>
          <div> <b><u>Can I use special characters in the group name</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Yes, you can use special characters such as "@", "$", "#". However this might cause undesirable result when adding users to the group.</li>
           <li> We can nicely, format the special characters but try not to depend on it.</li>
       </ul>

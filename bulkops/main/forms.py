@@ -26,11 +26,11 @@ class DeleteUserForm(FlaskForm):
 
 
 class CreateGroupForm(FlaskForm):
-    group = StringField("Group", validators=[DataRequired()])
+    group = TextAreaField("Group", validators=[DataRequired(), Length(min=1, max=1000)])
 
 
 class DeleteGroupForm(FlaskForm):
-    delete_gp = StringField("Delete Group", validators=[DataRequired()])
+    delete_gp = TextAreaField("Delete Group", validators=[DataRequired(), Length(min=1, max=1000)])
 
 
 class AddUserGroupForm(FlaskForm):
@@ -62,12 +62,12 @@ class ChangeProjectLeadForm(FlaskForm):
 
 
 class DeleteProjectForm(FlaskForm):
-    project = StringField("Project Key", validators=[DataRequired()])
+    project = TextAreaField("Project Key", validators=[DataRequired(), Length(min=1, max=1000)])
     undo = StringField("Enable undo", validators=[DataRequired()])
 
 
 class DeleteIssuesForm(FlaskForm):
-    issues = StringField("Issue Key", validators=[DataRequired()])
+    issues = TextAreaField("Issue Key", validators=[DataRequired(), Length(min=1, max=1000)])
     sub_task = StringField("Sub_task")
 
 
@@ -76,6 +76,10 @@ class DeleteSearchForm(FlaskForm):
 
 
 class MessageForm(FlaskForm):
-    messages = TextAreaField("Messages", validators=[DataRequired(), Length(min=0, max=980)])
+    messages = TextAreaField("Messages", validators=[DataRequired(), Length(min=1, max=1000)])
     subject = StringField("Subject", validators=[DataRequired()])
     receiver = StringField("Receiver")
+
+    
+class OrgForm(FlaskForm):
+    org_field = TextAreaField("Organization", validators=[DataRequired(), Length(min=1, max=1000)])

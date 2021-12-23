@@ -31,36 +31,30 @@
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link"  href="{{ url_for('add_groups') }}"><i class="fa fa-user-plus"></i>&nbsp;ADD USERS TO GROUP</a>
+      <a class="nav-link"  href="{{ url_for('create_org') }}"><i class="fa fa-sitemap"></i>&nbsp;CREATE ORGANIZATIONS</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link"  href="{{ url_for('remove_groups') }}"><i class="fa fa-user-times"></i>&nbsp;REMOVE USERS FROM GROUP</a>
-    </li>
-       <li class="nav-item">
-      <a class="nav-link " href="{{ url_for('create_groups') }}"><i class="fa fa-users"></i>&nbsp;CREATE GROUPS</a>
-    </li>
-       <li class="nav-item">
-      <a class="nav-link active" href="{{ url_for('delete_groups') }}"><i class="fa fa-users"></i>&nbsp;DELETE GROUPS</a>
+      <a class="nav-link active"  href="{{ url_for('delete_org') }}"><i class="fa fa-sitemap"></i>&nbsp;DELETE ORGANIZATIONS</a>
     </li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
 
-           
-            <div class="tab-pane container show active" id="delete_group">
+
+            <div class="tab-pane container show active" id="delete_org">
     <br />
 
        <form class="form-group" action=""  method="post">
            {{ form.hidden_tag() }}
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
-      <label class="sr-only" for="delete_gp">Delete Groups</label>
-      <textarea class="form-control" id="delete_gp" name="delete_gp" placeholder="Delete a Group. For multiple groups, separate by comma." style="height: 100px;"></textarea>
-    <small id="cloudHelp" class="form-text text-muted">Format for multiple group deletion e.g job,computer</small>
+      <label class="sr-only" for="org_field">Delete Organizations</label>
+            <textarea class="form-control" id="org_field" name="org_field" placeholder="Delete an organization. For multiple organizations deletion, separate by comma" style="height: 100px;"></textarea>
+    <small id="cloudHelp" class="form-text text-muted">Format for multiple organization deletion e.g. Cosmos,BigQuery,Azure. Please note the names are case sensitive.</small>
         </div>
 
            <div class="form-group mx-sm-3 mb-2">
-           {% for error in form.delete_gp.errors %}
+           {% for error in form.org_field.errors %}
              <div class="alert alert-danger" role="alert">
   {{ error }}
                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -71,7 +65,7 @@
            </div>
 
 <div class="form-group mx-sm-3 mb-2">
-    <button type="submit" id="bulkprogress" class="btn btn-danger"> Delete Group </button>
+    <button type="submit" id="bulkprogress" class="btn btn-danger"> Delete Organization </button>
 
 </div>
 
@@ -85,7 +79,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+<div class="modal fade" id="modQuestion" tabindex="2" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -95,21 +89,21 @@
         </button>
       </div>
       <div class="modal-body">
-        <div> <b><u>How can I delete a group?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> You can do so by typing the group name and clicking the remove group button.</li>
-          <li> You must know the name of the group by its exact string for the group to be successfully removed. i.e. case sensitive text</li>
+        <div> <b><u>How can I delete a JSM organization?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> You can do so by typing the organization name and clicking the delete organization button</li>
+          <li> You must know the name of the organization by its exact string for the organization to be successfully removed as it is case sensitive. i.e. Azure and AZURE are two different organization in this context.</li>
       </ul>
           </div>
-         <div> <b><u>What happens if a user is in a group when I delete it?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> The users will be removed from the group completely.</li>
+         <div> <b><u>What happens if a user is in an organization when I delete it?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> The users will be removed from the organization completely.</li>
       </ul>
           </div>
-         <div> <b><u>Can I delete multiple groups?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> Yes, you can, to do so type the name of the group separated by a comma e.g. cpu,magnet.</li>
-          <li> If the group name doesn't exist, an error is returned that such group cannot be found.</li>
+         <div> <b><u>Can I delete multiple organizations?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> Yes, you can, to do so type the name of the organization separated by a comma e.g. Drivers,GameCollector.</li>
+          <li> If the organization name doesn't exist, no deletion will occur and an error will not be recorded. Please know the exact name of the organization prior to deletion.</li>
       </ul>
           </div>
       </div>

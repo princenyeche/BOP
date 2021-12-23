@@ -64,7 +64,7 @@
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
       <label class="sr-only" for="issues">Delete Issues</label>
-      <input class="form-control" name="issues" id="issues" placeholder="Delete an issue. For multiple delete you can use Issue key separated by comma, e.g. AB-12,T2-20 or type a valid JQL query to search issues">
+      <textarea class="form-control" name="issues" id="issues" placeholder="Delete an issue. For multiple delete you can use Issue key separated by comma, e.g. AB-12,T2-20 or type a valid JQL query to search issues." style="height: 100px;"></textarea>
             <small id="jqlHelp" class="form-text text-muted">For a valid JQL type in format: "JQL:Project = ABC AND type in (Bug)" without the quotes.</small>
 
     </div>
@@ -98,8 +98,8 @@
       <div class="modal-body">
         Are you sure you want to proceed with issue deletion? This will delete all the issues selected and it can't be stopped once started?<br />
 
-        <button type="submit" id="bulkprogress" class="btn-success"> YES </button>
-        <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
+        <button type="submit" id="bulkprogress" class="btn-success" style="cursor: pointer;"> YES </button>
+        <button type="button" class="btn-danger mouse_pointer" style="cursor: pointer;" data-dismiss="modal"> NO</button>
 
       </div>
 
@@ -133,22 +133,22 @@
       </div>
       <div class="modal-body">
         <div> <b><u>How can I delete an issue?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Start by entering either the issue key or issue id, both values are accepted. e.g AT-123 or 10034</li>
           <li> If the issue contains a sub-task, remember to select "Yes" from the option if not the delete will fail.</li>
       </ul>
           </div>
          <div> <b><u>How can I delete off multiple issues</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> You can delete multiple issues by separating the issue key with a comma e.g. AT-123,AT-45,BT-21</li>
           <li> Alternatively, you can run a valid JQL search to delete off multiple issues.</li>
           <li> A valid JQL would look like this e.g. JQL:project in (AT) AND type in (Bug)</li>
       </ul>
           </div>
          <div> <b><u>Must I always use "JQL:" before the actual JQL?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Yes, you should because that's how we know what JQL you've entered into the form.</li>
-          <li> we validate the JQL against Jira, so if it's not valid, we'll return an error</li>
+          <li> We validate the JQL against Jira, so if it's not valid, we'll return an error</li>
       </ul>
           </div>
       </div>

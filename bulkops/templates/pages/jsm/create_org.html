@@ -10,7 +10,7 @@
 <!-- no comment -->
 {% else %}
   {% for message in get_flashed_messages() %}
-{% if success %}
+     {% if success %}
      <div class="alert alert-success alert-dismissible fade show" role="alert">
   <strong>Message!</strong> {{ success }}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -31,36 +31,30 @@
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link"  href="{{ url_for('add_groups') }}"><i class="fa fa-user-plus"></i>&nbsp;ADD USERS TO GROUP</a>
+      <a class="nav-link active"  href="{{ url_for('create_org') }}"><i class="fa fa-sitemap"></i>&nbsp;CREATE ORGANIZATIONS</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link"  href="{{ url_for('remove_groups') }}"><i class="fa fa-user-times"></i>&nbsp;REMOVE USERS FROM GROUP</a>
+      <a class="nav-link"  href="{{ url_for('delete_org') }}"><i class="fa fa-sitemap"></i>&nbsp;DELETE ORGANIZATIONS</a>
     </li>
-       <li class="nav-item">
-      <a class="nav-link " href="{{ url_for('create_groups') }}"><i class="fa fa-users"></i>&nbsp;CREATE GROUPS</a>
-    </li>
-       <li class="nav-item">
-      <a class="nav-link active" href="{{ url_for('delete_groups') }}"><i class="fa fa-users"></i>&nbsp;DELETE GROUPS</a>
     </li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
 
-           
-            <div class="tab-pane container show active" id="delete_group">
-    <br />
+
+       <div class="tab-pane container show active" id="credorg">
+           <br />
 
        <form class="form-group" action=""  method="post">
            {{ form.hidden_tag() }}
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
-      <label class="sr-only" for="delete_gp">Delete Groups</label>
-      <textarea class="form-control" id="delete_gp" name="delete_gp" placeholder="Delete a Group. For multiple groups, separate by comma." style="height: 100px;"></textarea>
-    <small id="cloudHelp" class="form-text text-muted">Format for multiple group deletion e.g job,computer</small>
-        </div>
-
+      <label class="sr-only" for="org_field">Create Organizations</label>
+      <textarea class="form-control" name="org_field" id="org_field" placeholder="Create a JSM organization. For multiple creation of organizations, separate by comma" style="height: 100px;"></textarea>
+             <small id="cloudHelp" class="form-text text-muted">Format for multiple organization creation e.g. Cosmos,BigQuery,Azure</small>
+    </div>
            <div class="form-group mx-sm-3 mb-2">
-           {% for error in form.delete_gp.errors %}
+           {% for error in form.org_field.errors %}
              <div class="alert alert-danger" role="alert">
   {{ error }}
                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -70,14 +64,11 @@
             {% endfor %}
            </div>
 
-<div class="form-group mx-sm-3 mb-2">
-    <button type="submit" id="bulkprogress" class="btn btn-danger"> Delete Group </button>
-
-</div>
+    <div class="form-group mx-sm-3 mb-2">
+    <button type="submit" id="bulkprogress" class="btn btn-success"> Create Organization </button>
+ </div>
 
  </form>
-
-
 
     </div>
 
@@ -85,7 +76,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+<div class="modal fade" id="modQuestion" tabindex="2" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -95,21 +86,22 @@
         </button>
       </div>
       <div class="modal-body">
-        <div> <b><u>How can I delete a group?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> You can do so by typing the group name and clicking the remove group button.</li>
-          <li> You must know the name of the group by its exact string for the group to be successfully removed. i.e. case sensitive text</li>
+        <div> <b><u>How can I create a JSM organization?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> You can start by typing the name of the organization you want to create</li>
+          <li> Avoid using &lt;space&gt; characters in the word.</li>
+            <li> Please note that organization are case sensitive. Creating an organization e.g. "Azure" is different from "AZURE".</li>
       </ul>
           </div>
-         <div> <b><u>What happens if a user is in a group when I delete it?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> The users will be removed from the group completely.</li>
+         <div> <b><u>How can I create multiple organizations?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> To create multiple organization, separate the words by a comma e.g.Cosmos,Jenkins,NewOrigin</li>
       </ul>
           </div>
-         <div> <b><u>Can I delete multiple groups?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> Yes, you can, to do so type the name of the group separated by a comma e.g. cpu,magnet.</li>
-          <li> If the group name doesn't exist, an error is returned that such group cannot be found.</li>
+         <div> <b><u>Can I use special characters in the organization name?</u></b> <br />
+          <ul style="list-style-type: square">
+          <li> Yes, you can use special characters such as "@", "$", "#". However this might cause undesirable behaviour when adding customers to the organization.</li>
+          <li> We can nicely format the special characters but try not to depend on it.</li>
       </ul>
           </div>
       </div>

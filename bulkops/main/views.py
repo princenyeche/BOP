@@ -5,6 +5,7 @@ import csv
 import sys
 import time
 import string
+import typing as t
 from copy import deepcopy
 from flask import render_template, flash, redirect, url_for, current_app, request, \
     jsonify, Response
@@ -13,14 +14,15 @@ from flask_login import current_user, login_required, fresh_login_required
 from bulkops import db, bulk
 from bulkops.main.forms import SettingsForm, TokenForm, CreateGroupForm, \
     DeleteUserForm, CreateUsersForm, AddUserGroupForm, RemoveUserGroupForm, DeleteGroupForm, \
-    ChangeProjectLeadForm, DeleteProjectForm, DeleteIssuesForm, UploadForm, MessageForm
-from datetime import datetime
+    ChangeProjectLeadForm, DeleteProjectForm, DeleteIssuesForm, UploadForm, MessageForm, \
+    OrgForm
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from bulkops.tasks.jobs import set_job_progress
 from bulkops.main.send_mail import send_app_messages, send_error_messages, send_admin_message, send_goodbye_message, \
-     send_user_exit
+    send_user_exit
 from bulkops.secure.user_checker import validate_account
-from collections import deque
+from collections import deque, namedtuple
 from jiraone import LOGIN, endpoint
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -38,12 +40,21 @@ if not os.path.exists(our_dir):
 def index():
     data = None
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    today = "2021-12-23 15:39:07.437753"
+    today_parse = datetime.strptime(today, "%Y-%m-%d %H:%M:%S.%f")
+    next_thirty = timedelta(days=30)
+    now = datetime.today()
+    time_factor = None
     if request.method == "GET":
         data = LOGIN.get(endpoint.myself())
         if data.status_code != 200:
             flash("Your API Token is invalid, please go to the Settings > Configurations page to have it sorted")
+        if now > today_parse + next_thirty:
+            time_factor = True
+        else:
+            time_factor = False
     return render_template("/users/layout.html", title=f"Home page :: {bulk.config['APP_NAME_SINGLE']}",
-                           Messages=Messages, data=data)
+                           Messages=Messages, data=data, time_factor=time_factor)
 
 
 @bulk.before_request
@@ -81,7 +92,8 @@ def settings():
             flash(error)
         elif "validate" in mistake:
             if mistake.get("validate") is not None:
-                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} instead?"
+                error = f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} " \
+                        f"instead?"
                 flash(error)
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
@@ -408,23 +420,23 @@ def bulk_users_group_creation(user_id, *args):
                         if "accountId" in retrieve:
                             account_id = retrieve.get('accountId')
                             group_names = u[2].split("~>")
-                            for y in group_names:
+                            for names in group_names:
                                 payload = (
                                     {
                                         "accountId": account_id
 
                                     }
                                 )
-                                sub_data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(y)),
+                                sub_data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(names)),
                                                       payload=payload)
                                 if sub_data.status_code != 201:
                                     display_name = f"{user.username}".capitalize()
-                                    activity = "Failure adding user {} to group {} in bulk".format(u[0], y)
+                                    activity = "Failure adding user {} to group {} in bulk".format(u[0], names)
                                     audit_log = "ERROR: {}".format(sub_data.status_code)
                                     auto_commit_jobs(display_name, activity, audit_log, user)
                                 else:
                                     display_name = f"{user.username}".capitalize()
-                                    activity = "Bulk addition of user {} to group {} successful".format(u[0], y)
+                                    activity = "Bulk addition of user {} to group {} successful".format(u[0], names)
                                     audit_log = "SUCCESS: {}".format(sub_data.status_code)
                                     auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
@@ -432,7 +444,8 @@ def bulk_users_group_creation(user_id, *args):
                         activity = "Failure in creating bulk Jira user {}".format(u[0])
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
-                send_app_messages(admin, user, {"success": "Successful", "job": "Bulk creation of Jira users and groups"})
+                send_app_messages(admin, user,
+                                  {"success": "Successful", "job": "Bulk creation of Jira users and groups"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
             send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk creation of Jira "
@@ -615,7 +628,7 @@ def create_groups():
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif 1 < p < 10:
-            with open(s_path, "r") as opr:
+            with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = (
                         {
@@ -727,7 +740,7 @@ def delete_groups():
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
         elif 1 < p < 10:
-            with open(s_path, "r") as opr:
+            with open(s_path, "r") as _opr:
                 for uc in k:
                     data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
                 if data.status_code != 200:
@@ -786,6 +799,672 @@ def bulk_delete_groups(user_id, *args):
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
             send_error_messages(admin, user, form={"error": f"{e}", "job": "Failure in bulk deletion of groups"})
+        finally:
+            set_job_progress(100)
+
+
+@bulk.route("/create_org", methods=["GET", "POST"])
+@login_required
+@validate_account
+def create_org():
+    form = OrgForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    success = None
+    error = None
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your token seems to be incorrect, please check it out."
+            flash(error)
+    if request.method == "POST" and form.validate_on_submit():
+        # an abritary statement to ensure our with statement works
+        s_file = "sometext.txt"
+        s_path = os.path.join(our_dir, s_file)
+        sa_path = open(s_path, "w+")
+        sa_path.close()
+        k = form.org_field.data.split(",")
+        org = len(k)
+        if org == 1:
+            payload = {"name": form.org_field.data}
+            data = LOGIN.post(endpoint.create_organization(), payload=payload)
+            if data.status_code != 201:
+                error = "Cannot create organization \"{}\", failure encountered".format(form.org_field.data)
+                display_name = f"{current_user.username}".capitalize()
+                activity = "Failure in creating organization"
+                audit_log = "ERROR: {}".format(data.status_code)
+                auto_commit(display_name, activity, audit_log)
+                flash(error)
+            else:
+                success = "Organization \"{}\" created successfully.".format(form.org_field.data)
+                display_name = f"{current_user.username}".capitalize()
+                activity = "Successfully created user group"
+                audit_log = "SUCCESS: {}".format(data.status_code)
+                auto_commit(display_name, activity, audit_log)
+                flash(success)
+        elif 1 < org < 7:
+            with open(s_path, "r") as _opr:
+                for uc in k:
+                    payload = {"name": uc}
+                    data = LOGIN.post(endpoint.create_organization(), payload=payload)
+                if data.status_code != 201:
+                    error = "Cannot create multiple organizations, check the audit log for more detail."
+                    display_name = f"{current_user.username}".capitalize()
+                    activity = "Failure in creating organization {} in bulk".format(uc)
+                    audit_log = "ERROR: {}".format(data.status_code)
+                    auto_commit(display_name, activity, audit_log)
+                    flash(error)
+                else:
+                    success = "Multiple organization created successfully."
+                    display_name = f"{current_user.username}".capitalize()
+                    activity = "Bulk organization creation successful"
+                    audit_log = "SUCCESS: {}".format(data.status_code)
+                    auto_commit(display_name, activity, audit_log)
+                    flash(success)
+        elif org > 7:
+            if current_user.get_job_in_progress("bulk_create_organizations"):
+                error = "A Bulk organization creation job is in progress, please wait till it's finished."
+                flash(error)
+            else:
+                current_user.launch_jobs("bulk_create_organizations", "Bulk creation of JSM organizations", k)
+                success = "A Job has been submitted for bulk creation of organizations, please check the " \
+                          "audit log for a completion message..."
+                db.session.commit()
+                flash(success)
+    return render_template("/pages/jsm/create_org.html",
+                           title=f"Create Organization :: {bulk.config['APP_NAME_SINGLE']}",
+                           form=form, error=error, success=success, Messages=Messages)
+
+
+@bulk.route("/bulk_create_organizations")
+def bulk_create_organizations(user_id, *args):
+    with bulk.app_context():
+        user = User.query.get(user_id)
+        admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        try:
+            set_job_progress(0)
+            i = 0
+            count = len(args[0])
+            for org in args[0]:
+                payload = {"name": org}
+                data = LOGIN.post(endpoint.create_organization(), payload=payload)
+                i += 1
+                set_job_progress(100 * i // count)
+                if data.status_code != 201:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Failure in creating JSM organizations {} in bulk".format(org)
+                    audit_log = "ERROR: {}".format(data.status_code)
+                    auto_commit_jobs(display_name, activity, audit_log, user)
+                else:
+                    display_name = f"{user.username}".capitalize()
+                    activity = "Bulk JSM organization creation successful"
+                    audit_log = "SUCCESS: {}".format(data.status_code)
+                    auto_commit_jobs(display_name, activity, audit_log, user)
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk JSM organization creation"})
+        except Exception as e:
+            bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk JSM organization creation"})
+        finally:
+            set_job_progress(100)
+
+
+@bulk.route("/delete_org", methods=["GET", "POST"])
+@login_required
+@validate_account
+def delete_org():
+    form = OrgForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    success = None
+    error = None
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your token seems to be incorrect, please check it out."
+            flash(error)
+    if request.method == "POST" and form.validate_on_submit():
+        k = form.org_field.data.split(",")
+        org = len(k)
+        if org > 0:
+            if current_user.get_job_in_progress("bulk_delete_organizations"):
+                error = "A Bulk JSM deletion of organizations job is in progress, please wait till it's finished."
+                flash(error)
+            else:
+                current_user.launch_jobs("bulk_delete_organizations", "Bulk deletion of JSM organizations", k)
+                success = "A Job has been submitted for bulk deletion of JSM organizations, please check the " \
+                          "audit log for a completion message."
+                db.session.commit()
+                flash(success)
+    return render_template("/pages/jsm/delete_org.html",
+                           title=f"Delete Organization :: {bulk.config['APP_NAME_SINGLE']}",
+                           form=form, error=error, success=success, Messages=Messages)
+
+
+@bulk.route("/bulk_delete_organizations")
+def bulk_delete_organizations(user_id, *args):
+    with bulk.app_context():
+        user = User.query.get(user_id)
+        admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        try:
+            set_job_progress(0)
+            i = 0
+            name_of_org = args[0]
+            org_collection = deque()
+            get_org = filter_jsm(LOGIN.get(endpoint.get_organizations(0, 100)).json(), org_collection)
+            org_collection.clear()
+            count = len(name_of_org)
+            for names in name_of_org:
+                for org_id in get_org:
+                    if names == org_id.get("name"):
+                        data = LOGIN.delete(endpoint.delete_organization(org_id.get('id')))
+                        i += 1
+                        set_job_progress(100 * i // count)
+                        if data.status_code != 204:
+                            display_name = f"{user.username}".capitalize()
+                            activity = "Failure in deleting JSM organizations {} in bulk".format(org_id.get('name'))
+                            audit_log = "ERROR: {}".format(data.status_code)
+                            auto_commit_jobs(display_name, activity, audit_log, user)
+                        else:
+                            display_name = f"{user.username}".capitalize()
+                            activity = "Bulk JSM deletion of organization successful"
+                            audit_log = "SUCCESS: {}".format(data.status_code)
+                            auto_commit_jobs(display_name, activity, audit_log, user)
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk JSM organization deletion"})
+        except Exception as e:
+            bulk.logger.error('Exception occurred', exc_info=sys.exc_info())
+            send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk JSM organization deletion"})
+        finally:
+            set_job_progress(100)
+
+
+@bulk.route("/add_customer", methods=["GET", "POST"])
+@login_required
+@validate_account
+def add_customer():
+    form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    success = None
+    error = None
+    user_dir = current_user.username
+    save_path = os.path.join(our_dir, user_dir)
+    create_dir(our_dir, save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your token seems to be incorrect, please check it out."
+            flash(error)
+    if request.method == "POST" and form.validate_on_submit():
+        f = form.docs.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(save_path, filename))
+        o = os.path.join(save_path, filename)
+        delimiter = form.delimiter.data
+        form_selection = form.upload_opt.data
+        if current_user.get_job_in_progress("bulk_add_customer"):
+            error = "A bulk addition of customers job is in progress, please wait until it's finished."
+            flash(error)
+        else:
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |account_id | name_of_user|organization name|
+                loop_count = [u for u in reader]
+                another_read = deepcopy(loop_count)
+                width = [len(k) for k in another_read if k]  # get the number of columns
+                number_of_loops = len(loop_count)
+                if width[0] > 3:
+                    error = "Expecting a CSV file with max 3 columns not more."
+                    flash(error)
+                elif width[0] < 2:
+                    error = "Invalid number of columns received, please click the \"Need help\" " \
+                            "button to see the expected format."
+                    flash(error)
+                elif width[0] == 3:
+                    # Format for single addition |account_id|name|org1|
+                    # Format for addition to multiple orgs are |account_id|name|org1~>org2~>org3|
+                    # Format for addition to multiple projects are |account_id |name |ABC~>ITSM~>SD|
+                    if number_of_loops > 0:
+                        current_user.launch_jobs("bulk_add_customer", "Bulk addition of customers", loop_count,
+                                                 form_selection)
+                        success = "A Job has been submitted for bulk addition of customers, " \
+                                  "please check the audit log page for the updated result."
+                        db.session.commit()
+                        os.remove(o)
+                        flash(success)
+    return render_template("pages/jsm/add_customers.html",
+                           title=f"Bulk addition of customer :: {bulk.config['APP_NAME_SINGLE']}", error=error,
+                           success=success, form=form, Messages=Messages)
+
+
+@bulk.route("/bulk_add_customer")
+def bulk_add_customer(user_id, *args):
+    with bulk.app_context():
+        user = User.query.get(user_id)
+        admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        data_dog = namedtuple("data_dog", ["accountId", "name", "org_data"])
+        try:
+            set_job_progress(0)
+            i = 0
+            id_of_request = args[0]
+            form_select = args[1]
+
+            def process_bulk_customer() -> t.NoReturn:
+                """Processes the context between adding customers to project or organizations."""
+                nonlocal i
+                attr = getattr(endpoint, "get_service_desks" if form_select == "JSM_PROJ" else "get_organizations")
+                list_of_col = deque()
+                get_org = filter_jsm(LOGIN.get(attr(0, 100)).json(), list_of_col,
+                                     types=True if form_select == "JSM_ORG" else False)
+                list_of_col.clear()
+                count = len(id_of_request)
+                name_list = {}
+                for customer in id_of_request:
+                    row_list = data_dog._make(customer)
+                    column = row_list.org_data.split("~>")
+                    for rows in column:
+                        for ids in get_org:
+                            if rows == ids.get("name" if form_select == "JSM_ORG" else "project_key"):
+                                name_list.update({
+                                    str(ids.get("id")): []
+                                })
+
+                for _customer in id_of_request:
+                    _row_list = data_dog._make(_customer)
+                    _column = _row_list.org_data.split("~>")
+                    for rows in _column:
+                        for _ids in get_org:
+                            if rows == _ids.get("name" if form_select == "JSM_ORG" else "project_key"):
+                                if _row_list.accountId not in name_list.get(str(_ids.get("id"))):
+                                    name_list.get(str(_ids.get("id"))).append(_row_list.accountId)
+
+                # At this point, account_id is suppose to be a list of users in the item.
+                for attr_id, account_id in name_list.items():
+                    payload = {"accountIds": account_id}
+                    attr_post = getattr(endpoint, "add_customers" if form_select == "JSM_PROJ"
+                    else "add_users_to_organization")
+                    data = LOGIN.post(attr_post(attr_id), payload=payload)
+                    i += 1
+                    set_job_progress(100 * i // count)
+                    if data.status_code < 300:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Success in adding customers to JSM project in bulk" if form_select == "JSM_PROJ" \
+                            else "Success in adding customers to JSM organizations in bulk"
+                        audit_log = "SUCCESS: {}".format(data.status_code)
+                        auto_commit_jobs(display_name, activity, audit_log, user)
+                    else:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Failure in addition of customers to JSM project" if form_select == "JSM_PROJ" \
+                            else "Failure in addition of customers to JSM organization"
+                        audit_log = "ERROR: {}".format(data.status_code)
+                        auto_commit_jobs(display_name, activity, audit_log, user)
+                send_app_messages(admin, user, {"success": "Successful", "job": "Bulk addition of customers to "
+                                                                                "JSM projects"
+                if form_select == "JSM_PROJ" else "Bulk addition of customers to JSM organization"})
+
+            if form_select == "JSM_PROJ":
+                process_bulk_customer()
+
+            elif form_select == "JSM_ORG":
+                process_bulk_customer()
+        except Exception as e:
+            bulk.logger.error('Exception occurred', exc_info=sys.exc_info())
+            send_error_messages(admin,
+                                user,
+                                {"error": f"{e}", "job": "Failure in bulk addition of customers to JSM organization."
+                                if form_select == "JSM_ORG" else "Failure in bulk addition of customers to JSM project."
+                                 })
+        finally:
+            set_job_progress(100)
+
+
+@bulk.route("/remove_customer", methods=["GET", "POST"])
+@login_required
+@validate_account
+def remove_customer():
+    form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    success = None
+    error = None
+    user_dir = current_user.username
+    save_path = os.path.join(our_dir, user_dir)
+    create_dir(our_dir, save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your token seems to be incorrect, please check it out."
+            flash(error)
+    if request.method == "POST" and form.validate_on_submit():
+        f = form.docs.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(save_path, filename))
+        o = os.path.join(save_path, filename)
+        delimiter = form.delimiter.data
+        form_selection = form.upload_opt.data
+        if current_user.get_job_in_progress("bulk_remove_customer"):
+            error = "A bulk removal of customers job is in progress, please wait until it's finished."
+            flash(error)
+        else:
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |account_id | name_of_user|organization name|
+                loop_count = [u for u in reader]
+                another_read = deepcopy(loop_count)
+                width = [len(k) for k in another_read if k]  # get the number of columns
+                number_of_loops = len(loop_count)
+                if width[0] > 3:
+                    error = "Expecting a CSV file with max 3 columns not more."
+                    flash(error)
+                elif width[0] < 2:
+                    error = "Invalid number of columns received, please click the \"Need help\" " \
+                            "button to see the expected format."
+                    flash(error)
+                elif width[0] == 3:
+                    # Format for single removal |account_id|name|org1|
+                    # Format for removal of multiple orgs are |account_id|name|org1~>org2~>org3|
+                    # Format for removal of multiple projects are |account_id |name |ABC~>ITSM~>SD|
+                    if number_of_loops > 0:
+                        current_user.launch_jobs("bulk_remove_customer", "Bulk removal of customers", loop_count,
+                                                 form_selection)
+                        success = "A Job has been submitted for bulk removal of JSM customers, " \
+                                  "please check the audit log page for the updated result."
+                        db.session.commit()
+                        os.remove(o)
+                        flash(success)
+    return render_template("pages/jsm/remove_customers.html",
+                           title=f"Bulk removal of customer :: {bulk.config['APP_NAME_SINGLE']}", error=error,
+                           success=success, form=form, Messages=Messages)
+
+
+@bulk.route("/bulk_remove_customer")
+def bulk_remove_customer(user_id, *args):
+    with bulk.app_context():
+        user = User.query.get(user_id)
+        admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        data_dog = namedtuple("data_dog", ["accountId", "name", "org_data"])
+        try:
+            set_job_progress(0)
+            i = 0
+            request_id = args[0]
+            select_form = args[1]
+
+            def remove_bulk_customer() -> t.NoReturn:
+                """This function processes the context of removing customers from project or organizations."""
+                nonlocal i
+                rem_attr = getattr(endpoint, "get_service_desks" if select_form == "JSM_PROJ" else "get_organizations")
+                cols = deque()
+                fetch_org = filter_jsm(LOGIN.get(rem_attr(0, 100)).json(), cols,
+                                       types=True if select_form == "JSM_ORG" else False)
+                cols.clear()
+                count = len(request_id)
+                data_list = {}
+                for customer in request_id:
+                    row_cell = data_dog._make(customer)
+                    column_cell = row_cell.org_data.split("~>")
+                    for rows in column_cell:
+                        for ids in fetch_org:
+                            if rows == ids.get("name" if select_form == "JSM_ORG" else "project_key"):
+                                data_list.update({
+                                    str(ids.get("id")): []
+                                })
+
+                for _customer in request_id:
+                    _row_cell = data_dog._make(_customer)
+                    _column_cell = _row_cell.org_data.split("~>")
+                    for rows in _column_cell:
+                        for _ids in fetch_org:
+                            if rows == _ids.get("name" if select_form == "JSM_ORG" else "project_key"):
+                                if _row_cell.accountId not in data_list.get(str(_ids.get("id"))):
+                                    data_list.get(str(_ids.get("id"))).append(_row_cell.accountId)
+
+                # At this point, account_id is suppose to be a list of users in the item.
+                for attr_id, account_id in data_list.items():
+                    payload = {"accountIds": account_id}
+                    attr_delete = getattr(endpoint, "remove_customers" if select_form == "JSM_PROJ"
+                    else "remove_users_from_organization")
+                    data = LOGIN.delete(attr_delete(attr_id), json=payload)
+                    i += 1
+                    set_job_progress(100 * i // count)
+                    if data.status_code < 300:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Success in removal of customers from JSM project in bulk" \
+                            if select_form == "JSM_PROJ" else "Success in removal of customers from " \
+                                                              "JSM organizations in bulk"
+                        audit_log = "SUCCESS: {}".format(data.status_code)
+                        auto_commit_jobs(display_name, activity, audit_log, user)
+                    else:
+                        display_name = f"{user.username}".capitalize()
+                        activity = "Failure in removal of customers from JSM project" if select_form == "JSM_PROJ" \
+                            else "Failure in removal of customers from JSM organization"
+                        audit_log = "ERROR: {}".format(data.status_code)
+                        auto_commit_jobs(display_name, activity, audit_log, user)
+                send_app_messages(admin, user, {"success": "Successful", "job": "Bulk removal of customers from "
+                                                                                "JSM projects"
+                if select_form == "JSM_PROJ" else "Bulk removal of customers from JSM organization"})
+
+            if select_form == "JSM_PROJ":
+                remove_bulk_customer()
+
+            elif select_form == "JSM_ORG":
+                remove_bulk_customer()
+        except Exception as e:
+            bulk.logger.error('Exception occurred', exc_info=sys.exc_info())
+            send_error_messages(admin,
+                                user,
+                                {"error": f"{e}", "job": "Failure in bulk removal of customers from JSM organization."
+                                if select_form == "JSM_ORG" else "Failure in bulk removal of customers from "
+                                                                 "JSM project."})
+        finally:
+            set_job_progress(100)
+
+
+@bulk.route("/add_org", methods=["GET", "POST"])
+@login_required
+@validate_account
+def add_org():
+    form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    success = None
+    error = None
+    user_dir = current_user.username
+    save_path = os.path.join(our_dir, user_dir)
+    create_dir(our_dir, save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your token seems to be incorrect, please check it out."
+            flash(error)
+    if request.method == "POST" and form.validate_on_submit():
+        f = form.docs.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(save_path, filename))
+        o = os.path.join(save_path, filename)
+        delimiter = form.delimiter.data
+        if current_user.get_job_in_progress("bulk_add_org"):
+            error = "A bulk addition of organizations to a project job is in progress, please wait until it's finished."
+            flash(error)
+        else:
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |organization name| project key|
+                loop_count = [u for u in reader]
+                another_read = deepcopy(loop_count)
+                width = [len(k) for k in another_read if k]  # get the number of columns
+                number_of_loops = len(loop_count)
+                if width[0] > 2:
+                    error = "Expecting a CSV file with max 2 columns not more."
+                    flash(error)
+                elif width[0] < 2:
+                    error = "Invalid number of columns received, please click the \"Need help\" " \
+                            "button to see the expected format."
+                    flash(error)
+                elif width[0] == 2:
+                    # Format for single addition |org name|ABC|
+                    # Format for addition of multiple orgs are |org name|ABC~>ITSM~>SD|
+                    if number_of_loops > 0:
+                        current_user.launch_jobs("bulk_add_org", "Bulk addition of organization to projects",
+                                                 loop_count)
+                        success = "A Job has been submitted for bulk addition of organization to a project, " \
+                                  "please check the audit log page for the updated result."
+                        db.session.commit()
+                        os.remove(o)
+                        flash(success)
+    return render_template("pages/jsm/add_org.html",
+                           title=f"Bulk addition of organizations to projects :: {bulk.config['APP_NAME_SINGLE']}",
+                           error=error, success=success, form=form, Messages=Messages)
+
+
+@bulk.route("/bulk_add_org")
+def bulk_add_org(user_id, *args):
+    with bulk.app_context():
+        user = User.query.get(user_id)
+        admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        data_dog = namedtuple("data_dog", ["name", "project_data"])
+        try:
+            set_job_progress(0)
+            i = 0
+            add_org_project = args[0]
+            list_of_col = deque()
+            org_collection = deque()
+            get_sd = filter_jsm(LOGIN.get(endpoint.get_service_desks(0, 100)).json(), list_of_col, types=False)
+            get_orgs = filter_jsm(LOGIN.get(endpoint.get_organizations(0, 100)).json(), org_collection)
+            count = len(add_org_project)
+            list_of_col.clear()
+            org_collection.clear()
+            for orgs in add_org_project:
+                row_data = data_dog._make(orgs)
+                columns = row_data.project_data.split("~>")
+                for rows in columns:
+                    for ids in get_orgs:
+                        for desk in get_sd:
+                            if rows == desk.get("project_key") and row_data.name == ids.get("name"):
+                                payload = {"organizationId": ids.get("id")}
+                                data = LOGIN.post(endpoint.add_sd_organization(desk.get("id")), payload=payload)
+                                i += 1
+                                set_job_progress(100 * i // count)
+                                if data.status_code < 300:
+                                    display_name = f"{user.username}".capitalize()
+                                    activity = "Success in adding organization to JSM project in bulk"
+                                    audit_log = "SUCCESS: {}".format(data.status_code)
+                                    auto_commit_jobs(display_name, activity, audit_log, user)
+                                else:
+                                    display_name = f"{user.username}".capitalize()
+                                    activity = "Failure in adding organization to JSM project"
+                                    audit_log = "ERROR: {}".format(data.status_code)
+                                    auto_commit_jobs(display_name, activity, audit_log, user)
+            send_app_messages(admin, user,
+                              {"success": "Successful", "job": "Bulk addition of organization to JSM projects"})
+        except Exception as e:
+            bulk.logger.error('Exception occurred', exc_info=sys.exc_info())
+            send_error_messages(admin,
+                                user, {"error": f"{e}",
+                                       "job": "Failure in bulk addition of organization to JSM projects."})
+        finally:
+            set_job_progress(100)
+
+
+@bulk.route("/remove_org", methods=["GET", "POST"])
+@login_required
+@validate_account
+def remove_org():
+    form = UploadForm()
+    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    success = None
+    error = None
+    user_dir = current_user.username
+    save_path = os.path.join(our_dir, user_dir)
+    create_dir(our_dir, save_path)
+    if request.method == "GET":
+        if check_token_valid().status_code != 200:
+            error = "Your token seems to be incorrect, please check it out."
+            flash(error)
+    if request.method == "POST" and form.validate_on_submit():
+        f = form.docs.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(save_path, filename))
+        o = os.path.join(save_path, filename)
+        delimiter = form.delimiter.data
+        if current_user.get_job_in_progress("bulk_remove_org"):
+            error = "A bulk removal of organizations from a project job is in progress, " \
+                    "please wait until it's finished."
+            flash(error)
+        else:
+            with open(o, "r") as csv_file:
+                reader = csv.reader(csv_file, delimiter=delimiter)
+                next(reader, None)
+                # Format for CSV is |organization name| project key|
+                loop_count = [u for u in reader]
+                another_read = deepcopy(loop_count)
+                width = [len(k) for k in another_read if k]  # get the number of columns
+                number_of_loops = len(loop_count)
+                if width[0] > 2:
+                    error = "Expecting a CSV file with max 2 columns not more."
+                    flash(error)
+                elif width[0] < 2:
+                    error = "Invalid number of columns received, please click the \"Need help\" " \
+                            "button to see the expected format."
+                    flash(error)
+                elif width[0] == 2:
+                    # Format for single removal |org name|ABC|
+                    # Format for removal of multiple orgs are |org name|ABC~>ITSM~>SD|
+                    if number_of_loops > 0:
+                        current_user.launch_jobs("bulk_remove_org", "Bulk removal of organization from projects",
+                                                 loop_count)
+                        success = "A Job has been submitted for bulk removal of organization from a project, " \
+                                  "please check the audit log page for the updated result."
+                        db.session.commit()
+                        os.remove(o)
+                        flash(success)
+    return render_template("pages/jsm/remove_org.html",
+                           title=f"Bulk removal of organizations from projects :: {bulk.config['APP_NAME_SINGLE']}",
+                           error=error, success=success, form=form, Messages=Messages)
+
+
+@bulk.route("/bulk_remove_org")
+def bulk_remove_org(user_id, *args):
+    with bulk.app_context():
+        user = User.query.get(user_id)
+        admin = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
+        LOGIN(user=user.email, password=user.token, url="https://{}".format(user.instances))
+        data_dog = namedtuple("data_dog", ["name", "project_data"])
+        try:
+            set_job_progress(0)
+            i = 0
+            remove_org_project = args[0]
+            cols = deque()
+            org_cols = deque()
+            fetch_sd = filter_jsm(LOGIN.get(endpoint.get_service_desks(0, 100)).json(), cols, types=False)
+            fetch_orgs = filter_jsm(LOGIN.get(endpoint.get_organizations(0, 100)).json(), org_cols)
+            count = len(remove_org_project)
+            cols.clear()
+            org_cols.clear()
+            for orgs in remove_org_project:
+                row_data = data_dog._make(orgs)
+                columns = row_data.project_data.split("~>")
+                for rows in columns:
+                    for ids in fetch_orgs:
+                        for desk in fetch_sd:
+                            if rows == desk.get("project_key") and row_data.name == ids.get("name"):
+                                payload = {"organizationId": ids.get("id")}
+                                data = LOGIN.delete(endpoint.remove_sd_organization(desk.get("id")), json=payload)
+                                i += 1
+                                set_job_progress(100 * i // count)
+                                if data.status_code < 300:
+                                    display_name = f"{user.username}".capitalize()
+                                    activity = "Success in removing organization from JSM project in bulk"
+                                    audit_log = "SUCCESS: {}".format(data.status_code)
+                                    auto_commit_jobs(display_name, activity, audit_log, user)
+                                else:
+                                    display_name = f"{user.username}".capitalize()
+                                    activity = "Failure in removing organization from JSM project"
+                                    audit_log = "ERROR: {}".format(data.status_code)
+                                    auto_commit_jobs(display_name, activity, audit_log, user)
+            send_app_messages(admin, user,
+                              {"success": "Successful", "job": "Bulk removal of organization from JSM projects"})
+        except Exception as e:
+            bulk.logger.error('Exception occurred', exc_info=sys.exc_info())
+            send_error_messages(admin,
+                                user, {"error": f"{e}",
+                                       "job": "Failure in bulk removal of organization from JSM projects."})
         finally:
             set_job_progress(100)
 
@@ -894,17 +1573,17 @@ def bulk_add_users(user_id, *args):
             count = len(args[0])
             for u in args[0]:
                 group_names = u[0].split("~>")
-                for y in group_names:
+                for name in group_names:
                     payload = (
                         {
                             "accountId": u[1]
 
                         }
                     )
-                    data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(y)), payload=payload)
+                    data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)), payload=payload)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure adding users {} to groups {} in bulk".format(u[2], y)
+                        activity = "Failure adding users {} to groups {} in bulk".format(u[2], name)
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
@@ -1021,11 +1700,11 @@ def bulk_remove_users(user_id, *args):
             count = len(args[0])
             for u in args[0]:
                 group_names = u[0].split("~>")
-                for y in group_names:
-                    data = LOGIN.delete(endpoint.group_jira_users(group_name=y, account_id=u[1]))
+                for name in group_names:
+                    data = LOGIN.delete(endpoint.group_jira_users(group_name=name, account_id=u[1]))
                     if data.status_code != 200:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure removing multiple users {} from group {}".format(u[2], y)
+                        activity = "Failure removing multiple users {} from group {}".format(u[2], name)
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
@@ -1079,8 +1758,8 @@ def projects():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 10:
-            with open(s_path, "r") as opr:
+        elif 1 < p < 3:
+            with open(s_path, "r") as _opr:
                 for z in f:
                     data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=form.undo.data))
                 if data.status_code != 204:
@@ -1097,7 +1776,7 @@ def projects():
                     audit_log = "SUCCESS: {}".format(data.status_code)
                     auto_commit(display_name, activity, audit_log)
                     flash(success)
-        elif p > 10:
+        elif p > 3:
             if current_user.get_job_in_progress("bulk_projects"):
                 error = "A bulk deletion of project job is in progress, please wait till it's finished."
                 flash(error)
@@ -1814,7 +2493,40 @@ def clear_task(task_id):
     task = Jobs.query.get(task_id)
     if request.method == "POST":
         task.completion = True
-        db.session.add(task)
         db.session.commit()
         flash("Cleared pending task!", "alert-success")
         return redirect(url_for('audit'))
+
+
+def filter_jsm(maps: t.Mapping, queue: t.Deque, types: bool = True) -> t.List:
+    """Search through the list of organization or projects and return a dict of id and name
+     or id, projectId, project name and project key if projects.
+
+    :param maps: The payload to query
+
+    :param queue: A storage list of data
+
+    :param types: A bool condition of the field name, True for orgs, false for project.
+
+    :returns: A List of all organization names or project entity values and ids within the instance.
+    """
+
+    while True:
+        next_page = maps.get("next") if "next" in maps and maps.get("isLastPage") is False else []
+        for filter_name in maps.get("values"):
+            filter_data = {
+                "id": filter_name['id'],
+                "name": filter_name['name']
+            } if types is True else {
+                "id": filter_name['id'],
+                "project_id": filter_name['projectId'],
+                "project_key": filter_name['projectKey'],
+                "project_name": filter_name['projectName']
+            }
+            queue.append(filter_data)
+        if isinstance(next_page, list):
+            break
+        _maps = LOGIN.get(next_page)
+        if _maps.status_code < 300:
+            maps = _maps.json()
+    return [s for s in queue]

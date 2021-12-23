@@ -2,57 +2,60 @@
 
 
 {% block header %}
-  <h1>{% block title %} {{ title }} {% endblock %}</h1>
+  <h1>{% block title %} {{ title }}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 {% if current_user.is_anonymous %}
 <!-- no comment -->
 {% else %}
- {% for message in get_flashed_messages() %}
-{% if success %}
-     <div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Message!</strong> {{ success }}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-{% elif error %}
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+{% for message in get_flashed_messages() %}
+{% if error %}
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
   <strong>Error!</strong> {{ error }}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+{% elif success %}
+ <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
 {% endif %}
-       {% endfor %}
- {% include 'users/job_progress.html' %}
+{% endfor %}
+{% include 'users/job_progress.html' %}
 <div class="shadow-lg p-3 mb-5 bg-white rounded">
         <!-- Nav tabs -->
   <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('projects')}}"><i class="fa fa-trash"></i>&nbsp;DELETE PROJECTS</a>
+      <li class="nav-item">
+      <a class="nav-link"  href="{{ url_for('add_org')}}"><i class="fa fa-user-plus"></i>&nbsp;ADD ORGANIZATION TO PROJECT</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('delete_issue')}}"><i class="fa fa-eraser"></i>&nbsp;DELETE JIRA ISSUES</a>
-    </li>
-       <li class="nav-item">
-      <a class="nav-link active" href="{{ url_for('project_lead')}}"><i class="fa fa-user"></i>&nbsp;CHANGE PROJECT LEADS</a>
+      <a class="nav-link active" href="{{ url_for('remove_org')}}"><i class="fa fa-user-times"></i>&nbsp;REMOVE ORGANIZATION FROM PROJECT</a>
     </li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
+    <div class="tab-pane container fade" id="delete">
 
-       <div class="tab-pane container show active" id="leads">
- <br />
-          <form action="" enctype="multipart/form-data" method="post">
+<br />
+
+
+        </div>
+
+    <div class="tab-pane container show active" id="create">
+<br />
+
+  <form action="" enctype="multipart/form-data" method="post">
     {{ form.hidden_tag() }}
 <div class="form-group mx-sm-3 mb-2">
 <div class="form-group">
     <label for="docs">File Upload</label>
     <input type="file" class="form-control-file" id="docs" name="docs" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/csv, application/vnd.ms-excel">
   </div>
-    <small id="addHelp" class="form-text text-muted">To see the Format of the file, please click the "Need Help?" link above!</small>
 </div>
 <div class="form-group mx-sm-3 mb-2">
        {% for error in form.docs.errors %}
@@ -64,8 +67,9 @@
 </div>
             {% endfor %}
        </div>
+    <div class="form-group mx-sm-3 mb-2">
 
-              <div class="form-group">
+        <div class="form-group">
    <div class="input-group-prepend">
       <i class="fa fa-exchange" aria-hidden="true"></i>
     <label for="delimiter" class="sr-only">Options</label>
@@ -80,26 +84,21 @@
   </select>
   </div>
                  <small id="delimeter" class="form-text text-muted">Choose the options for the delimiter, by default the option is set to ",". Each value correspond to the actual character</small>
-
-
-<br />
-             <div class="form-group mx-sm-3 mb-2">
-        <button type="submit" id="bulkprogress" class="btn btn-success"> Bulk Change Project Lead </button>
+        <br />
+        <button type="submit" id="bulkprogress" class="btn btn-danger"> Remove Organization from Project(s) </button>
 </div>
 
 
 
 </form>
 
-        </div>
-
-
+    </div>
 
   </div>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="modQuestion" tabindex="-1" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+<div class="modal fade" id="modQuestion" tabindex="4" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -109,39 +108,47 @@
         </button>
       </div>
       <div class="modal-body">
-        <div><b><u>How can I bulk update project lead?</u></b> <br />
+        <div><b><u>How can I remove organizations from project in bulk?</u></b> <br />
           <ul style="list-style-type: list">
           <li> This is done using a csv file, which needs to be uploaded</li>
           <li> you will need to prepare the format, so it includes the required fields</li>
-              <li> Accepted values for "AssigneeType" e.g. "PROJECT_LEAD" or "UNASSIGNED" and it has to be in capital form on the csv file.</li>
-              <li> Please your csv file should be in the format - "accountId | key | assigneeType" </li>
+              <li> Please your csv file should be in the format: "organization name | project key" </li>
            </ul>
            <table class="table table-sm table-responsive table-bordered">
   <thead>
     <tr>
-      <th scope="col">accountId</th>
-      <th scope="col">key</th>
-      <th scope="col">assigneeType</th>
+      <th scope="col">Org Name</th>
+         <th scope="col">Project Key</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>5233711atgxsay72812bc</td>
-      <td>ABC-123</td>
-      <td>PROJECT_LEAD</td>
+        <td>Nexusfive</td>
+      <td>ITSM</td>
     </tr>
   </tbody>
 </table>
           </div>
-         <div><b><u>Where can I get an accountId?</u></b> <br />
+        <div><b><u>How to bulk remove organizations from multiple projects?</u></b> <br />
           <ul style="list-style-type: list">
-          <li> You can get one from the admin hub page or use a JQL search of assignee or reporters in order to return an accountId.</li>
+         <li> Using a csv file, please format the CSV file into the below format.</li>
+              <li> Your csv file should be in the format: "org name |project key" </li>
+               <li> Use this symbol <code>~></code> as delimiter between each project key.</li>
       </ul>
-          </div>
-         <div><b><u>Must I add the assigneeType?</u></b> <br />
-          <ul style="list-style-type: list">
-          <li> Yes; since a format style is being used. By uploading, it is essential those values for assigneeType is provided.</li>
-      </ul>
+              <table class="table table-sm table-responsive table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Org Name</th>
+        <th scope="col">Project Key</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cosmos</td>
+        <td>ITSM~>STI~>ABC~>SD</td>
+    </tr>
+  </tbody>
+</table>
           </div>
       </div>
       <div class="modal-footer">
