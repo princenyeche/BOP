@@ -47,7 +47,7 @@
     <li class="list-group-item">Add users to group</li>
     <li class="list-group-item">Remove users from group</li>
      <li class="list-group-item">Create or delete groups</li>
-      <li class="list-group-item">Add or remove customers from organization or projects</li>
+      <li class="list-group-item"> {% if time_factor is false %}<span class="badge badge-pill badge-danger">New</span> {% else %} {% endif %}Add or remove customers from organization or projects</li>
   </ul><br />
      {% if current_user.is_anonymous %}
         <a href="{{ url_for('signin') }}" class="btn btn-primary">Get Started</a>
@@ -66,7 +66,7 @@
     <li class="list-group-item">Delete projects</li>
     <li class="list-group-item">Delete issues</li>
     <li class="list-group-item">Change project lead</li>
-        <li class="list-group-item">Add or remove organization from projects</li>
+        <li class="list-group-item"> {% if time_factor is false %}<span class="badge badge-pill badge-danger">New</span> {% else %} {% endif %}Add or remove organization from projects</li>
   </ul> <br />
         {% if current_user.is_anonymous %}
           <a href="{{ url_for('signin') }}" class="btn btn-primary">Get Started</a>
