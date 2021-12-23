@@ -45,8 +45,9 @@
       <p class="card-text"> User Management feature to control users and groups in bulk</p>
     <ul class="list-group list-group-flush">
     <li class="list-group-item">Add users to group</li>
-    <li class="list-group-item">Remove Users from Group</li>
-     <li class="list-group-item">Create or Delete Groups</li>
+    <li class="list-group-item">Remove users from group</li>
+     <li class="list-group-item">Create or delete groups</li>
+      <li class="list-group-item">Add or remove customers from organization or projects</li>
   </ul><br />
      {% if current_user.is_anonymous %}
         <a href="{{ url_for('signin') }}" class="btn btn-primary">Get Started</a>
@@ -65,6 +66,7 @@
     <li class="list-group-item">Delete projects</li>
     <li class="list-group-item">Delete issues</li>
     <li class="list-group-item">Change project lead</li>
+        <li class="list-group-item">Add or remove organization from projects</li>
   </ul> <br />
         {% if current_user.is_anonymous %}
           <a href="{{ url_for('signin') }}" class="btn btn-primary">Get Started</a>
