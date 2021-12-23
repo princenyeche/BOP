@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v4.0.0 - (23 December 2021)
+## Update
+* Bump dependency for Jiraone to v0.4.8
+* Changed input forms to text forms for create and remove group features
+* Added JSM features for cloud migrations
+* Added new FAQ data.
+* Bump BulkOps app for Jira to v4.0.0 making it a complete cloud migration tool. You can now perform all migrations for user management from server, datacenter or another cloud environment to Atlassian cloud instances.
+
+
 ## v3.8.7 - (28 October 2021)
 ## Update
 * Added a clear task feature - The ability to clear pending jobs from the audit page.
