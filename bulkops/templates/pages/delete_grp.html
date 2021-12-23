@@ -55,7 +55,7 @@
         <div class="form-group mx-sm-3 mb-2">
             <i class="fa fa-users" aria-hidden="true"></i>
       <label class="sr-only" for="delete_gp">Delete Groups</label>
-      <input class="form-control" id="delete_gp" name="delete_gp" placeholder="Delete a Group. for multiple Groups, separate by comma">
+      <textarea class="form-control" id="delete_gp" name="delete_gp" placeholder="Delete a Group. For multiple groups, separate by comma." style="height: 100px;"></textarea>
     <small id="cloudHelp" class="form-text text-muted">Format for multiple group deletion e.g job,computer</small>
         </div>
 
@@ -96,20 +96,20 @@
       </div>
       <div class="modal-body">
         <div> <b><u>How can I delete a group?</u></b> <br />
-          <ul type="list">
-          <li> You can do so by typing the group name and clicking the remove group button</li>
-          <li> You must know the name of the group by its exact string for the group to be successfully removed.</li>
+          <ul style="list-style-type: list">
+          <li> You can do so by typing the group name and clicking the remove group button.</li>
+          <li> You must know the name of the group by its exact string for the group to be successfully removed. i.e. case sensitive text</li>
       </ul>
           </div>
          <div> <b><u>What happens if a user is in a group when I delete it?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> The users will be removed from the group completely.</li>
       </ul>
           </div>
          <div> <b><u>Can I delete multiple groups?</u></b> <br />
-          <ul type="list">
+          <ul style="list-style-type: list">
           <li> Yes, you can, to do so type the name of the group separated by a comma e.g. cpu,magnet.</li>
-          <li> If the group name doesn't exist, an error is return that group cannot be found</li>
+          <li> If the group name doesn't exist, an error is returned that such group cannot be found.</li>
       </ul>
           </div>
       </div>
