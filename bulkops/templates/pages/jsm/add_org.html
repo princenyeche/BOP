@@ -1,0 +1,161 @@
+{% extends 'index.html' %}
+
+
+{% block header %}
+  <h1>{% block title %} {{ title }}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+{% if current_user.is_anonymous %}
+<!-- no comment -->
+{% else %}
+{% for message in get_flashed_messages() %}
+{% if error %}
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ error }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% elif success %}
+ <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Message!</strong> {{ success }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+{% endfor %}
+{% include 'users/job_progress.html' %}
+<div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+      <li class="nav-item">
+      <a class="nav-link active"  href="{{ url_for('add_org')}}"><i class="fa fa-user-plus"></i>&nbsp;ADD ORGANIZATION TO PROJECT</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('remove_org')}}"><i class="fa fa-user-times"></i>&nbsp;REMOVE ORGANIZATION FROM PROJECT</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div class="tab-pane container fade" id="delete">
+
+<br />
+
+
+        </div>
+
+    <div class="tab-pane container show active" id="create">
+<br />
+
+  <form action="" enctype="multipart/form-data" method="post">
+    {{ form.hidden_tag() }}
+<div class="form-group mx-sm-3 mb-2">
+<div class="form-group">
+    <label for="docs">File Upload</label>
+    <input type="file" class="form-control-file" id="docs" name="docs" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/csv, application/vnd.ms-excel">
+  </div>
+</div>
+<div class="form-group mx-sm-3 mb-2">
+       {% for error in form.docs.errors %}
+             <div class="alert alert-danger" role="alert">
+  {{ error }}
+                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+            {% endfor %}
+       </div>
+    <div class="form-group mx-sm-3 mb-2">
+
+        <div class="form-group">
+   <div class="input-group-prepend">
+      <i class="fa fa-exchange" aria-hidden="true"></i>
+    <label for="delimiter" class="sr-only">Options</label>
+  </div>
+  <select class="custom-select" id="delimiter" name="delimiter">
+      <option selected value=",">Choose the delimiter of the file </option>
+    <option value=",">&lt;comma&gt; </option>
+    <option value="\t">&lt;tab&gt; </option>
+      <option value=":">&lt;colon&gt; </option>
+      <option value=";">&lt;semi-colon&gt; </option>
+      <option value=" ">&lt;space&gt; </option>
+  </select>
+  </div>
+                 <small id="delimeter" class="form-text text-muted">Choose the options for the delimiter, by default the option is set to ",". Each value correspond to the actual character</small>
+        <br />
+        <button type="submit" id="bulkprogress" class="btn btn-success"> Add Organization to Project(s) </button>
+</div>
+
+
+
+</form>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modQuestion" tabindex="4" role="dialog" aria-labelledby="modQuestion" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="faqs">F.A.Q</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div><b><u>How can I add organizations to project in bulk?</u></b> <br />
+          <ul style="list-style-type: list">
+          <li> This is done using a csv file, which needs to be uploaded</li>
+          <li> you will need to prepare the format, so it includes the required fields</li>
+              <li> Please your csv file should be in the format: "organization name | project key" </li>
+           </ul>
+           <table class="table table-sm table-responsive table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Org Name</th>
+         <th scope="col">Project Key</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+        <td>Nexusfive</td>
+      <td>ITSM</td>
+    </tr>
+  </tbody>
+</table>
+          </div>
+        <div><b><u>How to bulk add organizations to multiple projects?</u></b> <br />
+          <ul style="list-style-type: list">
+         <li> Using a csv file, please format the CSV file into the below format.</li>
+              <li> Your csv file should be in the format: "org name |project key" </li>
+               <li> Use this symbol <code>~></code> as delimiter between each project key.</li>
+      </ul>
+              <table class="table table-sm table-responsive table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Org Name</th>
+        <th scope="col">Project Key</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cosmos</td>
+        <td>ITSM~>STI~>ABC~>SD</td>
+    </tr>
+  </tbody>
+</table>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
