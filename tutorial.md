@@ -11,6 +11,14 @@ The below documentation outlines, the basic use cases of the app and how you can
 * Bulk delete projects
 * Bulk change project leads
 * Bulk delete issues 
+* Bulk creation of JSM organizations.
+* Bulk deletion of JSM organizations.
+* Bulk addition of JSM organizations to a service desk.
+* Bulk removal of JSM organizations from a service desk.
+* Bulk addition of customers into JSM organization.
+* Bulk removal of customers from JSM organization.
+* Bulk addition of customers to specific JSM projects e.g. ITSM or SD
+* Bulk removal of customers from specific JSM projects e.g. ITSM or SD
 
 ## Issues and troubleshooting
 * [Troubleshooting BulkOps app for Jira](https://github.com/princenyeche/BOP/wiki/Troubleshooting-BulkOps-app-for-Jira)
@@ -72,6 +80,22 @@ Creating multiple groups is easy. Simply navigate to the create groups under the
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulk_add_users_to_groups.png)
 
 This feature requires you upload a csv file, click the "Need help" button to see an example of the csv file format. Once ready, simply upload the file.
+
+## Bulk add customers to organization
+![](https://github.com/princenyeche/BOP/blob/master/img/add-customers.png)
+To perform this operation, you will need to prepare a your data file in the below format. It is crucial that you CSV file is structured in the below manner having 3 columns, so the app can be able to perform the bulk operation. 
+
+![](https://github.com/princenyeche/BOP/blob/master/img/customer_organization.png)
+The name part isn’t used but it helps to nicely represent your customers during the file formulation. Use this delimiter `~>` for adding customers to multiple organization at the same time. Prior to submission ensure you set the “Customer selection” to “JSM Organization”.
+
+## Bulk remove customers from projects
+![](https://github.com/princenyeche/BOP/blob/master/img/customer_organization.png)
+A 3 column CSV file is required with the above structure. Once your file above is prepared, simply upload the file and set the option for customer selection to “JSM Project” prior to submission. Use this delimiter `~>` for adding customers to multiple projects.
+
+## Bulk add organizations to projects
+Performing bulk addition of organizations to specific Jira service management project involves you knowing the exact string for the organization and listing out your project keys that you need those organization added to. Create a CSV file having only two columns as shown below. Use this delimiter `~>` for adding organizations to multiple projects.
+![](https://github.com/princenyeche/BOP/blob/master/img/organization_project.png)
+Once you’re done with your file formulation, simply upload the file and the organizations will be added to those projects. 
 
 ## Audit log
 ![](https://github.com/princenyeche/BOP/blob/master/img/audit_log.png)
