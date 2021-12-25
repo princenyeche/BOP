@@ -1220,6 +1220,7 @@ def bulk_remove_customer(user_id, *args):
                     payload = {"accountIds": account_id}
                     attr_delete = getattr(endpoint, "remove_customers" if select_form == "JSM_PROJ"
                     else "remove_users_from_organization")
+                    LOGIN.headers.update({"X-ExperimentalApi": "opt-in"})
                     data = LOGIN.delete(attr_delete(attr_id), json=payload)
                     i += 1
                     set_job_progress(100 * i // count)
