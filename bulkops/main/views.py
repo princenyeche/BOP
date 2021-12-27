@@ -304,8 +304,9 @@ def bulk_users():
                         flash(success)
                 elif width[0] == 3:
                     if form_selection == "JSD":
-                        error = "You cannot add JSM customers to a group, add them to organization from " \
-                                "your JSM project interface."
+                        error = "You cannot add JSM customers to a group, add them to organizations or projects" \
+                                " instead by using the bulk add customer feature " \
+                                "from the in-app menu."
                         flash(error)
                     else:
                         # your CSV should be |displayName|email| groupname|
