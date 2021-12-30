@@ -10,5 +10,3 @@ install:
 script:
   - export FLASK_APP=startup.py
   - export FLASK_ENV=development
-  - flask db init
-  - flask db migrate
