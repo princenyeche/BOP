@@ -3,7 +3,10 @@ language: python
 python:
   - "3.7"
 cache: pip
+before_install:
+  - python -m pip install --upgrade pip
 install:
   - pip install -r requirements.txt
 script:
-  - py.test
+  - export FLASK_APP=startup.py
+  - export FLASK_ENV=development

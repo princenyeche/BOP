@@ -16,7 +16,7 @@ SQLAlchemy==1.4.29
 urllib3==1.26.7
 WTForms==3.0.1
 PyJWT==2.3.0
-virtualenv==20.11.0
+virtualenv==20.11.2
 Flask-Moment==1.0.2
 psycopg2-binary
 gunicorn

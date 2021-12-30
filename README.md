@@ -87,6 +87,7 @@ In the environment variables, you will need to set it up as below, so python kno
 |QUEUE_TIMEOUT | 1h | 
 |REDIS_URL | redis://url |
 |MAX_CONTENT_LENGTH| 2 * 1024 * 1024 |
+|SUPPORT_LINK| https://example.com|
 
 If redis is installed, use the terminal and activate it by using `heroku ps:scale worker=1 -a <app_name>` to provision the redis worker on the application(P/s To install redis plugin on Heroku requires you to add a payment system to your account if not you cannot use it). The `queue_timeout` environment variable is a string and can be represented as "30m" or "1h", "2h" etc. This tells bulkops how long a request job can run for using redis. This job is a queue task that is submitted and update back to the user.
 
