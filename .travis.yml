@@ -7,8 +7,4 @@ before_install:
   - python -m pip install --upgrade pip
 install:
   - pip install -r requirements.txt
-script:
-  - python startup.py
-after_success:
-  - codecov
   
