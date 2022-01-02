@@ -157,6 +157,17 @@ flask run -h 192.168.1.100 -p 8080
 #### Using Redis Worker
 Using redis locally, download the software. On macOS use `brew install redis`. Once installed start the service automatically by using `brew services start redis`. Which will enable the app listen for Jobs. You can view these jobs by running on terminal `rq worker bulkops-jobs`.
 
+### Using Docker
+Ensure you have [Docker setup for your respective operating system](https://docs.docker.com/get-docker/).
+
+Run the following from the BOP project folder root
+1. `docker build -t bulkops-app .` 
+2. `docker run -p 5000:5000 bulkops-app`
+
+On point 1, notice the dot at the end, it is required to successfully build the docker image. Once that it completed, use the second command to run the image locally on docker. If you need to use a different port, you can modify the `Dockerfile` and the `runit.sh` file for you to have the app expose to your network. The app requires a mail configuration for email delivery. Ensure that you export all the required environment variables prior to building the docker image. You can do this by putting the variables in the `runit.sh` file prior to building it. 
+
+Do not export secrets on the container, see this documentation on [Managing secrets data with Docker secrets](https://docs.docker.com/engine/swarm/secrets/)
+
 ### Other Linux Hosting
 * You can use other linux servers as well to install this application online.
 
