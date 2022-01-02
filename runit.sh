@@ -10,7 +10,7 @@ flask db upgrade
 
 gunicorn startup:bulk \
          --bind=0.0.0.0:5000 \
-         --timeout 60 \
-         --graceful-timeout 60 \
+         --timeout 30 \
+         --graceful-timeout 30 \
          --keep-alive 120 \
          --workers 2
