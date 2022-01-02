@@ -40,7 +40,7 @@ if not os.path.exists(our_dir):
 def index():
     data = None
     LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
-    today = "2021-12-23 15:39:07.437753"
+    today = bulk.config["TODAY"]
     today_parse = datetime.strptime(today, "%Y-%m-%d %H:%M:%S.%f")
     next_thirty = timedelta(days=30)
     now = datetime.today()

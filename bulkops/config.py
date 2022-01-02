@@ -56,3 +56,4 @@ class Config(object):
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH") or 2 * 1024 * 1024)
     # support link
     SUPPORT_LINK = os.environ.get("SUPPORT_LINK") or "https://example.com"
+    TODAY = os.environ.get("TODAY") or "2021-12-23 15:39:07.437753"

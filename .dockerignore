@@ -1,0 +1,5 @@
+.vscode
+.flake8
+out
+*.md
+*.csv
