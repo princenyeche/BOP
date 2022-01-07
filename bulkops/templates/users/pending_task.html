@@ -50,7 +50,11 @@
       <div class="modal-body">
         Are you sure you want to clear this task?<br />
 
-        <button type="button" class="btn-success" id="Btn-{{ task.id }}"> YES </button>
+        {% if parse.strptime(task.timestamp, "%Y-%m-%d %H:%M:%S.%f") < parse.strptime(task.timestamp, "%Y-%m-%d %H:%M:%S.%f")  + elapse %}
+        <button type="button" class="btn-success" id="Btn-{{ task.id }}" data-toggle="tooltip" data-html="true" title="<em>You have to wait after 30m of a Job task before you can clear a task.</em>" disabled> YES </button>
+          {% else %}
+           <button type="button" class="btn-success" id="Btn-{{ task.id }}"> YES </button>
+          {% endif %}
         <button type="button" class="btn-danger" data-dismiss="modal"> NO</button>
 
       </div>
