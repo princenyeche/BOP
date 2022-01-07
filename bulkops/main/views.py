@@ -2168,7 +2168,7 @@ def audit():
     prev_url = url_for("audit", page=logs.prev_num) if logs.has_prev else None
     return render_template("/config/audit.html", title=f"Audit Log :: {bulk.config['APP_NAME_SINGLE']}",
                            logs=logs.items, next_url=next_url, prev_url=prev_url, Messages=Messages, 
-                           tasks=tasks, elapse=elapse, parse=datetime)
+                           tasks=tasks, elapse=elapse)
 
 
 @bulk.route("/messages/inbox", methods=["GET", "POST"])
