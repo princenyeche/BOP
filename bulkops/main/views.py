@@ -2159,6 +2159,7 @@ def audit():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     page = request.args.get("page", 1, type=int)
     elapse = timedelta(minutes=30)
+    now = datetime.today()
     tasks = {
         "task": current_user.jobs.filter_by(completion=False).all(),
         "task_count": current_user.jobs.filter_by(completion=False).count()
@@ -2168,7 +2169,7 @@ def audit():
     prev_url = url_for("audit", page=logs.prev_num) if logs.has_prev else None
     return render_template("/config/audit.html", title=f"Audit Log :: {bulk.config['APP_NAME_SINGLE']}",
                            logs=logs.items, next_url=next_url, prev_url=prev_url, Messages=Messages, 
-                           tasks=tasks, elapse=elapse)
+                           tasks=tasks, elapse=elapse, parser=now)
 
 
 @bulk.route("/messages/inbox", methods=["GET", "POST"])
