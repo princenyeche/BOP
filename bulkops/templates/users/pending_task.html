@@ -53,9 +53,9 @@
 
         <button type="button" class="btn-success" id="Btn-{{ task.id }}" style="cursor: pointer;"> YES </button>
         {% else %}
-          The clear task button is disabled, please wait {{ cool_down }}?<br />
+          The clear task button is disabled, please wait {{ cool_down }}.<br />
           
-        <button type="button" class="btn-secondary" id="Btn-{{ task.id }}" data-toggle="tooltip" data-html="true" title="You have to wait after {{ cool_down }} of a Job task before you can clear a task." style="cursor: pointer;" disabled> YES </button>
+        <button type="button" class="btn-secondary" id="Btn-{{ task.id }}" data-toggle="tooltip" data-html="true" title="You have to wait after {{ cool_down }} of a Job task before you can clear it." style="cursor: pointer;" disabled> YES </button>
           {% endif %}
         <button type="button" class="btn-danger" data-dismiss="modal" style="cursor: pointer;"> NO</button>
 
