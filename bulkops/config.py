@@ -57,3 +57,4 @@ class Config(object):
     # support link
     SUPPORT_LINK = os.environ.get("SUPPORT_LINK") or "https://example.com"
     TODAY = os.environ.get("TODAY") or "2021-12-23 15:39:07.437753"
+    COOL_DOWN = os.environ.get("COOL_DOWN") or "30m"
