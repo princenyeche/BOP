@@ -50,7 +50,7 @@
       <div class="modal-body">
         Are you sure you want to clear this task?<br />
 
-        {% if task.timestamp  > task.timestamp + elapse %}
+        {% if parser  > task.timestamp + elapse %}
         <button type="button" class="btn-success" id="Btn-{{ task.id }}" style="cursor: pointer;"> YES </button>
         {% else %}
         <button type="button" class="btn-secondary" id="Btn-{{ task.id }}" data-toggle="tooltip" data-html="true" title="You have to wait after 30m of a Job task before you can clear a task." style="cursor: pointer;" disabled> YES </button>
