@@ -148,6 +148,7 @@ class Jobs(db.Model):
     name = db.Column(db.String(225), index=True)
     description = db.Column(db.String(225), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     completion = db.Column(db.Boolean, default=False)
 
     def get_job(self):
