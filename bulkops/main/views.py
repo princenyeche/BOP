@@ -2158,7 +2158,7 @@ def bulk_project_lead(user_id, *args):
 def audit():
     user = User.query.filter_by(username=current_user.username).first_or_404()
     page = request.args.get("page", 1, type=int)
-    elapse = timedelta(minutes=30)
+    elapse = timedelta(minutes=bulk.config["COUNT_DOWN"])
     now = datetime.today()
     cool_down = bulk.config["COOL_DOWN"]
     tasks = {
