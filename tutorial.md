@@ -89,7 +89,7 @@ To perform this operation, you will need to prepare a your data file in the belo
 The name part isn’t used but it helps to nicely represent your customers during the file formulation. Use this delimiter `~>` for adding customers to multiple organization at the same time. Prior to submission ensure you set the “Customer selection” to “JSM Organization”.
 
 ## Bulk remove customers from projects
-![](https://github.com/princenyeche/BOP/blob/master/img/customer_organization.png)
+![](https://github.com/princenyeche/BOP/blob/master/img/customer_project.png)
 A 3 column CSV file is required with the above structure. Once your file above is prepared, simply upload the file and set the option for customer selection to “JSM Project” prior to submission. Use this delimiter `~>` for adding customers to multiple projects.
 
 ## Bulk add organizations to projects
