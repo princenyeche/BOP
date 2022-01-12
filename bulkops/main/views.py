@@ -1047,7 +1047,7 @@ def bulk_add_customer(user_id, *args):
             id_of_request = args[0]
             form_select = args[1]
 
-            def process_bulk_customer() -> t.NoReturn:
+            def process_bulk_customer() -> None:
                 """Processes the context between adding customers to project or organizations."""
                 nonlocal i
                 attr = getattr(endpoint, "get_service_desks" if form_select == "JSM_PROJ" else "get_organizations")
@@ -1187,7 +1187,7 @@ def bulk_remove_customer(user_id, *args):
             request_id = args[0]
             select_form = args[1]
 
-            def remove_bulk_customer() -> t.NoReturn:
+            def remove_bulk_customer() -> None:
                 """This function processes the context of removing customers from project or organizations."""
                 nonlocal i
                 rem_attr = getattr(endpoint, "get_service_desks" if select_form == "JSM_PROJ" else "get_organizations")
