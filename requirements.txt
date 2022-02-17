@@ -1,7 +1,7 @@
 alembic==1.7.5
 chardet==4.0.0
 Click==8.0.3
-Flask==2.0.2
+Flask==2.0.3
 Flask-Login==0.5.0
 Flask-Mail==0.9.1
 Flask-Migrate==3.1.0
@@ -12,7 +12,7 @@ Jinja2==3.0.3
 Mako==1.1.6
 Markdown==3.3.6
 MarkupSafe==2.0.1
-SQLAlchemy==1.4.29
+SQLAlchemy==1.4.31
 urllib3==1.26.8
 WTForms==3.0.1
 PyJWT==2.3.0
