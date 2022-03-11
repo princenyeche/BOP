@@ -1,7 +1,7 @@
-alembic==1.7.5
+alembic==1.7.6
 chardet==4.0.0
-Click==8.0.3
-Flask==2.0.2
+Click==8.0.4
+Flask==2.0.3
 Flask-Login==0.5.0
 Flask-Mail==0.9.1
 Flask-Migrate==3.1.0
@@ -9,10 +9,10 @@ Flask-SQLAlchemy==2.5.1
 Flask-Uploads==0.2.1
 Flask-WTF==1.0.0
 Jinja2==3.0.3
-Mako==1.1.6
+Mako==1.2.0
 Markdown==3.3.6
-MarkupSafe==2.0.1
-SQLAlchemy==1.4.29
+MarkupSafe==2.1.0
+SQLAlchemy==1.4.32
 urllib3==1.26.8
 WTForms==3.0.1
 PyJWT==2.3.0
@@ -24,7 +24,7 @@ Python-dotenv
 requests
 pymysql
 email_validator
-Werkzeug==2.0.2
-redis==4.1.0
+Werkzeug==2.0.3
+redis==4.1.4
 rq==1.10.1
-jiraone==0.5.0
+jiraone==0.6.0
