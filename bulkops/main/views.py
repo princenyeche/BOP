@@ -210,7 +210,7 @@ def bulk_users():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect.Please check it out"
+            error = "Your token seems to be incorrect.Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -224,104 +224,111 @@ def bulk_users():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |displayName | email|
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loops = len(loop_count)
-                if width[0] > 3:
-                    error = "Expecting a CSV file with max 3 columns not more."
-                    flash(error)
-                elif width[0] < 2:
-                    error = "Invalid number of columns received, please click the \"Need help\" " \
-                            "button to see the expected format."
-                    flash(error)
-                elif width[0] == 2:
-                    # for CSV is |displayName | email|
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
                     # Format for CSV is |displayName | email|
-                    if 1 < number_of_loops < 10:
-                        if form_selection == "JSD":
-                            for u in loop_count:
-                                payload = (
-                                    {
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loops = len(loop_count)
+                    if width[0] > 3:
+                        error = "Expecting a CSV file with max 3 columns not more."
+                        flash(error)
+                    elif width[0] < 2:
+                        error = "Invalid number of columns received, please click the \"Need help\" " \
+                                "button to see the expected format."
+                        flash(error)
+                    elif width[0] == 2:
+                        # for CSV is |displayName | email|
+                        # Format for CSV is |displayName | email|
+                        if 1 < number_of_loops < 10:
+                            if form_selection == "JSD":
+                                for u in loop_count:
+                                    payload = {
                                         "email": u[1],
                                         "displayName": u[0]
 
                                     }
-                                )
-                                data = LOGIN.post(endpoint.create_customer(), payload=payload)
-                            if data.status_code != 201:
-                                error = "Unable to create multiple customer, an error occurred."
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Failure creating bulk JSM users {}".format(u[0])
-                                audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(error)
-                            else:
-                                success = "Multiple customer users created successfully."
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Success in creating bulk JSM users"
-                                audit_log = "SUCCESS: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(success)
-                        elif form_selection == "JIRA":
-                            for u in loop_count:
-                                payload = (
-                                    {
+                                    data = LOGIN.post(endpoint.create_customer(), payload=payload)
+                                if data.status_code != 201:
+                                    error = "Unable to create multiple customer, an error occurred."
+                                    display_name = f"{current_user.username}".capitalize()
+                                    activity = "Failure creating bulk JSM users {}".format(u[0])
+                                    audit_log = "ERROR: {}".format(data.status_code)
+                                    auto_commit(display_name, activity, audit_log)
+                                    os.remove(o)
+                                    flash(error)
+                                else:
+                                    success = "Multiple customer users created successfully."
+                                    display_name = f"{current_user.username}".capitalize()
+                                    activity = "Success in creating bulk JSM users"
+                                    audit_log = "SUCCESS: {}".format(data.status_code)
+                                    auto_commit(display_name, activity, audit_log)
+                                    os.remove(o)
+                                    flash(success)
+                            elif form_selection == "JIRA":
+                                for u in loop_count:
+                                    payload = {
                                         "emailAddress": u[1],
                                         "displayName": u[0]
 
                                     }
-                                )
-                                data = LOGIN.post(endpoint.jira_user(), payload=payload)
-                            if data.status_code != 201:
-                                error = "Unable to create multiple Jira users, something went wrong."
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Failure in creating bulk Jira users {}".format(u[0])
-                                audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(error)
-                            else:
-                                success = "Multiple Jira users created successfully."
-                                display_name = f"{current_user.username}".capitalize()
-                                activity = "Success in creating bulk Jira users"
-                                audit_log = "SUCCESS: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
-                                os.remove(o)
-                                flash(success)
-                    elif number_of_loops > 10:
-                        current_user.launch_jobs("bulk_users_creation", "Bulk creation of users", loop_count,
-                                                 form_selection)
-                        success = "A Job has been submitted for bulk user creation, please check the audit log page " \
-                                  "for the updated result."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
-                elif width[0] == 3:
-                    if form_selection == "JSD":
-                        error = "You cannot add JSM customers to a group, add them to organizations or projects" \
-                                " instead by using the bulk add customer feature " \
-                                "from the in-app menu."
+                                    data = LOGIN.post(endpoint.jira_user(), payload=payload)
+                                if data.status_code != 201:
+                                    error = "Unable to create multiple Jira users, something went wrong."
+                                    display_name = f"{current_user.username}".capitalize()
+                                    activity = "Failure in creating bulk Jira users {}".format(u[0])
+                                    audit_log = "ERROR: {}".format(data.status_code)
+                                    auto_commit(display_name, activity, audit_log)
+                                    os.remove(o)
+                                    flash(error)
+                                else:
+                                    success = "Multiple Jira users created successfully."
+                                    display_name = f"{current_user.username}".capitalize()
+                                    activity = "Success in creating bulk Jira users"
+                                    audit_log = "SUCCESS: {}".format(data.status_code)
+                                    auto_commit(display_name, activity, audit_log)
+                                    os.remove(o)
+                                    flash(success)
+                        elif number_of_loops > 10:
+                            current_user.launch_jobs("bulk_users_creation", "Bulk creation of users", loop_count,
+                                                     form_selection)
+                            success = "A Job has been submitted for bulk user creation, " \
+                                      "please check the audit log page for the updated result."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                    elif width[0] == 3:
+                        if form_selection == "JSD":
+                            error = "You cannot add JSM customers to a group, add them to organizations or projects" \
+                                    " instead by using the bulk add customer feature " \
+                                    "from the in-app menu."
+                            flash(error)
+                        else:
+                            # your CSV should be |displayName|email| groupname|
+                            """
+                            displayName,email,groupname
+                            Prince Nyeche,prince.nyeche@example.com,star-trek~>Managers~>group-managers
+                            Prince Crown,prince.crown@example.com,project-admin~>HR Groups~>IT Managers
+                            """
+                            current_user.launch_jobs("bulk_users_group_creation", "Bulk creation of users and groups",
+                                                     loop_count, form_selection)
+                            success = "A Job has been submitted for bulk users and groups creation, please check " \
+                                      "the audit log page for the updated result."
+                            db.session.commit()
+                            flash(success)
+                            os.remove(o)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
                         flash(error)
-                    else:
-                        # your CSV should be |displayName|email| groupname|
-                        """
-                        displayName,email,groupname
-                        Prince Nyeche,prince.nyeche@example.com,star-trek~>Managers~>group-managers
-                        Prince Crown,prince.crown@example.com,project-admin~>HR Groups~>IT Managers
-                        """
-                        current_user.launch_jobs("bulk_users_group_creation", "Bulk creation of users and groups",
-                                                 loop_count, form_selection)
-                        success = "A Job has been submitted for bulk users and groups creation, please check " \
-                                  "the audit log page for the updated result."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("users/sub_pages/_create_jira_user.html",
                            title=f"Bulk User Creation :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -339,13 +346,11 @@ def bulk_users_creation(user_id, *args):
             if args[1] == "JSD":
                 count = len(args[0])
                 for u in args[0]:
-                    payload = (
-                        {
+                    payload = {
                             "email": u[1],
                             "displayName": u[0]
 
                         }
-                    )
                     data = LOGIN.post(endpoint.create_customer(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
@@ -362,13 +367,11 @@ def bulk_users_creation(user_id, *args):
             elif args[1] == "JIRA":
                 count = len(args[0])
                 for u in args[0]:
-                    payload = (
-                        {
+                    payload = {
                             "emailAddress": u[1],
                             "displayName": u[0]
 
                         }
-                    )
                     data = LOGIN.post(endpoint.jira_user(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
@@ -402,13 +405,11 @@ def bulk_users_group_creation(user_id, *args):
             if args[1] == "JIRA":
                 count = len(args[0])
                 for u in args[0]:
-                    payload = (
-                        {
+                    payload = {
                             "emailAddress": u[1],
                             "displayName": u[0]
 
                         }
-                    )
                     data = LOGIN.post(endpoint.jira_user(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
@@ -421,23 +422,21 @@ def bulk_users_group_creation(user_id, *args):
                         if "accountId" in retrieve:
                             account_id = retrieve.get('accountId')
                             group_names = u[2].split("~>")
-                            for names in group_names:
-                                payload = (
-                                    {
+                            for name in group_names:
+                                payload = {
                                         "accountId": account_id
 
                                     }
-                                )
-                                sub_data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(names)),
+                                sub_data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)),
                                                       payload=payload)
                                 if sub_data.status_code != 201:
                                     display_name = f"{user.username}".capitalize()
-                                    activity = "Failure adding user {} to group {} in bulk".format(u[0], names)
+                                    activity = "Failure adding user {} to group {} in bulk".format(u[0], name)
                                     audit_log = "ERROR: {}".format(sub_data.status_code)
                                     auto_commit_jobs(display_name, activity, audit_log, user)
                                 else:
                                     display_name = f"{user.username}".capitalize()
-                                    activity = "Bulk addition of user {} to group {} successful".format(u[0], names)
+                                    activity = "Bulk addition of user {} to group {} successful".format(u[0], name)
                                     audit_log = "SUCCESS: {}".format(sub_data.status_code)
                                     auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
@@ -450,7 +449,7 @@ def bulk_users_group_creation(user_id, *args):
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
             send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk creation of Jira "
-                                                                      "users and group"})
+                                                                      "users and groups"})
         finally:
             set_job_progress(100)
 
@@ -509,46 +508,57 @@ def bulk_delete():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |id | displayName |
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loop = len(loop_count)
-                if width[0] < 2:
-                    error = "Please check the format for the required file upload, incorrect column detected."
-                    flash(error)
-                elif width[0] > 2:
-                    error = "Your column length is not expected, please check the required format by clicking" \
-                            " the \"Need help\" button above."
-                    flash(error)
-                elif width[0] == 2:
-                    if 1 < number_of_loop < 10:
-                        for u in loop_count:
-                            data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
-                        if data.status_code != 204:
-                            error = "Unable to  delete multiple users, check the audit log for the cause."
-                            display_name = f"{current_user.username}".capitalize()
-                            activity = "Failure in bulk user deletion of {}".format(u[1])
-                            audit_log = "ERROR: {}".format(data.status_code)
-                            auto_commit(display_name, activity, audit_log)
-                            os.remove(o)
-                            flash(error)
-                        else:
-                            success = "Multiple user deletion completed."
-                            display_name = f"{current_user.username}".capitalize()
-                            activity = "Executed successfully, bulk user deletion."
-                            audit_log = "SUCCESS: {}".format(data.status_code)
-                            auto_commit(display_name, activity, audit_log)
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |id | displayName |
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loop = len(loop_count)
+                    if width[0] < 2:
+                        error = "Please check the format for the required file upload, incorrect column detected."
+                        flash(error)
+                    elif width[0] > 2:
+                        error = "Your column length is not expected, please check the required format by clicking" \
+                                " the \"Need help\" button above."
+                        flash(error)
+                    elif width[0] == 2:
+                        if 1 < number_of_loop < 10:
+                            for u in loop_count:
+                                data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
+                            if data.status_code != 204:
+                                error = "Unable to  delete multiple users, check the audit log for the cause."
+                                display_name = f"{current_user.username}".capitalize()
+                                activity = "Failure in bulk user deletion of {}".format(u[1])
+                                audit_log = "ERROR: {}".format(data.status_code)
+                                auto_commit(display_name, activity, audit_log)
+                                os.remove(o)
+                                flash(error)
+                            else:
+                                success = "Multiple user deletion completed."
+                                display_name = f"{current_user.username}".capitalize()
+                                activity = "Executed successfully, bulk user deletion."
+                                audit_log = "SUCCESS: {}".format(data.status_code)
+                                auto_commit(display_name, activity, audit_log)
+                                os.remove(o)
+                                flash(success)
+                        elif number_of_loop > 10:
+                            current_user.launch_jobs("bulk_users_deletion", "Bulk deletion of users", loop_count)
+                            success = "A Job has been submitted for bulk user deletion"
+                            db.session.commit()
                             os.remove(o)
                             flash(success)
-                    elif number_of_loop > 10:
-                        current_user.launch_jobs("bulk_users_deletion", "Bulk deletion of users", loop_count)
-                        success = "A Job has been submitted for bulk user deletion"
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("users/sub_pages/_delete_user.html",
                            title=f"Bulk User Deletion :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -596,7 +606,7 @@ def create_groups():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect. please check it out"
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary statement to ensure our with statement works
@@ -607,12 +617,9 @@ def create_groups():
         k = form.group.data.split(",")
         p = len(k)
         if p == 1:
-            payload = (
-                {
+            payload = {
                     "name": form.group.data
-
                 }
-            )
             data = LOGIN.post(endpoint.jira_group(), payload=payload)
             if data.status_code != 201:
                 error = "Cannot Create Group \"{}\", failure encountered".format(form.group.data)
@@ -631,12 +638,9 @@ def create_groups():
         elif 1 < p < 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
-                    payload = (
-                        {
+                    payload = {
                             "name": uc
-
                         }
-                    )
                     data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 if data.status_code != 201:
                     error = "Cannot create multiple groups, check the audit log for more detail."
@@ -677,12 +681,9 @@ def bulk_create_groups(user_id, *args):
             i = 0
             count = len(args[0])
             for uc in args[0]:
-                payload = (
-                    {
+                payload = {
                         "name": uc
-
                     }
-                )
                 data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
@@ -714,7 +715,7 @@ def delete_groups():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect, please check it out."
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         # an abritary expression to ensure our with statement works
@@ -1003,32 +1004,43 @@ def add_customer():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |account_id | name_of_user|organization name|
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loops = len(loop_count)
-                if width[0] > 3:
-                    error = "Expecting a CSV file with max 3 columns not more."
-                    flash(error)
-                elif width[0] < 2:
-                    error = "Invalid number of columns received, please click the \"Need help\" " \
-                            "button to see the expected format."
-                    flash(error)
-                elif width[0] == 3:
-                    # Format for single addition |account_id|name|org1|
-                    # Format for addition to multiple orgs are |account_id|name|org1~>org2~>org3|
-                    # Format for addition to multiple projects are |account_id |name |ABC~>ITSM~>SD|
-                    if number_of_loops > 0:
-                        current_user.launch_jobs("bulk_add_customer", "Bulk addition of customers", loop_count,
-                                                 form_selection)
-                        success = "A Job has been submitted for bulk addition of customers, " \
-                                  "please check the audit log page for the updated result."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |account_id | name_of_user|organization name|
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loops = len(loop_count)
+                    if width[0] > 3:
+                        error = "Expecting a CSV file with max 3 columns not more."
+                        flash(error)
+                    elif width[0] < 2:
+                        error = "Invalid number of columns received, please click the \"Need help\" " \
+                                "button to see the expected format."
+                        flash(error)
+                    elif width[0] == 3:
+                        # Format for single addition |account_id|name|org1|
+                        # Format for addition to multiple orgs are |account_id|name|org1~>org2~>org3|
+                        # Format for addition to multiple projects are |account_id |name |ABC~>ITSM~>SD|
+                        if number_of_loops > 0:
+                            current_user.launch_jobs("bulk_add_customer", "Bulk addition of customers", loop_count,
+                                                     form_selection)
+                            success = "A Job has been submitted for bulk addition of customers, " \
+                                      "please check the audit log page for the updated result."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/jsm/add_customers.html",
                            title=f"Bulk addition of customer :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -1143,32 +1155,43 @@ def remove_customer():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |account_id | name_of_user|organization name|
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loops = len(loop_count)
-                if width[0] > 3:
-                    error = "Expecting a CSV file with max 3 columns not more."
-                    flash(error)
-                elif width[0] < 2:
-                    error = "Invalid number of columns received, please click the \"Need help\" " \
-                            "button to see the expected format."
-                    flash(error)
-                elif width[0] == 3:
-                    # Format for single removal |account_id|name|org1|
-                    # Format for removal of multiple orgs are |account_id|name|org1~>org2~>org3|
-                    # Format for removal of multiple projects are |account_id |name |ABC~>ITSM~>SD|
-                    if number_of_loops > 0:
-                        current_user.launch_jobs("bulk_remove_customer", "Bulk removal of customers", loop_count,
-                                                 form_selection)
-                        success = "A Job has been submitted for bulk removal of JSM customers, " \
-                                  "please check the audit log page for the updated result."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |account_id | name_of_user|organization name|
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loops = len(loop_count)
+                    if width[0] > 3:
+                        error = "Expecting a CSV file with max 3 columns not more."
+                        flash(error)
+                    elif width[0] < 2:
+                        error = "Invalid number of columns received, please click the \"Need help\" " \
+                                "button to see the expected format."
+                        flash(error)
+                    elif width[0] == 3:
+                        # Format for single removal |account_id|name|org1|
+                        # Format for removal of multiple orgs are |account_id|name|org1~>org2~>org3|
+                        # Format for removal of multiple projects are |account_id |name |ABC~>ITSM~>SD|
+                        if number_of_loops > 0:
+                            current_user.launch_jobs("bulk_remove_customer", "Bulk removal of customers", loop_count,
+                                                     form_selection)
+                            success = "A Job has been submitted for bulk removal of JSM customers, " \
+                                      "please check the audit log page for the updated result."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/jsm/remove_customers.html",
                            title=f"Bulk removal of customer :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -1284,31 +1307,42 @@ def add_org():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |organization name| project key|
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loops = len(loop_count)
-                if width[0] > 2:
-                    error = "Expecting a CSV file with max 2 columns not more."
-                    flash(error)
-                elif width[0] < 2:
-                    error = "Invalid number of columns received, please click the \"Need help\" " \
-                            "button to see the expected format."
-                    flash(error)
-                elif width[0] == 2:
-                    # Format for single addition |org name|ABC|
-                    # Format for addition of multiple orgs are |org name|ABC~>ITSM~>SD|
-                    if number_of_loops > 0:
-                        current_user.launch_jobs("bulk_add_org", "Bulk addition of organization to projects",
-                                                 loop_count)
-                        success = "A Job has been submitted for bulk addition of organization to a project, " \
-                                  "please check the audit log page for the updated result."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |organization name| project key|
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loops = len(loop_count)
+                    if width[0] > 2:
+                        error = "Expecting a CSV file with max 2 columns not more."
+                        flash(error)
+                    elif width[0] < 2:
+                        error = "Invalid number of columns received, please click the \"Need help\" " \
+                                "button to see the expected format."
+                        flash(error)
+                    elif width[0] == 2:
+                        # Format for single addition |org name|ABC|
+                        # Format for addition of multiple orgs are |org name|ABC~>ITSM~>SD|
+                        if number_of_loops > 0:
+                            current_user.launch_jobs("bulk_add_org", "Bulk addition of organization to projects",
+                                                     loop_count)
+                            success = "A Job has been submitted for bulk addition of organization to a project, " \
+                                      "please check the audit log page for the updated result."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/jsm/add_org.html",
                            title=f"Bulk addition of organizations to projects :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1391,31 +1425,42 @@ def remove_org():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |organization name| project key|
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loops = len(loop_count)
-                if width[0] > 2:
-                    error = "Expecting a CSV file with max 2 columns not more."
-                    flash(error)
-                elif width[0] < 2:
-                    error = "Invalid number of columns received, please click the \"Need help\" " \
-                            "button to see the expected format."
-                    flash(error)
-                elif width[0] == 2:
-                    # Format for single removal |org name|ABC|
-                    # Format for removal of multiple orgs are |org name|ABC~>ITSM~>SD|
-                    if number_of_loops > 0:
-                        current_user.launch_jobs("bulk_remove_org", "Bulk removal of organization from projects",
-                                                 loop_count)
-                        success = "A Job has been submitted for bulk removal of organization from a project, " \
-                                  "please check the audit log page for the updated result."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |organization name| project key|
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loops = len(loop_count)
+                    if width[0] > 2:
+                        error = "Expecting a CSV file with max 2 columns not more."
+                        flash(error)
+                    elif width[0] < 2:
+                        error = "Invalid number of columns received, please click the \"Need help\" " \
+                                "button to see the expected format."
+                        flash(error)
+                    elif width[0] == 2:
+                        # Format for single removal |org name|ABC|
+                        # Format for removal of multiple orgs are |org name|ABC~>ITSM~>SD|
+                        if number_of_loops > 0:
+                            current_user.launch_jobs("bulk_remove_org", "Bulk removal of organization from projects",
+                                                     loop_count)
+                            success = "A Job has been submitted for bulk removal of organization from a project, " \
+                                      "please check the audit log page for the updated result."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/jsm/remove_org.html",
                            title=f"Bulk removal of organizations from projects :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1518,7 +1563,7 @@ def bulk_add():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect, please check it out."
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -1532,32 +1577,43 @@ def bulk_add():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |groupName |id | displayName |
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loop = len(loop_count)
-                if width[0] > 3:
-                    error = "Your column should not be greater than 3 max. Please recheck your file."
-                    flash(error)
-                elif width[0] < 3:
-                    error = "Your column length is not expected. Did you check the required file format and how many" \
-                            " columns are needed?"
-                    flash(error)
-                elif width[0] == 3:
-                    if number_of_loop > 1:
-                        current_user.launch_jobs("bulk_add_users", "Bulk add users to groups", loop_count)
-                        success = "A Job has been submitted for bulk addition of users to groups, please check the " \
-                                  "audit log for a completion message..."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
-                    else:
-                        error = "Unable to run task, you must at least submit more than 1 entity of data."
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |groupName |id | displayName |
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loop = len(loop_count)
+                    if width[0] > 3:
+                        error = "Your column should not be greater than 3 max. Please recheck your file."
                         flash(error)
-                        os.remove(o)
+                    elif width[0] < 3:
+                        error = "Your column length is not expected. Did you check the required file format and " \
+                                "how many columns are needed?"
+                        flash(error)
+                    elif width[0] == 3:
+                        if number_of_loop > 1:
+                            current_user.launch_jobs("bulk_add_users", "Bulk add users to groups", loop_count)
+                            success = "A Job has been submitted for bulk addition of users to groups, " \
+                                      "please check the audit log for a completion message..."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                        else:
+                            error = "Unable to run task, you must at least submit more than 1 entity of data."
+                            flash(error)
+                            os.remove(o)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/sub_pages/_add_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -1576,12 +1632,10 @@ def bulk_add_users(user_id, *args):
             for u in args[0]:
                 group_names = u[0].split("~>")
                 for name in group_names:
-                    payload = (
-                        {
+                    payload = {
                             "accountId": u[1]
 
                         }
-                    )
                     data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)), payload=payload)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
@@ -1645,7 +1699,7 @@ def bulk_remove():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect, please check it out"
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -1659,32 +1713,43 @@ def bulk_remove():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                loop_count = [u for u in reader]
-                # Format for CSV is |groupName |id | displayName |
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loop = len(loop_count)
-                if width[0] > 3:
-                    error = "Unexpected number of columns received. A maximum of 3 columns are required."
-                    flash(error)
-                elif width[0] < 3:
-                    error = "Unexpected number of columns received. A minimum of 3 columns are required." \
-                            " Please click the \"Need help\" button to see the format."
-                    flash(error)
-                elif width[0] == 3:
-                    if number_of_loop > 1:
-                        current_user.launch_jobs("bulk_remove_users", "Bulk remove users from groups", loop_count)
-                        success = "A Job has been submitted for bulk removal of users from groups, please check the " \
-                                  "audit log for a completion message."
-                        db.session.commit()
-                        os.remove(o)
-                        flash(success)
-                    else:
-                        error = "Unable to run task, you must at least submit more than 1 entity of data."
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    loop_count = [u for u in reader]
+                    # Format for CSV is |groupName |id | displayName |
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read if k]  # get the number of columns
+                    number_of_loop = len(loop_count)
+                    if width[0] > 3:
+                        error = "Unexpected number of columns received. A maximum of 3 columns are required."
                         flash(error)
-                        os.remove(o)
+                    elif width[0] < 3:
+                        error = "Unexpected number of columns received. A minimum of 3 columns are required." \
+                                " Please click the \"Need help\" button to see the format."
+                        flash(error)
+                    elif width[0] == 3:
+                        if number_of_loop > 1:
+                            current_user.launch_jobs("bulk_remove_users", "Bulk remove users from groups", loop_count)
+                            success = "A Job has been submitted for bulk removal of users from groups, " \
+                                      "please check the audit log for a completion message."
+                            db.session.commit()
+                            os.remove(o)
+                            flash(success)
+                        else:
+                            error = "Unable to run task, you must at least submit more than 1 entity of data."
+                            flash(error)
+                            os.remove(o)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1835,7 +1900,7 @@ def delete_issue():
     error = None
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect, please check it out"
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         q = form.issues.data.split(",")
@@ -2044,7 +2109,7 @@ def bulk_lead():
     create_dir(our_dir, save_path)
     if request.method == "GET":
         if check_token_valid().status_code != 200:
-            error = "Your token seems to be incorrect, please check it out"
+            error = "Your token seems to be incorrect. Please check it out."
             flash(error)
     if request.method == "POST" and form.validate_on_submit():
         f = form.docs.data
@@ -2058,55 +2123,66 @@ def bulk_lead():
             flash(error)
         else:
             with open(o, "r") as csv_file:
-                reader = csv.reader(csv_file, delimiter=delimiter)
-                next(reader, None)
-                # Format for CSV is |id | key | assignee_type |
-                loop_count = [u for u in reader]
-                another_read = deepcopy(loop_count)
-                width = [len(k) for k in another_read if k]  # get the number of columns
-                number_of_loop = len(loop_count)
-                if width[0] > 3:
-                    error = "Please check the required columns expected for this operation by clicking " \
-                            "the \"Need help\" button above."
-                    flash(error)
-                elif width[0] < 3:
-                    error = "A minimum of 3 columns are required in your uploaded file, please check again."
-                    flash(error)
-                elif width[0] == 3:
-                    if 1 < number_of_loop < 10:
-                        for u in loop_count:
-                            payload = (
-                                {
-                                    "leadAccountId": u[0],
-                                    "assigneeType": u[2],
-                                    "key": u[1],
+                try:
+                    reader = csv.reader(csv_file, delimiter=delimiter)
+                    next(reader, None)
+                    # Format for CSV is |id | key | assignee_type |
+                    loop_count = [u for u in reader]
+                    another_read = deepcopy(loop_count)
+                    width = [len(k) for k in another_read]  # get the number of columns
+                    number_of_loop = len(loop_count)
+                    if width[0] > 3:
+                        error = "Please check the required columns expected for this operation by clicking " \
+                                "the \"Need help\" button above."
+                        flash(error)
+                    elif width[0] < 3:
+                        error = "A minimum of 3 columns are required in your uploaded file, please check again."
+                        flash(error)
+                    elif width[0] == 3:
+                        if 1 < number_of_loop < 10:
+                            for u in loop_count:
+                                payload = (
+                                    {
+                                        "leadAccountId": u[0],
+                                        "assigneeType": u[2],
+                                        "key": u[1],
 
-                                }
-                            )
-                            data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
-                        if data.status_code != 200:
-                            error = "Cannot change multiple project lead project due to an error!"
-                            display_name = f"{current_user.username}".capitalize()
-                            activity = "Error, bulk changing project lead"
-                            audit_log = "ERROR: {}".format(data.status_code)
-                            auto_commit(display_name, activity, audit_log)
-                            os.remove(o)
-                            flash(error)
-                        else:
-                            success = "Multiple project lead change completed."
-                            display_name = f"{current_user.username}".capitalize()
-                            activity = "Bulk project lead change successful"
-                            audit_log = "SUCCESS: {}".format(data.status_code)
-                            auto_commit(display_name, activity, audit_log)
-                            os.remove(o)
+                                    }
+                                )
+                                data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
+                            if data.status_code != 200:
+                                error = "Cannot change multiple project lead project due to an error!"
+                                display_name = f"{current_user.username}".capitalize()
+                                activity = "Error, bulk changing project lead"
+                                audit_log = "ERROR: {}".format(data.status_code)
+                                auto_commit(display_name, activity, audit_log)
+                                os.remove(o)
+                                flash(error)
+                            else:
+                                success = "Multiple project lead change completed."
+                                display_name = f"{current_user.username}".capitalize()
+                                activity = "Bulk project lead change successful"
+                                audit_log = "SUCCESS: {}".format(data.status_code)
+                                auto_commit(display_name, activity, audit_log)
+                                os.remove(o)
+                                flash(success)
+                        elif number_of_loop > 10:
+                            current_user.launch_jobs("bulk_project_lead", "Bulk change project lead", loop_count)
+                            success = "A Job has been submitted for bulk change of project leads. Please check the " \
+                                      "audit log for a completion message..."
+                            db.session.commit()
                             flash(success)
-                    elif number_of_loop > 10:
-                        current_user.launch_jobs("bulk_project_lead", "Bulk change project lead", loop_count)
-                        success = "A Job has been submitted for bulk change of project leads. Please check the " \
-                                  "audit log for a completion message..."
-                        db.session.commit()
-                        flash(success)
-                        os.remove(o)
+                            os.remove(o)
+                except (TypeError, IndexError, UnicodeDecodeError) as err:
+                    if isinstance(err, TypeError):
+                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, IndexError):
+                        error = "The file you've uploaded is missing some rows: {}".format(err)
+                        flash(error)
+                    elif isinstance(err, UnicodeDecodeError):
+                        error = "There's an incompatible character used on the text in your file: {}".format(err)
+                        flash(error)
     return render_template("pages/sub_pages/_change_lead.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -2123,14 +2199,12 @@ def bulk_project_lead(user_id, *args):
             i = 0
             count = len(args[0])
             for u in args[0]:
-                payload = (
-                    {
+                payload = {
                         "leadAccountId": u[0],
                         "assigneeType": u[2],
                         "key": u[1],
 
                     }
-                )
                 data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
@@ -2169,7 +2243,7 @@ def audit():
     next_url = url_for("audit", page=logs.next_num) if logs.has_next else None
     prev_url = url_for("audit", page=logs.prev_num) if logs.has_prev else None
     return render_template("/config/audit.html", title=f"Audit Log :: {bulk.config['APP_NAME_SINGLE']}",
-                           logs=logs.items, next_url=next_url, prev_url=prev_url, Messages=Messages, 
+                           logs=logs.items, next_url=next_url, prev_url=prev_url, Messages=Messages,
                            tasks=tasks, elapse=elapse, parser=now, cool_down=cool_down)
 
 
