@@ -1067,7 +1067,6 @@ def bulk_add_customer(user_id, *args):
                 get_org = filter_jsm(LOGIN.get(attr(0, 100)).json(), list_of_col,
                                      types=True if form_select == "JSM_ORG" else False)
                 list_of_col.clear()
-                count = len(id_of_request)
                 name_list = {}
                 for customer in id_of_request:
                     row_list = data_dog._make(customer)
@@ -1089,6 +1088,7 @@ def bulk_add_customer(user_id, *args):
                                     name_list.get(str(_ids.get("id"))).append(_row_list.accountId)
 
                 # At this point, account_id is suppose to be a list of users in the item.
+                count = len(name_list)
                 for attr_id, account_id in name_list.items():
                     payload = {"accountIds": account_id}
                     attr_post = getattr(endpoint, "add_customers" if form_select == "JSM_PROJ"
@@ -1218,7 +1218,6 @@ def bulk_remove_customer(user_id, *args):
                 fetch_org = filter_jsm(LOGIN.get(rem_attr(0, 100)).json(), cols,
                                        types=True if select_form == "JSM_ORG" else False)
                 cols.clear()
-                count = len(request_id)
                 data_list = {}
                 for customer in request_id:
                     row_cell = data_dog._make(customer)
@@ -1240,6 +1239,7 @@ def bulk_remove_customer(user_id, *args):
                                     data_list.get(str(_ids.get("id"))).append(_row_cell.accountId)
 
                 # At this point, account_id is suppose to be a list of users in the item.
+                count = len(data_list)
                 for attr_id, account_id in data_list.items():
                     payload = {"accountIds": account_id}
                     attr_delete = getattr(endpoint, "remove_customers" if select_form == "JSM_PROJ"
