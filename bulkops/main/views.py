@@ -242,7 +242,7 @@ def bulk_users():
                     elif width[0] == 2:
                         # for CSV is |displayName | email|
                         # Format for CSV is |displayName | email|
-                        if 1 < number_of_loops < 10:
+                        if 1 < number_of_loops <= 10:
                             if form_selection == "JSD":
                                 for u in loop_count:
                                     payload = {
@@ -524,7 +524,7 @@ def bulk_delete():
                                 " the \"Need help\" button above."
                         flash(error)
                     elif width[0] == 2:
-                        if 1 < number_of_loop < 10:
+                        if 1 < number_of_loop <= 10:
                             for u in loop_count:
                                 data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
                             if data.status_code != 204:
@@ -635,7 +635,7 @@ def create_groups():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 10:
+        elif 1 < p <= 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = {
@@ -741,7 +741,7 @@ def delete_groups():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 10:
+        elif 1 < p <= 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
@@ -842,7 +842,7 @@ def create_org():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < org < 7:
+        elif 1 < org <= 7:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = {"name": uc}
@@ -1825,7 +1825,7 @@ def projects():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 3:
+        elif 1 < p <= 3:
             with open(s_path, "r") as _opr:
                 for z in f:
                     data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=form.undo.data))
@@ -2139,7 +2139,7 @@ def bulk_lead():
                         error = "A minimum of 3 columns are required in your uploaded file, please check again."
                         flash(error)
                     elif width[0] == 3:
-                        if 1 < number_of_loop < 10:
+                        if 1 < number_of_loop <= 10:
                             for u in loop_count:
                                 payload = (
                                     {
