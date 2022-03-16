@@ -1015,7 +1015,7 @@ def add_customer():
                     if width[0] > 3:
                         error = "Expecting a CSV file with max 3 columns not more."
                         flash(error)
-                    elif width[0] < 2:
+                    elif width[0] <= 2:
                         error = "Invalid number of columns received, please click the \"Need help\" " \
                                 "button to see the expected format."
                         flash(error)
@@ -1166,7 +1166,7 @@ def remove_customer():
                     if width[0] > 3:
                         error = "Expecting a CSV file with max 3 columns not more."
                         flash(error)
-                    elif width[0] < 2:
+                    elif width[0] <= 2:
                         error = "Invalid number of columns received, please click the \"Need help\" " \
                                 "button to see the expected format."
                         flash(error)
