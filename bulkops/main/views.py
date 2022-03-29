@@ -242,7 +242,7 @@ def bulk_users():
                     elif width[0] == 2:
                         # for CSV is |displayName | email|
                         # Format for CSV is |displayName | email|
-                        if 1 < number_of_loops < 10:
+                        if 1 < number_of_loops <= 10:
                             if form_selection == "JSD":
                                 for u in loop_count:
                                     payload = {
@@ -524,7 +524,7 @@ def bulk_delete():
                                 " the \"Need help\" button above."
                         flash(error)
                     elif width[0] == 2:
-                        if 1 < number_of_loop < 10:
+                        if 1 < number_of_loop <= 10:
                             for u in loop_count:
                                 data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
                             if data.status_code != 204:
@@ -635,7 +635,7 @@ def create_groups():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 10:
+        elif 1 < p <= 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = {
@@ -741,7 +741,7 @@ def delete_groups():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 10:
+        elif 1 < p <= 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
@@ -842,7 +842,7 @@ def create_org():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < org < 7:
+        elif 1 < org <= 7:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = {"name": uc}
@@ -1015,7 +1015,7 @@ def add_customer():
                     if width[0] > 3:
                         error = "Expecting a CSV file with max 3 columns not more."
                         flash(error)
-                    elif width[0] < 2:
+                    elif width[0] <= 2:
                         error = "Invalid number of columns received, please click the \"Need help\" " \
                                 "button to see the expected format."
                         flash(error)
@@ -1067,7 +1067,6 @@ def bulk_add_customer(user_id, *args):
                 get_org = filter_jsm(LOGIN.get(attr(0, 100)).json(), list_of_col,
                                      types=True if form_select == "JSM_ORG" else False)
                 list_of_col.clear()
-                count = len(id_of_request)
                 name_list = {}
                 for customer in id_of_request:
                     row_list = data_dog._make(customer)
@@ -1089,6 +1088,7 @@ def bulk_add_customer(user_id, *args):
                                     name_list.get(str(_ids.get("id"))).append(_row_list.accountId)
 
                 # At this point, account_id is suppose to be a list of users in the item.
+                count = len(name_list)
                 for attr_id, account_id in name_list.items():
                     payload = {"accountIds": account_id}
                     attr_post = getattr(endpoint, "add_customers" if form_select == "JSM_PROJ"
@@ -1166,7 +1166,7 @@ def remove_customer():
                     if width[0] > 3:
                         error = "Expecting a CSV file with max 3 columns not more."
                         flash(error)
-                    elif width[0] < 2:
+                    elif width[0] <= 2:
                         error = "Invalid number of columns received, please click the \"Need help\" " \
                                 "button to see the expected format."
                         flash(error)
@@ -1218,7 +1218,6 @@ def bulk_remove_customer(user_id, *args):
                 fetch_org = filter_jsm(LOGIN.get(rem_attr(0, 100)).json(), cols,
                                        types=True if select_form == "JSM_ORG" else False)
                 cols.clear()
-                count = len(request_id)
                 data_list = {}
                 for customer in request_id:
                     row_cell = data_dog._make(customer)
@@ -1240,6 +1239,7 @@ def bulk_remove_customer(user_id, *args):
                                     data_list.get(str(_ids.get("id"))).append(_row_cell.accountId)
 
                 # At this point, account_id is suppose to be a list of users in the item.
+                count = len(data_list)
                 for attr_id, account_id in data_list.items():
                     payload = {"accountIds": account_id}
                     attr_delete = getattr(endpoint, "remove_customers" if select_form == "JSM_PROJ"
@@ -1825,7 +1825,7 @@ def projects():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p < 3:
+        elif 1 < p <= 3:
             with open(s_path, "r") as _opr:
                 for z in f:
                     data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=form.undo.data))
@@ -2139,7 +2139,7 @@ def bulk_lead():
                         error = "A minimum of 3 columns are required in your uploaded file, please check again."
                         flash(error)
                     elif width[0] == 3:
-                        if 1 < number_of_loop < 10:
+                        if 1 < number_of_loop <= 10:
                             for u in loop_count:
                                 payload = (
                                     {
@@ -2592,7 +2592,7 @@ def filter_jsm(maps: t.Mapping, queue: t.Deque, types: bool = True) -> t.List:
     """
 
     while True:
-        next_page = maps.get("next") if "next" in maps and maps.get("isLastPage") is False else []
+        next_page = maps.get("_links").get("next") if "_links" in maps and maps.get("isLastPage") is False else []
         for filter_name in maps.get("values"):
             filter_data = {
                 "id": filter_name['id'],

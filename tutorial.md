@@ -23,6 +23,9 @@ The below documentation outlines, the basic use cases of the app and how you can
 ## Issues and troubleshooting
 * [Troubleshooting BulkOps app for Jira](https://github.com/princenyeche/BOP/wiki/Troubleshooting-BulkOps-app-for-Jira)
 
+## Articles 
+* [BulkOps app for Jira articles](https://github.com/princenyeche/BOP/wiki/Articles-on-BulkOps-app-for-Jira)
+
 ## Use cases
 ### Cloud to cloud import of users
 * User migration (cloud to cloud or even server to cloud or DC to cloud)? Yes, you can be able to use this app to perform not just the user creation but add those users to their rightful groups as well with the click of a button and using a CSV file to design your data. Check the app help menu to see the format to creating and adding users to multiple groups at the same time.
