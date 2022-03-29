@@ -2592,7 +2592,7 @@ def filter_jsm(maps: t.Mapping, queue: t.Deque, types: bool = True) -> t.List:
     """
 
     while True:
-        next_page = maps.get("next") if "next" in maps and maps.get("isLastPage") is False else []
+        next_page = maps.get("_links").get("next") if "_links" in maps and maps.get("isLastPage") is False else []
         for filter_name in maps.get("values"):
             filter_data = {
                 "id": filter_name['id'],
