@@ -7,6 +7,7 @@ import os
 
 rand = os.urandom(16)
 randa = os.urandom(20)
+rom = os.urandom(20)
 basedir = os.path.abspath(os.path.dirname(__file__))
 # if running on a linux server, uncomment below
 # load_dotenv(os.path.join(basedir, '.env'))
@@ -20,6 +21,7 @@ class Config(object):
                                                        "sqlite:///" + os.path.join(basedir, "bulkops.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECURITY_SALT = os.environ.get("SECURITY_SALT") or f"{randa}"
+    SECRET_SAUCE = os.environ.get("SECRET_SAUCE") or f"{rom}"
 
     # mail configuration
     MAIL_SERVER = os.environ.get("MAIL_SERVER")
@@ -59,3 +61,4 @@ class Config(object):
     TODAY = os.environ.get("TODAY") or "2021-12-23 15:39:07.437753"
     COOL_DOWN = os.environ.get("COOL_DOWN") or "30m"
     COUNT_DOWN = int(os.environ.get("COUNT_DOWN") or 30)
+    CIPHERS = os.environ.get("CIPHERS") or ""
