@@ -28,3 +28,4 @@ Werkzeug==2.1.0
 redis==4.2.0
 rq==1.10.1
 jiraone==0.6.0
+mistyfy==2.0.2
