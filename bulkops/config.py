@@ -61,4 +61,4 @@ class Config(object):
     TODAY = os.environ.get("TODAY") or "2021-12-23 15:39:07.437753"
     COOL_DOWN = os.environ.get("COOL_DOWN") or "30m"
     COUNT_DOWN = int(os.environ.get("COUNT_DOWN") or 30)
-    CIPHERS = os.environ.get("CIPHERS") or ""
+    CIPHERS = os.environ.get("CIPHERS") or "not this one"
