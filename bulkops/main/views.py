@@ -6,6 +6,7 @@ import sys
 import time
 import string
 import typing as t
+import mistyfy as ms
 from copy import deepcopy
 from datetime import datetime, timedelta
 from collections import deque, namedtuple
@@ -39,7 +40,10 @@ if not os.path.exists(our_dir):
 @validate_account
 def index():
     data = None
-    LOGIN(user=current_user.email, password=current_user.token, url="https://{}".format(current_user.instances))
+    LOGIN(user=current_user.email, 
+          password=ms.decode(current_user.token, bulk.config["SECRET_SAUCE"], 
+                             json.loads(bulk.config["CIPHERS"])), 
+          url="https://{}".format(current_user.instances))
     today = bulk.config["TODAY"]
     today_parse = datetime.strptime(today, "%Y-%m-%d %H:%M:%S.%f")
     next_thirty = timedelta(days=30)
@@ -2512,7 +2516,8 @@ def account_delete():
 def tokens():
     form = TokenForm()
     if form.validate_on_submit():
-        current_user.token = form.token.data
+        current_user.token = ms.encode(form.token.data, bulk.config["SECRET_SAUCE"],
+                                      json.loads(bulk.config["CIPHERS"]))
         db.session.commit()
         flash("Your API token has been saved!")
         return redirect(url_for("config"))
