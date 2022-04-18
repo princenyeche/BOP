@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v4.0.1 - (12 April 2022)
+## Update
+* Dependency updates
+* Fix to `filter_jsm` function
+
+
 ## v4.0.0 - (23 December 2021)
 ## Update
 * Bump dependency for Jiraone to v0.4.8
