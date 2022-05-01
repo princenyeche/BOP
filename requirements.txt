@@ -12,7 +12,7 @@ Jinja2==3.1.2
 Mako==1.2.0
 Markdown==3.3.6
 MarkupSafe==2.1.1
-SQLAlchemy==1.4.32
+SQLAlchemy==1.4.36
 urllib3==1.26.9
 WTForms==3.0.1
 PyJWT==2.3.0
