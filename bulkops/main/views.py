@@ -242,7 +242,10 @@ def bulk_users():
                     elif width[0] == 2:
                         # for CSV is |displayName | email|
                         # Format for CSV is |displayName | email|
-                        if 1 < number_of_loops <= 10:
+                        if number_of_loops <= 1:
+                            error = "You need to have more than 1 record to perform a bulk operation."
+                            flash(error)
+                        elif 1 < number_of_loops < 10:
                             if form_selection == "JSD":
                                 for u in loop_count:
                                     payload = {
@@ -320,15 +323,8 @@ def bulk_users():
                             flash(success)
                             os.remove(o)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("users/sub_pages/_create_jira_user.html",
                            title=f"Bulk User Creation :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -347,10 +343,10 @@ def bulk_users_creation(user_id, *args):
                 count = len(args[0])
                 for u in args[0]:
                     payload = {
-                            "email": u[1],
-                            "displayName": u[0]
+                        "email": u[1],
+                        "displayName": u[0]
 
-                        }
+                    }
                     data = LOGIN.post(endpoint.create_customer(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
@@ -368,10 +364,10 @@ def bulk_users_creation(user_id, *args):
                 count = len(args[0])
                 for u in args[0]:
                     payload = {
-                            "emailAddress": u[1],
-                            "displayName": u[0]
+                        "emailAddress": u[1],
+                        "displayName": u[0]
 
-                        }
+                    }
                     data = LOGIN.post(endpoint.jira_user(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
@@ -406,10 +402,10 @@ def bulk_users_group_creation(user_id, *args):
                 count = len(args[0])
                 for u in args[0]:
                     payload = {
-                            "emailAddress": u[1],
-                            "displayName": u[0]
+                        "emailAddress": u[1],
+                        "displayName": u[0]
 
-                        }
+                    }
                     data = LOGIN.post(endpoint.jira_user(), payload=payload)
                     i += 1
                     set_job_progress(100 * i // count)
@@ -424,9 +420,9 @@ def bulk_users_group_creation(user_id, *args):
                             group_names = u[2].split("~>")
                             for name in group_names:
                                 payload = {
-                                        "accountId": account_id
+                                    "accountId": account_id
 
-                                    }
+                                }
                                 sub_data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)),
                                                       payload=payload)
                                 if sub_data.status_code != 201:
@@ -524,7 +520,10 @@ def bulk_delete():
                                 " the \"Need help\" button above."
                         flash(error)
                     elif width[0] == 2:
-                        if 1 < number_of_loop <= 10:
+                        if number_of_loops <= 1:
+                            error = "You need to have more than 1 record to perform a bulk operation."
+                            flash(error)
+                        elif 1 < number_of_loop < 10:
                             for u in loop_count:
                                 data = LOGIN.delete(endpoint.jira_user(account_id="{}".format(u[0])))
                             if data.status_code != 204:
@@ -550,15 +549,8 @@ def bulk_delete():
                             os.remove(o)
                             flash(success)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("users/sub_pages/_delete_user.html",
                            title=f"Bulk User Deletion :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -618,8 +610,8 @@ def create_groups():
         p = len(k)
         if p == 1:
             payload = {
-                    "name": form.group.data
-                }
+                "name": form.group.data
+            }
             data = LOGIN.post(endpoint.jira_group(), payload=payload)
             if data.status_code != 201:
                 error = "Cannot Create Group \"{}\", failure encountered".format(form.group.data)
@@ -635,12 +627,12 @@ def create_groups():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p <= 10:
+        elif 1 < p < 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = {
-                            "name": uc
-                        }
+                        "name": uc
+                    }
                     data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 if data.status_code != 201:
                     error = "Cannot create multiple groups, check the audit log for more detail."
@@ -682,8 +674,8 @@ def bulk_create_groups(user_id, *args):
             count = len(args[0])
             for uc in args[0]:
                 payload = {
-                        "name": uc
-                    }
+                    "name": uc
+                }
                 data = LOGIN.post(endpoint.jira_group(), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
@@ -741,7 +733,7 @@ def delete_groups():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p <= 10:
+        elif 1 < p < 10:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     data = LOGIN.delete(endpoint.jira_group(group_name="{}".format(uc)))
@@ -842,7 +834,7 @@ def create_org():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < org <= 7:
+        elif 1 < org < 7:
             with open(s_path, "r") as _opr:
                 for uc in k:
                     payload = {"name": uc}
@@ -1015,7 +1007,7 @@ def add_customer():
                     if width[0] > 3:
                         error = "Expecting a CSV file with max 3 columns not more."
                         flash(error)
-                    elif width[0] <= 2:
+                    elif width[0] < 2:
                         error = "Invalid number of columns received, please click the \"Need help\" " \
                                 "button to see the expected format."
                         flash(error)
@@ -1032,15 +1024,8 @@ def add_customer():
                             os.remove(o)
                             flash(success)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/jsm/add_customers.html",
                            title=f"Bulk addition of customer :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -1067,6 +1052,7 @@ def bulk_add_customer(user_id, *args):
                 get_org = filter_jsm(LOGIN.get(attr(0, 100)).json(), list_of_col,
                                      types=True if form_select == "JSM_ORG" else False)
                 list_of_col.clear()
+                count = len(id_of_request)
                 name_list = {}
                 for customer in id_of_request:
                     row_list = data_dog._make(customer)
@@ -1088,7 +1074,6 @@ def bulk_add_customer(user_id, *args):
                                     name_list.get(str(_ids.get("id"))).append(_row_list.accountId)
 
                 # At this point, account_id is suppose to be a list of users in the item.
-                count = len(name_list)
                 for attr_id, account_id in name_list.items():
                     payload = {"accountIds": account_id}
                     attr_post = getattr(endpoint, "add_customers" if form_select == "JSM_PROJ"
@@ -1166,7 +1151,7 @@ def remove_customer():
                     if width[0] > 3:
                         error = "Expecting a CSV file with max 3 columns not more."
                         flash(error)
-                    elif width[0] <= 2:
+                    elif width[0] < 2:
                         error = "Invalid number of columns received, please click the \"Need help\" " \
                                 "button to see the expected format."
                         flash(error)
@@ -1183,15 +1168,8 @@ def remove_customer():
                             os.remove(o)
                             flash(success)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/jsm/remove_customers.html",
                            title=f"Bulk removal of customer :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -1218,6 +1196,7 @@ def bulk_remove_customer(user_id, *args):
                 fetch_org = filter_jsm(LOGIN.get(rem_attr(0, 100)).json(), cols,
                                        types=True if select_form == "JSM_ORG" else False)
                 cols.clear()
+                count = len(request_id)
                 data_list = {}
                 for customer in request_id:
                     row_cell = data_dog._make(customer)
@@ -1239,7 +1218,6 @@ def bulk_remove_customer(user_id, *args):
                                     data_list.get(str(_ids.get("id"))).append(_row_cell.accountId)
 
                 # At this point, account_id is suppose to be a list of users in the item.
-                count = len(data_list)
                 for attr_id, account_id in data_list.items():
                     payload = {"accountIds": account_id}
                     attr_delete = getattr(endpoint, "remove_customers" if select_form == "JSM_PROJ"
@@ -1334,15 +1312,8 @@ def add_org():
                             os.remove(o)
                             flash(success)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/jsm/add_org.html",
                            title=f"Bulk addition of organizations to projects :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1452,15 +1423,8 @@ def remove_org():
                             os.remove(o)
                             flash(success)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/jsm/remove_org.html",
                            title=f"Bulk removal of organizations from projects :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1605,15 +1569,8 @@ def bulk_add():
                             flash(error)
                             os.remove(o)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/sub_pages/_add_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}", error=error,
                            success=success, form=form, Messages=Messages)
@@ -1633,9 +1590,9 @@ def bulk_add_users(user_id, *args):
                 group_names = u[0].split("~>")
                 for name in group_names:
                     payload = {
-                            "accountId": u[1]
+                        "accountId": u[1]
 
-                        }
+                    }
                     data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)), payload=payload)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
@@ -1741,15 +1698,8 @@ def bulk_remove():
                             flash(error)
                             os.remove(o)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/sub_pages/_remove_group.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -1825,7 +1775,7 @@ def projects():
                 audit_log = "SUCCESS: {}".format(data.status_code)
                 auto_commit(display_name, activity, audit_log)
                 flash(success)
-        elif 1 < p <= 3:
+        elif 1 < p < 3:
             with open(s_path, "r") as _opr:
                 for z in f:
                     data = LOGIN.delete(endpoint.projects(id_or_key=z, enable_undo=form.undo.data))
@@ -2139,7 +2089,10 @@ def bulk_lead():
                         error = "A minimum of 3 columns are required in your uploaded file, please check again."
                         flash(error)
                     elif width[0] == 3:
-                        if 1 < number_of_loop <= 10:
+                        if number_of_loops <= 1:
+                            error = "You need to have more than 1 record to perform a bulk operation."
+                            flash(error)
+                        elif 1 < number_of_loop < 10:
                             for u in loop_count:
                                 payload = (
                                     {
@@ -2174,15 +2127,8 @@ def bulk_lead():
                             flash(success)
                             os.remove(o)
                 except (TypeError, IndexError, UnicodeDecodeError) as err:
-                    if isinstance(err, TypeError):
-                        error = "You're using multiple separator in your file as delimiter: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, IndexError):
-                        error = "The file you've uploaded is missing some rows: {}".format(err)
-                        flash(error)
-                    elif isinstance(err, UnicodeDecodeError):
-                        error = "There's an incompatible character used on the text in your file: {}".format(err)
-                        flash(error)
+                    error = capture_exceptions(err)
+                    flash(error)
     return render_template("pages/sub_pages/_change_lead.html",
                            title=f"Bulk Add Users to Groups :: {bulk.config['APP_NAME_SINGLE']}",
                            error=error, success=success, form=form, Messages=Messages)
@@ -2200,11 +2146,11 @@ def bulk_project_lead(user_id, *args):
             count = len(args[0])
             for u in args[0]:
                 payload = {
-                        "leadAccountId": u[0],
-                        "assigneeType": u[2],
-                        "key": u[1],
+                    "leadAccountId": u[0],
+                    "assigneeType": u[2],
+                    "key": u[1],
 
-                    }
+                }
                 data = LOGIN.put(endpoint.projects(u[1]), payload=payload)
                 i += 1
                 set_job_progress(100 * i // count)
@@ -2592,7 +2538,7 @@ def filter_jsm(maps: t.Mapping, queue: t.Deque, types: bool = True) -> t.List:
     """
 
     while True:
-        next_page = maps.get("_links").get("next") if "_links" in maps and maps.get("isLastPage") is False else []
+        next_page = maps.get("next") if "next" in maps and maps.get("isLastPage") is False else []
         for filter_name in maps.get("values"):
             filter_data = {
                 "id": filter_name['id'],
@@ -2610,3 +2556,23 @@ def filter_jsm(maps: t.Mapping, queue: t.Deque, types: bool = True) -> t.List:
         if _maps.status_code < 300:
             maps = _maps.json()
     return [s for s in queue]
+
+
+def capture_exceptions(err, error=None) -> str:
+    """Returns an error message detected.
+
+    :param err: Any object as exception
+
+    :param error: A string of the error message, default is None.
+
+    :returns: string
+
+    """
+    if isinstance(err, TypeError):
+        error = "You're using multiple separator in your file as delimiter: {}".format(err)
+    elif isinstance(err, IndexError):
+        error = "The file you've uploaded is missing some rows: {}".format(err)
+    elif isinstance(err, UnicodeDecodeError):
+        error = "There's an incompatible character used on the text in your file: {}".format(err)
+
+    return error
