@@ -242,7 +242,7 @@ def bulk_users():
                     elif width[0] == 2:
                         # for CSV is |displayName | email|
                         # Format for CSV is |displayName | email|
-                        if number_of_loops < 1:
+                        if number_of_loops == 1:
                             error = "You need to have more than 1 record to perform a bulk operation."
                             flash(error)
                         elif 1 < number_of_loops <= 10:
@@ -520,7 +520,7 @@ def bulk_delete():
                                 " the \"Need help\" button above."
                         flash(error)
                     elif width[0] == 2:
-                        if number_of_loop < 1:
+                        if number_of_loop == 1:
                             error = "You need to have more than 1 record to perform a bulk operation."
                             flash(error)
                         elif 1 < number_of_loop <= 10:
@@ -2089,7 +2089,7 @@ def bulk_lead():
                         error = "A minimum of 3 columns are required in your uploaded file, please check again."
                         flash(error)
                     elif width[0] == 3:
-                        if number_of_loop < 1:
+                        if number_of_loop == 1:
                             error = "You need to have more than 1 record to perform a bulk operation."
                             flash(error)
                         elif 1 < number_of_loop <= 10:
