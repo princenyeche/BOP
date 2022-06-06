@@ -27,4 +27,4 @@ email_validator
 Werkzeug==2.1.2
 redis==4.3.1
 rq==1.10.1
-jiraone==0.6.2
+jiraone==0.6.3
