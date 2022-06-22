@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+
+## v4.0.3 - (22 June 2022)
+## Update
+* Dependency update
+* Rewrote exceptions on bulk upload into a function called `capture_exceptions`
+* Added error message when a single record is used for bulk operation.
+
+
 ## v4.0.2 - (25 May 2022)
 ## Update
 * Dependency update
