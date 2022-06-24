@@ -380,7 +380,8 @@ def bulk_users_creation(user_id, *args):
                         activity = "Success in creating bulk JIRA users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
-                send_app_messages(admin, user, {"success": "Successful", "job": "Bulk creation of Jira users"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk creation of Jira users"
+                                            if args[1] == "JIRA" else "Bulk creation of JSM users"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
             send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk creation of Jira users"})
