@@ -529,9 +529,12 @@ def bulk_delete():
                             if data.status_code != 204:
                                 error = "Unable to  delete multiple users, check the audit log for the cause."
                                 display_name = f"{current_user.username}".capitalize()
-                                activity = "Failure in bulk user deletion of {}".format(u[1])
+                                activity = "Failure in bulk user deletion of {}; {}".\
+                                    format(u[1], json.loads(data.content)["errorMessages"])
                                 audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
+                                auto_commit(display_name, 
+                                            activity if len(activity) < 215 else truncate(activity), 
+                                            audit_log)
                                 os.remove(o)
                                 flash(error)
                             else:
