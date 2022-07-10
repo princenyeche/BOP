@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 
+## v4.0.4 - (10 July 2022)
+## Update
+* Dependency update
+* Added potential fix to inform more information on 400 errors on bulk deletion.
+  * Introduced a new function called `truncate` which helps in reducing the activity column text prior to saving to DB.
+  
+
 ## v4.0.3 - (22 June 2022)
 ## Update
 * Dependency update

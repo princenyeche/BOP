@@ -380,7 +380,8 @@ def bulk_users_creation(user_id, *args):
                         activity = "Success in creating bulk JIRA users"
                         audit_log = "SUCCESS: {}".format(data.status_code)
                         auto_commit_jobs(display_name, activity, audit_log, user)
-                send_app_messages(admin, user, {"success": "Successful", "job": "Bulk creation of Jira users"})
+            send_app_messages(admin, user, {"success": "Successful", "job": "Bulk creation of Jira users"
+                                            if args[1] == "JIRA" else "Bulk creation of JSM users"})
         except Exception as e:
             bulk.logger.error('Unhandled exception', exc_info=sys.exc_info())
             send_error_messages(admin, user, {"error": f"{e}", "job": "Failure in bulk creation of Jira users"})
@@ -528,9 +529,12 @@ def bulk_delete():
                             if data.status_code != 204:
                                 error = "Unable to  delete multiple users, check the audit log for the cause."
                                 display_name = f"{current_user.username}".capitalize()
-                                activity = "Failure in bulk user deletion of {}".format(u[1])
+                                activity = "Failure in bulk user deletion of {}; {}".\
+                                    format(u[1], json.loads(data.content)["errorMessages"])
                                 audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, activity, audit_log)
+                                auto_commit(display_name, 
+                                            activity if len(activity) < 215 else truncate(activity), 
+                                            audit_log)
                                 os.remove(o)
                                 flash(error)
                             else:
@@ -571,9 +575,12 @@ def bulk_users_deletion(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in bulk user deletion of {}".format(u[1])
+                    activity = "Failure in bulk user deletion of {}; {}"\
+                        .format(u[1], json.loads(data.content)["errorMessages"])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    auto_commit_jobs(display_name, activity, audit_log, user)
+                    auto_commit_jobs(display_name, 
+                                     activity if len(activity) < 215 else truncate(activity), 
+                                     audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Executed successfully, bulk user deletion"
@@ -1595,9 +1602,12 @@ def bulk_add_users(user_id, *args):
                     data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)), payload=payload)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure adding users {} to groups {} in bulk".format(u[2], name)
+                        activity = "Failure adding users {} to groups {} in bulk; {}".\
+                            format(u[2], name, json.loads(data.content)["errorMessages"])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        auto_commit_jobs(display_name, activity, audit_log, user)
+                        auto_commit_jobs(display_name, 
+                                         activity if len(activity) < 215 else truncate(activity), 
+                                         audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Bulk addition of users to groups successful"
@@ -2575,3 +2585,24 @@ def capture_exceptions(err, error=None) -> str:
         error = "There's an incompatible character used on the text in your file: {}".format(err)
 
     return error
+
+
+def truncate(chars, limit: int = 215) -> str:
+    """Truncate the characters to match the limit allowed
+    by the table column.
+
+    :param chars: A sentence or group of words.
+
+    :param limit: A range or limit of acceptable characters.
+
+    :return: string of truncated characters.
+
+    """
+    nums = len(chars)
+    if nums > limit:
+        char_limit = []
+        for alpha in range(limit):
+            new_char = chars[alpha]
+            char_limit.append(new_char)
+        return "".join(char_limit) + "..."
+    return chars
