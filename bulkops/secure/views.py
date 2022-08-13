@@ -236,8 +236,8 @@ def contact():
     try:
         if request.method == "POST":
             send_contact_form(form)
-        success = "Your Message was sent successfully."
-        flash(success, category="alert-success")
+            success = "Your Message was sent successfully."
+            flash(success, category="alert-success")
     except:
         error = "We're unable to send your Message."
         flash(error, category="alert-danger")
