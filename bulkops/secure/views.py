@@ -109,7 +109,7 @@ def signup():
             flash("You must use at least one of this special characters (!, @, #, $, %, &, or *) in your password!")
         elif "validate" in mistake:
             if mistake.get('validate') is not None:
-                flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.lstrip(string.punctuation)} instead?")
+                flash(f"Your URL \"{y}\" is not the expected value. Do you mean {y.strip(string.punctuation)} instead?")
         elif y.endswith("atlassian.net") or y.endswith("jira-dev.com") \
                 or y.endswith("jira.com"):
             pattern = r"[^\w\d\|\|\.\|\|-]"
@@ -236,8 +236,8 @@ def contact():
     try:
         if request.method == "POST":
             send_contact_form(form)
-        success = "Your Message was sent successfully."
-        flash(success, category="alert-success")
+            success = "Your Message was sent successfully."
+            flash(success, category="alert-success")
     except:
         error = "We're unable to send your Message."
         flash(error, category="alert-danger")

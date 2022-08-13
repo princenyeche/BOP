@@ -112,13 +112,14 @@ python3 -m pip install -r requirements.txt
 you will also need to export some important variables in order to get the app running in flask. Open your terminal (linux/macOS) and key in the below variables
 ```bash
 export FLASK_APP=startup.py
-export FLASK_ENV=development
 ```
 if you're on `windows` OS, please use `SET` command
 ```powershell
 SET FLASK_APP=startup.py
-SET FLASK_ENV=development
 ```
+
+In flask 2.2.0 the `FLASK_ENV` has been deprecated. Therefore, we're removing its use on the description. If you want to use the development environment, you can declare it on the app configuration `app.run(debug=True)`
+
 #### Providing Mail Support
 For you to get the mail running locally, you will need to `export` the variable on terminal or use `SET` command for windows users.
 ```bash

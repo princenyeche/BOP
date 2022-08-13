@@ -57,7 +57,7 @@ The below documentation outlines, the basic use cases of the app and how you can
 ## Signup
 ![](https://github.com/princenyeche/BOP/blob/master/img/signup.png)
 
-Once you load the app, you will need to create a user account for you to be able to sign in. Navigate to the signin page and register a user.
+Once you load the app, you will need to create a user account for you to be able to sign in. Navigate to the signin page and register a user. Please ensure when signing up, your email address must exist as a site-admin in the cloud instance that you sign up with. 
 
 ## Home 
 ![](https://github.com/princenyeche/BOP/blob/master/img/home_screen.png)

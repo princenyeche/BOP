@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 
+## v4.0.5 - (13 August 2022)
+## Update
+* Dependency update
+* Added a robot header to frontend page
+* Changed Heroku runtime environment to 3.8.13
+
+
 ## v4.0.4 - (10 July 2022)
 ## Update
 * Dependency update
