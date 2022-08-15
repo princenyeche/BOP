@@ -2595,7 +2595,7 @@ def truncate(chars, limit: int = 215) -> str:
 
     :param limit: A range or limit of acceptable characters.
 
-    :return: string of truncated characters.
+    :return: strings - It could be truncated characters.
 
     """
     nums = len(chars)
