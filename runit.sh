@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 export FLASK_APP=startup
-export FLASK_ENV=development
 
 # added db initialization
 flask db init
