@@ -26,7 +26,7 @@ def stringer(n: int = 15):
     return "".join(random.choice(char) for _ in range(n))
 
 
-x = f"{stringer(19)}"
+auto_user_pass = stringer(19)
 
 
 @bulk.route("/signin", methods=["GET", "POST"])
@@ -249,12 +249,12 @@ def default_user():
     default = User(username=f"{bulk.config['APP_ADMIN_USERNAME']}".lower(),
                    email=f"{bulk.config['CONTACT_EMAIL'][0]}".lower(),
                    instances=f"{bulk.config['APP_DEFAULT_INSTANCE']}".lower())
-    default.set_password(x)
+    default.set_password(auto_user_pass)
     db.session.add(default)
     db.session.commit()
     default = User.query.filter_by(username=bulk.config["APP_ADMIN_USERNAME"]).first()
     # send the admin user the account notification details
-    pre_config(default, date, x)
+    pre_config(default, date, auto_user_pass)
 
                    
 # send a message to the user only once, if the version is not the latest.
