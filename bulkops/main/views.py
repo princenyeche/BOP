@@ -351,9 +351,12 @@ def bulk_users_creation(user_id, *args):
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure creating bulk JSM users {}".format(u[0])
+                        activity = "Failure creating bulk JSM users {}; {}".\
+                            format(u[0], json.loads(data.content)["errorMessages"])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        auto_commit_jobs(display_name, activity, audit_log, user)
+                        auto_commit_jobs(display_name,
+                                         activity if len(activity) < 215 else truncate(activity),
+                                         audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Success in creating bulk JSM users"
@@ -372,9 +375,12 @@ def bulk_users_creation(user_id, *args):
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure in creating bulk JIRA users {}".format(u[0])
+                        activity = "Failure in creating bulk JIRA users {}; {}".\
+                            format(u[0], json.loads(data.content)["errorMessages"])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        auto_commit_jobs(display_name, activity, audit_log, user)
+                        auto_commit_jobs(display_name,
+                                         activity if len(activity) < 215 else truncate(activity),
+                                         audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Success in creating bulk JIRA users"
@@ -427,9 +433,12 @@ def bulk_users_group_creation(user_id, *args):
                                                       payload=payload)
                                 if sub_data.status_code != 201:
                                     display_name = f"{user.username}".capitalize()
-                                    activity = "Failure adding user {} to group {} in bulk".format(u[0], name)
+                                    activity = "Failure adding user {} to group {} in bulk; {}".\
+                                        format(u[0], name, json.loads(sub_data.content)["errorMessages"])
                                     audit_log = "ERROR: {}".format(sub_data.status_code)
-                                    auto_commit_jobs(display_name, activity, audit_log, user)
+                                    auto_commit_jobs(display_name,
+                                                     activity if len(activity) < 215 else truncate(activity),
+                                                     audit_log, user)
                                 else:
                                     display_name = f"{user.username}".capitalize()
                                     activity = "Bulk addition of user {} to group {} successful".format(u[0], name)
@@ -437,9 +446,12 @@ def bulk_users_group_creation(user_id, *args):
                                     auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure in creating bulk Jira user {}".format(u[0])
+                        activity = "Failure in creating bulk Jira user {}; {}".\
+                            format(u[0], json.loads(data.content)["errorMessages"])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        auto_commit_jobs(display_name, activity, audit_log, user)
+                        auto_commit_jobs(display_name,
+                                         activity if len(activity) < 215 else truncate(activity),
+                                         audit_log, user)
                 send_app_messages(admin, user,
                                   {"success": "Successful", "job": "Bulk creation of Jira users and groups"})
         except Exception as e:
@@ -532,8 +544,8 @@ def bulk_delete():
                                 activity = "Failure in bulk user deletion of {}; {}".\
                                     format(u[1], json.loads(data.content)["errorMessages"])
                                 audit_log = "ERROR: {}".format(data.status_code)
-                                auto_commit(display_name, 
-                                            activity if len(activity) < 215 else truncate(activity), 
+                                auto_commit(display_name,
+                                            activity if len(activity) < 215 else truncate(activity),
                                             audit_log)
                                 os.remove(o)
                                 flash(error)
@@ -578,8 +590,8 @@ def bulk_users_deletion(user_id, *args):
                     activity = "Failure in bulk user deletion of {}; {}"\
                         .format(u[1], json.loads(data.content)["errorMessages"])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    auto_commit_jobs(display_name, 
-                                     activity if len(activity) < 215 else truncate(activity), 
+                    auto_commit_jobs(display_name,
+                                     activity if len(activity) < 215 else truncate(activity),
                                      audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
@@ -687,9 +699,12 @@ def bulk_create_groups(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 201:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in creating groups {} in bulk".format(uc)
+                    activity = "Failure in creating groups {} in bulk; {}".\
+                        format(uc, json.loads(data.content)["errorMessages"])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    auto_commit_jobs(display_name, activity, audit_log, user)
+                    auto_commit_jobs(display_name,
+                                     activity if len(activity) < 215 else truncate(activity),
+                                     audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Bulk group creation successful"
@@ -787,9 +802,12 @@ def bulk_delete_groups(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in deleting multiple groups {}".format(uc)
+                    activity = "Failure in deleting multiple groups {}; {}".\
+                        format(uc, json.loads(data.content)["errorMessages"])
                     audit_log = "ERROR: {}".format(data.status_code)
-                    auto_commit_jobs(display_name, activity, audit_log, user)
+                    auto_commit_jobs(display_name,
+                                     activity if len(activity) < 215 else truncate(activity),
+                                     audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = "Multiple groups deletion successful"
@@ -1605,8 +1623,8 @@ def bulk_add_users(user_id, *args):
                         activity = "Failure adding users {} to groups {} in bulk; {}".\
                             format(u[2], name, json.loads(data.content)["errorMessages"])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        auto_commit_jobs(display_name, 
-                                         activity if len(activity) < 215 else truncate(activity), 
+                        auto_commit_jobs(display_name,
+                                         activity if len(activity) < 215 else truncate(activity),
                                          audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
@@ -1730,9 +1748,12 @@ def bulk_remove_users(user_id, *args):
                     data = LOGIN.delete(endpoint.group_jira_users(group_name=name, account_id=u[1]))
                     if data.status_code != 200:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure removing multiple users {} from group {}".format(u[2], name)
+                        activity = "Failure removing multiple users {} from group {}; {}".\
+                            format(u[2], name, json.loads(data.content)["errorMessages"])
                         audit_log = "ERROR: {}".format(data.status_code)
-                        auto_commit_jobs(display_name, activity, audit_log, user)
+                        auto_commit_jobs(display_name,
+                                         activity if len(activity) < 215 else truncate(activity),
+                                         audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Successfully removed multiple users from group"
@@ -1833,9 +1854,12 @@ def bulk_projects(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
                     display_name = f"{user.username}".capitalize()
-                    activity = f"Failure deleting these projects {z}"
+                    activity = f"Failure deleting these projects {z}; " \
+                               f"{json.loads(data.content)['errorMessages']}"
                     audit_log = "ERROR: {}".format(data.status_code)
-                    auto_commit_jobs(display_name, activity, audit_log, user)
+                    auto_commit_jobs(display_name,
+                                     activity if len(activity) < 215 else truncate(activity),
+                                     audit_log, user)
                 else:
                     display_name = f"{user.username}".capitalize()
                     activity = f"Success in deleting off these projects {z}"
