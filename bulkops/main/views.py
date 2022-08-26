@@ -352,7 +352,8 @@ def bulk_users_creation(user_id, *args):
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
                         activity = "Failure creating bulk JSM users {}; {}".\
-                            format(u[0], json.loads(data.content).get("errorMessages"))
+                            format(u[0], json.loads(data.content).get("errorMessages", 
+                                                                      "Issue with user check your admin hub"))
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
@@ -376,7 +377,8 @@ def bulk_users_creation(user_id, *args):
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
                         activity = "Failure in creating bulk JIRA users {}; {}".\
-                            format(u[0], json.loads(data.content).get("errorMessages"))
+                            format(u[0], json.loads(data.content).get("errorMessages", 
+                                                                      "Issue with user check your admin hub"))
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
@@ -447,7 +449,8 @@ def bulk_users_group_creation(user_id, *args):
                     else:
                         display_name = f"{user.username}".capitalize()
                         activity = "Failure in creating bulk Jira user {}; {}".\
-                            format(u[0], json.loads(data.content).get("errorMessages"))
+                            format(u[0], json.loads(data.content).get("errorMessages", 
+                                                                      "Issue with user check your admin hub"))
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
