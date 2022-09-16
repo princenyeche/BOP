@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 
+## v4.0.6 - (16 September 2022)
+## Patch and update
+* Dependency update
+* Changed Heroku runtime environment to 3.8.14
+* Security update on dependency mako
+
+
 ## v4.0.5 - (13 August 2022)
 ## Update
 * Dependency update
