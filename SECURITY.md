@@ -8,9 +8,10 @@ The below release version is supported.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| v4.0.6    | :white_check_mark: |
 | v4.0.5    | :white_check_mark: |
 | v4.0.4    | :white_check_mark: |
-| v4.0.3    | :white_check_mark: |
+| v4.0.3    | :x: |
 | v4.0.2    | :x: |
 | v4.0.1    | :x: |
 | v4.0.0    | :x: |
