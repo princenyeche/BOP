@@ -15,7 +15,7 @@ MarkupSafe==2.1.1
 SQLAlchemy==1.4.42
 urllib3==1.26.12
 WTForms==3.0.1
-PyJWT==2.5.0
+PyJWT==2.6.0
 virtualenv
 Flask-Moment==1.0.5
 psycopg2-binary
