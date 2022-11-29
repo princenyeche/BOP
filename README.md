@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6068ebb9b8794d11bcb8471f71b711c6)](https://www.codacy.com/gh/princenyeche/BOP/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=princenyeche/BOP&amp;utm_campaign=Badge_Grade) [![Requirements Status](https://requires.io/github/princenyeche/BOP/requirements.svg?branch=master)](https://requires.io/github/princenyeche/BOP/requirements/?branch=master)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6068ebb9b8794d11bcb8471f71b711c6)](https://www.codacy.com/gh/princenyeche/BOP/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=princenyeche/BOP&amp;utm_campaign=Badge_Grade) 
 [![Build Status](https://app.travis-ci.com/princenyeche/BOP.svg?branch=master)](https://app.travis-ci.com/princenyeche/BOP)
 
 # **Bulk Operations App**
