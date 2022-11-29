@@ -28,4 +28,3 @@ Werkzeug==2.2.2
 redis==4.3.4
 rq==1.11.1
 jiraone==0.7.3
-setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
