@@ -107,7 +107,7 @@ function runHeroku {
      if [[ $askpush == "Y" || $askpush == "y" ]]; then
        git commit -m "commits $2"
         git push heroku master
-        python -mwebbrowser https://dashboard.heroku.com/apps/"${app_name}"/settings
+        python3 -mwebbrowser https://dashboard.heroku.com/apps/"${app_name}"/settings
         else
           echo "No action taken. Run the '$0' if you want to continue"
           exit $SUCCESS
