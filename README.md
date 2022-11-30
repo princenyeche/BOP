@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6068ebb9b8794d11bcb8471f71b711c6)](https://www.codacy.com/gh/princenyeche/BOP/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=princenyeche/BOP&amp;utm_campaign=Badge_Grade) [![Requirements Status](https://requires.io/github/princenyeche/BOP/requirements.svg?branch=master)](https://requires.io/github/princenyeche/BOP/requirements/?branch=master)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6068ebb9b8794d11bcb8471f71b711c6)](https://www.codacy.com/gh/princenyeche/BOP/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=princenyeche/BOP&amp;utm_campaign=Badge_Grade) 
 [![Build Status](https://app.travis-ci.com/princenyeche/BOP.svg?branch=master)](https://app.travis-ci.com/princenyeche/BOP)
 
 # **Bulk Operations App**
@@ -34,7 +34,8 @@ You can be able to launch the application in various ways. Either you host it yo
 ## **Hosting**
 
 ### Heroku
-Heroku is an easier hosting platform which you can get for free to host this app. Simply create an account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own app running in no time. Assuming you've already logged in to Heroku on your terminal. You need to have git, if you don't, download it. If on macOS use "homebrew", for windows use **[Git for Windows](https://git-for-windows.github.io)**
+**Heroku is no longer free as of Nov 28 2022, please note that for any use of Heroku, you have to subscribe to their subscription plans.**
+~~Heroku is an easier hosting platform which you can get for free to host this app. Simply create an account at **[Heroku](https://heroku.com)**, configure and provide python as your framework and you can easily have your own app running in no time. Assuming you've already logged in to Heroku on your terminal. You need to have git, if you don't, download it. If on macOS use "homebrew", for windows use **[Git for Windows](https://git-for-windows.github.io)**~~
 
 You can use the below methods to deploy to heroku
 

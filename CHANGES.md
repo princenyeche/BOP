@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+
+## v4.1.0 - (30 November 2022)
+## Patch and update
+* [Snyk] Security upgrade python from 3.8-slim-buster to 3.10.8-slim-bullseye
+* [Snyk] Security upgrade setuptools from 39.0.1 to 65.5.1
+* Documentation update
+
+
+## v4.0.9 - (16 November 2022)
+## Patch and update
+* Updated Heroku python runtime #479
+* Updated support option icon colours
+
+
+## v4.0.8 - (16 November 2022)
+## Patch and update
+* Dependency update
+
+
 ## v4.0.7 - (29 October 2022)
 ## Patch and update
 * Dependency update
