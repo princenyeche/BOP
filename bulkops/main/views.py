@@ -2221,7 +2221,7 @@ def audit():
         "task": current_user.jobs.filter_by(completion=False).all(),
         "task_count": current_user.jobs.filter_by(completion=False).count()
     }
-    logs = user.audit.order_by(Audit.timestamp.desc()).paginate(page, current_app.config["AUDIT_PER_PAGE"], False)
+    logs = user.audit.order_by(Audit.timestamp.desc()).paginate(page=page, per_page=current_app.config["AUDIT_PER_PAGE"], error_out=False)
     next_url = url_for("audit", page=logs.next_num) if logs.has_next else None
     prev_url = url_for("audit", page=logs.prev_num) if logs.has_prev else None
     return render_template("/config/audit.html", title=f"Audit Log :: {bulk.config['APP_NAME_SINGLE']}",
@@ -2240,7 +2240,7 @@ def messages():
     success = None
     page = request.args.get("page", 1, type=int)
     msg = user.received_messages.order_by(Messages.timestamp.desc()) \
-        .paginate(page, current_app.config["MESSAGES_PER_PAGE"], False)
+        .paginate(page=page, per_page=current_app.config["MESSAGES_PER_PAGE"], error_out=False)
     next_url = url_for("messages", page=msg.next_num) if msg.has_next else None
     prev_url = url_for("messages", page=msg.prev_num) if msg.has_prev else None
     current_user.last_read_message = datetime.utcnow()
@@ -2320,7 +2320,7 @@ def sent_messages():
     success = None
     page = request.args.get("page", 1, type=int)
     msg = user.sent_messages.order_by(Messages.timestamp.desc()) \
-        .paginate(page, current_app.config["MESSAGES_PER_PAGE"], False)
+        .paginate(page=page, per_page=current_app.config["MESSAGES_PER_PAGE"], error_out=False)
     next_url = url_for("sent_messages", page=msg.next_num) if msg.has_next else None
     prev_url = url_for("sent_messages", page=msg.prev_num) if msg.has_prev else None
     if request.method == "POST" and form.validate_on_submit():
