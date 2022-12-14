@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 
+## v4.1.1 - (14 December 2022)
+## Updates and Patch
+* Added CSRF error handler 
+* Changed email template from plain text to HTML 
+* Dependency update 
+* Heroku runtime update to 3.8.16
+
+
 ## v4.1.0 - (30 November 2022)
 ## Patch and update
 * [Snyk] Security upgrade python from 3.8-slim-buster to 3.10.8-slim-bullseye
