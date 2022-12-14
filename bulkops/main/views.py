@@ -351,9 +351,10 @@ def bulk_users_creation(user_id, *args):
                     set_job_progress(100 * i // count)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure creating bulk JSM users {}; {}".\
-                            format(u[0], json.loads(data.content).get("errorMessages", 
-                                                                      "Issue with user, check your admin hub"))
+                        activity = "Failure creating bulk JSM users {}; {}". \
+                            format(u[0], json.loads(data.content).get("errorMessages",
+                                                                      "Issue with user, check your admin hub")
+                        if data.content.decode("utf-8") != "" else "A limiter has been detected")
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
@@ -435,8 +436,10 @@ def bulk_users_group_creation(user_id, *args):
                                                       payload=payload)
                                 if sub_data.status_code != 201:
                                     display_name = f"{user.username}".capitalize()
-                                    activity = "Failure adding user {} to group {} in bulk; {}".\
-                                        format(u[0], name, json.loads(sub_data.content).get("errorMessages"))
+                                    activity = "Failure adding user {} to group {} in bulk; {}". \
+                                        format(u[0], name, json.loads(sub_data.content).get("errorMessages")
+                                    if sub_data.content.decode("utf-8") != "" else
+                                    "A limiter has been detected")
                                     audit_log = "ERROR: {}".format(sub_data.status_code)
                                     auto_commit_jobs(display_name,
                                                      activity if len(activity) < 215 else truncate(activity),
@@ -448,9 +451,10 @@ def bulk_users_group_creation(user_id, *args):
                                     auto_commit_jobs(display_name, activity, audit_log, user)
                     else:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure in creating bulk Jira user {}; {}".\
-                            format(u[0], json.loads(data.content).get("errorMessages", 
-                                                                      "Issue with user, check your admin hub"))
+                        activity = "Failure in creating bulk Jira user {}; {}". \
+                            format(u[0], json.loads(data.content).get("errorMessages",
+                                                                      "Issue with user, check your admin hub")
+                        if data.content.decode("utf-8") != "" else "A limiter has been detected")
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
@@ -590,8 +594,9 @@ def bulk_users_deletion(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in bulk user deletion of {}; {}"\
-                        .format(u[1], json.loads(data.content).get("errorMessages"))
+                    activity = "Failure in bulk user deletion of {}; {}". \
+                        format(u[1], json.loads(data.content).get("errorMessages")
+                    if data.content.decode("utf-8") != "" else "A limiter has been detected")
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name,
                                      activity if len(activity) < 215 else truncate(activity),
@@ -702,8 +707,9 @@ def bulk_create_groups(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 201:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in creating groups {} in bulk; {}".\
-                        format(uc, json.loads(data.content).get("errorMessages"))
+                    activity = "Failure in creating groups {} in bulk; {}". \
+                        format(uc, json.loads(data.content).get("errorMessages")
+                    if data.content.decode("utf-8") != "" else "A limiter has been detected")
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name,
                                      activity if len(activity) < 215 else truncate(activity),
@@ -805,8 +811,9 @@ def bulk_delete_groups(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 200:
                     display_name = f"{user.username}".capitalize()
-                    activity = "Failure in deleting multiple groups {}; {}".\
-                        format(uc, json.loads(data.content).get("errorMessages"))
+                    activity = "Failure in deleting multiple groups {}; {}". \
+                        format(uc, json.loads(data.content).get("errorMessages")
+                    if data.content.decode("utf-8") != "" else "A limiter has been detected")
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name,
                                      activity if len(activity) < 215 else truncate(activity),
@@ -1623,8 +1630,9 @@ def bulk_add_users(user_id, *args):
                     data = LOGIN.post(endpoint.group_jira_users(group_name="{}".format(name)), payload=payload)
                     if data.status_code != 201:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure adding users {} to groups {} in bulk; {}".\
-                            format(u[2], name, json.loads(data.content).get("errorMessages"))
+                        activity = "Failure adding users {} to groups {} in bulk; {}". \
+                            format(u[2], name, json.loads(data.content).get("errorMessages")
+                        if data.content.decode("utf-8") != "" else "A limiter has been detected")
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
@@ -1751,8 +1759,9 @@ def bulk_remove_users(user_id, *args):
                     data = LOGIN.delete(endpoint.group_jira_users(group_name=name, account_id=u[1]))
                     if data.status_code != 200:
                         display_name = f"{user.username}".capitalize()
-                        activity = "Failure removing multiple users {} from group {}; {}".\
-                            format(u[2], name, json.loads(data.content).get("errorMessages"))
+                        activity = "Failure removing multiple users {} from group {}; {}". \
+                            format(u[2], name, json.loads(data.content).get("errorMessages")
+                        if data.content.decode("utf-8") != "" else "A limiter has been detected")
                         audit_log = "ERROR: {}".format(data.status_code)
                         auto_commit_jobs(display_name,
                                          activity if len(activity) < 215 else truncate(activity),
@@ -1857,8 +1866,9 @@ def bulk_projects(user_id, *args):
                 set_job_progress(100 * i // count)
                 if data.status_code != 204:
                     display_name = f"{user.username}".capitalize()
-                    activity = f"Failure deleting these projects {z}; " \
-                               f"{json.loads(data.content).get('errorMessages')}"
+                    activity = "Failure deleting these projects {}; {}". \
+                        format(z, json.loads(data.content).get('errorMessages') if data.content.decode("utf-8") != ""
+                    else "Limiter detected, unable to read data output from project.")
                     audit_log = "ERROR: {}".format(data.status_code)
                     auto_commit_jobs(display_name,
                                      activity if len(activity) < 215 else truncate(activity),
