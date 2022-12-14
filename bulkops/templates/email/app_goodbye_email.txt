@@ -1,9 +1,9 @@
 Hi {{user.username.capitalize()}},
 
-Please if you have the time, kindly drop a feedback by using our contact form on the app to let us know what we could improve.
+We received your request and your account has now been deleted.
 
-As we try to improve the services and features that we render, we will also want to understand how users such as yourself use our application.
-Feel free to signup again with the sign up link below, if you ever choose to use our services again - {{ url_for('signup', _external=True) }}
+We are continuously trying to improve the services and features we render. We would appreciate any feedback on how we can do better or how we have helped you. You can do this here -> https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=reviews
+If you would like to use our services again please feel free to sign up again - {{ url_for('signup', _external=True) }}
 
-Cheers,
-The BulkOps App Team
+Cheers
+BulkOps Team
