@@ -1,4 +1,5 @@
 from flask import render_template
+from flask_wtf.csrf import CSRFError
 from bulkops import db, bulk
 from bulkops.database import Messages
 
@@ -29,3 +30,8 @@ def internal_server_error(error):
 @bulk.errorhandler(503)
 def service_unavailable(error):
     return render_template("error/503.html", title="503 Error: Service Unavailable", Messages=Messages), 503
+
+
+@bulk.errorhandler(CSRFError)
+def handle_csrf_error(error):
+    return render_template("error/400.html", reason=error.description, Messages=Messages), 400
