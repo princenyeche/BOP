@@ -1,6 +1,8 @@
 Hi {{user.username.capitalize()}},
 
-Glad to have you sign up with us, a few things to let you know about the features you're about to use.
+BulkOps (Bulk operations app) is a free Jira application on the Atlassian marketplace - https://marketplace.atlassian.com/apps/1223196/bulkops-app?hosting=cloud&tab=overview . It will help you manage your users, groups and JSM organizations. It is a quick and efficient way to perform bulk administrative operations leaving you with more time to focus on other important tasks!
+Get started - {{ url_for('signin', _external=True) }}
+
 With BulkOps App, you can be able to do the below:
     * Bulk create Jira users or Jira Service Management users
     * Bulk delete users
@@ -9,8 +11,7 @@ With BulkOps App, you can be able to do the below:
     * Bulk delete projects
 And many more...
 
-If you require a walkthrough or a guide on how to use the application, at any point within the app - you can click on
-the help button to know what to do, try it out - {{ url_for('signin', _external=True) }}
+For a walkthrough or guide on how to use the application, you can click on the help button within the app for support.
 
-Cheers,
-The BulkOps App Team
+Cheers
+BulkOps Team
