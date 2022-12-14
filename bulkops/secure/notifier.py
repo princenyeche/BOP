@@ -5,7 +5,7 @@ from bulkops import bulk
 
 def send_reset_password(user):
     token = user.get_reset_password_token()
-    send_message(f"[{bulk.config['APP_NAME']}] Reset Your Password",
+    send_message("Reset your BulkOps password",
                  sender=bulk.config["ADMINS"][0],
                  recipients=[user.email],
                  text_body=render_template("email/reset_password.txt", user=user, token=token),
@@ -23,7 +23,7 @@ def send_contact_form(form):
 
 
 def login_alert(user, ip_address, date):
-    send_message(f"[{bulk.config['APP_NAME']}] Login Alert on your Account",
+    send_message("Login alert on your BulkOps account",
                  sender=bulk.config["ADMINS"][0],
                  recipients=[user.email],
                  text_body=render_template("email/login_alert.txt", user=user, ip_address=ip_address,
@@ -43,7 +43,7 @@ def pre_config(default, date, x):
     
     
 def send_welcome_email(user):
-    send_message(f"[{bulk.config['APP_NAME']}] Thank You for Signing Up!",
+    send_message("Get started with BulkOps",
                  sender=bulk.config["ADMINS"][0],
                  recipients=[user.email],
                  text_body=render_template("email/app_welcome_email.txt", user=user),
@@ -52,7 +52,7 @@ def send_welcome_email(user):
 
     
 def send_confirm_email(user, subject, confirm_url):
-    send_message(f"[{bulk.config['APP_NAME']}] {subject}",
+    send_message(f"{subject}",
                  sender=bulk.config["ADMINS"][0],
                  recipients=[user.email],
                  text_body=render_template("email/email_activation.txt", user=user, confirm_url=confirm_url),
