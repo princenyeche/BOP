@@ -30,7 +30,7 @@ def send_admin_message(admin, user, form):
 
 
 def send_goodbye_message(user):
-    send_message(f"[{bulk.config['APP_NAME']}] account deletion confirmation!",
+    send_message("We're sad to see you go",
                  sender=bulk.config["ADMINS"][0],
                  recipients=[user.email],
                  text_body=render_template("email/app_goodbye_email.txt", user=user),
