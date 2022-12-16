@@ -28,20 +28,20 @@ The below documentation outlines, the basic use cases of the app and how you can
 
 ## Use cases
 ### Cloud to cloud import of users
-* User migration (cloud to cloud or even server to cloud or DC to cloud)? Yes, you can be able to use this app to perform not just the user creation but add those users to their rightful groups as well with the click of a button and using a CSV file to design your data. Check the app help menu to see the format to creating and adding users to multiple groups at the same time.
+* User migration (cloud to cloud or even server to cloud or DC to cloud)? Yes, you can use this app to perform not just the user creation but add those users to their rightful groups as well with the click of a button and using a CSV file to design your data. Check the app help menu to see the format of creating and adding users to multiple groups at the same time.
 
 ### Deleting Jira users or customer user
-* With the BulkOps app for Jira, you can delete Jira users or Jira Service Management customer only user. Simply upload your user record and you can be able to delete these set of users.
+* With the BulkOps app for Jira, you can delete Jira users or Jira Service Management customer only user. Simply upload your user record and you can delete those set of users.
 
 ### Change of multiple project leads
-* You can easily now change Project lead but we didn’t stop there, you can do this in bulk for multiple projects.
+* You can easily now change project lead but we didn’t stop there, you can do this in bulk for multiple projects.
 
 ### Create Jira Service Management customers
 * Not only can you create Jira users but you can create Jira Service Management customers properly with their display name.
 
 ### Deleting multiple users
-* Let’s say you made a mistake during user import, fear not you can easily bulk delete those users.
-* Likewise, if you have hundreds of users, you want remove from utilizing your licenses, this can also be done.
+* Let’s say you made a mistake during user import, fear not as you can easily bulk delete those users.
+* Likewise, if you have hundreds of users, you want remove from utilizing your licenses, this can be done.
 
 ### Removing multiple users from group or simply add users to multiple groups
 * Perform bulk operations of adding users to group or remove them at will.
@@ -52,12 +52,15 @@ The below documentation outlines, the basic use cases of the app and how you can
 ### Deleting the n-th number of issues
 * You know when you want to bulk delete thousands of issues and you’re limited to 1K issues and the multiple clicks? Well, now all you just have to do is use a JQL that returns those thousands of issues and just delete all the way. (Please always make sure when using this, that you take the utmost care. If in doubt, do not press the submit button.)
 
+### Manage JSM organization users
+* You can add users to JSM projects or organization and remove them from JSM project or organization. In addition, you can create or delete JSM organizations.
+
 
 # HOW-TO
 ## Signup
 ![](https://github.com/princenyeche/BOP/blob/master/img/signup.png)
 
-Once you load the app, you will need to create a user account for you to be able to sign in. Navigate to the signin page and register a user. Please ensure when signing up, your email address must exist as a site-admin in the cloud instance that you sign up with. 
+Once you load the app, you will need to create a user account for you to sign in. Navigate to the signin page and register a user. Please ensure when signing up, your email address must exist as a site-admin in the cloud instance that you sign up with. 
 
 ## Home 
 ![](https://github.com/princenyeche/BOP/blob/master/img/home_screen.png)
@@ -67,12 +70,12 @@ Once you've signed in, you can view the navigation menu or you can simply go str
 ## Configuration
 ![](https://github.com/princenyeche/BOP/blob/master/img/config_screen.png)
 
-The configuration page helps you to input your API token, it has a status bar to alert you if the token is active or inactive. Click the "Edit token" button and place your Atlassian API token. Also you can navigate to the "settings" page to change your instance URL.
+The configuration page helps you to input your API token. It has a status bar to alert you if the token is active or inactive. Click the "Edit token" button and place your Atlassian API token. Also you can navigate to the "settings" page to change your instance URL.
 
 ## Bulk creating users and add to multiple groups
 ![](https://github.com/princenyeche/BOP/blob/master/img/create_add_group.png)
 
-The above file format is required when creating Jira users and adding them to multiple groups during creation using your CSV file. You will need to use this character `~>` as a delimiter between each group. Once done simply upload the file and your users will be created and added into the specified groups.
+The above file format is required when creating Jira users and adding them to multiple groups during creation using your CSV file. You will need to use these characters `~>` as a delimiter between each group. Once done, simply upload the file and your users will be created and added into the specified groups.
 
 ## Bulk creation of group
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulk_create_groups.png)
@@ -86,10 +89,10 @@ This feature requires you upload a csv file, click the "Need help" button to see
 
 ## Bulk add customers to organization
 ![](https://github.com/princenyeche/BOP/blob/master/img/add-customers.png)
-To perform this operation, you will need to prepare a your data file in the below format. It is crucial that you CSV file is structured in the below manner having 3 columns, so the app can be able to perform the bulk operation. 
+To perform this operation, you will need to prepare your data file in the below format. It is crucial that you CSV file is structured in the below manner having 3 columns, so the app can perform the bulk operation. 
 
 ![](https://github.com/princenyeche/BOP/blob/master/img/customer_organization.png)
-The name part isn’t used but it helps to nicely represent your customers during the file formulation. Use this delimiter `~>` for adding customers to multiple organization at the same time. Prior to submission ensure you set the “Customer selection” to “JSM Organization”.
+The name part isn’t used but it helps to nicely represent your customers during the file formulation. Use this delimiter `~>` for adding customers to multiple organization at the same time. Prior to submission, ensure you've set the “Customer selection” to “JSM Organization”.
 
 ## Bulk remove customers from projects
 ![](https://github.com/princenyeche/BOP/blob/master/img/customer_project.png)

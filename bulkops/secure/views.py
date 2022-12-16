@@ -130,9 +130,9 @@ def signup():
                         db.session.commit()
                         token = User.create_user_confirmation(user.email)
                         confirm_url = url_for("confirmation_email", token=token, _external=True)
-                        subject = "Confirm Your Email Address"
-                        success = "Congratulations, you have been registered successfully. we also sent you a " \
-                                  "welcome message!😉 and please verify your email as we sent a verification link too. "
+                        subject = "Confirm your email address"
+                        success = "Congratulations, you have been registered successfully. We also sent you a " \
+                                  "welcome message!😉 and verify your email too as we sent a verification link. "
                         flash(success, category="alert-success")
                         welcome_message(extract=form.username.data.lower())
                         sleep(0.5)
@@ -158,7 +158,7 @@ def reset_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_reset_password(user)
-        success = "Check your email for Password reset details..."
+        success = "Check your email for password reset details."
         flash(success, category="alert-success")
         return redirect(url_for("signin"))
     return render_template("secure/reset_request.html", title="Forgot Password", form=form, copy=copy)

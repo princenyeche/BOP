@@ -1,7 +1,7 @@
 Hi {{user.username.capitalize()}},
 
-Glad to have you sign up with us, before you can proceed further, we'll need to verify your email.
-Please click on the link below to verify your email address: {{ confirm_url }}
+To start using BulkOps just click the verify email.
+ verify email - {{ confirm_url }}
 
-Cheers,
-The BulkOps App Team
+Cheers
+BulkOps Team
