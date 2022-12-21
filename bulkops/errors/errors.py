@@ -34,4 +34,5 @@ def service_unavailable(error):
 
 @bulk.errorhandler(CSRFError)
 def handle_csrf_error(error):
-    return render_template("error/400.html", reason=error.description, Messages=Messages), 400
+    return render_template("error/400.html", title="400 Error: Bad Request", 
+                           reason=error.description, Messages=Messages), 400
