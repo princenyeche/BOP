@@ -13,7 +13,7 @@ Mako==1.2.4
 Markdown==3.4.1
 MarkupSafe==2.1.1
 SQLAlchemy==1.4.46
-urllib3==1.26.13
+urllib3==1.26.14
 WTForms==3.0.1
 PyJWT==2.6.0
 virtualenv
