@@ -8,8 +8,12 @@
 {% with flash_msg = get_flashed_messages(with_categories=true) %}
 {% if flash_msg %}
 {% for category, msg in  flash_msg %}
-            <div class="alert {{ category }} alert-warning alert-dismissible fade show" role="alert">
-  <strong>Alert!</strong> {{ msg }}
+              <div class="alert {% if category == 'alert-warning' %} alert-warning {% else %} {{ category or alert-info }} {% endif %} alert-dismissible fade show" role="alert">
+  <strong>{% if category == "alert-danger" %} Alert!
+    {% elif category == "alert-success" %} Success!
+    {% elif category == "alert-warning" %} Warning!
+    {% else %} Info!
+    {% endif %}</strong> {{ msg }}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
