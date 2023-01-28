@@ -2441,7 +2441,7 @@ def notifications():
 @bulk.route("/auto_logout", methods=["GET", "POST"])
 @login_required
 def auto_logout():
-    flash("You have been logged out due to inactivity for 10 minutes.", "success")
+    flash("You have been logged out due to inactivity for 10 minutes.", "alert-info")
     return redirect(url_for("logout"), code=302)
 
 
@@ -2492,7 +2492,7 @@ def account_delete():
         time.sleep(0.5)
         send_user_exit(user, admin, date)
         db.session.commit()
-        flash("You have been signed out")
+        flash("You have been signed out", "alert-info")
         return redirect(url_for("logout"))
     return render_template("/config/account.html",
                            title=f"Configuration - Delete Account ::{bulk.config['APP_NAME_SINGLE']}",
