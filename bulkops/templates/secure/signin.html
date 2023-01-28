@@ -10,7 +10,7 @@
 {% for category, msg in  flash_msg %}
              <div class="alert {% if category == 'alert-warning' %} alert-warning
              {% elif category == 'message' %} alert-info
-             {% elif category == 'info' %} alert-info
+             {% elif category == 'warning' %} alert-info
              {% else %}  {{ category }} {% endif %} alert-dismissible fade show" role="alert">
   <strong>{% if category == "alert-danger" %} Alert!
     {% elif category == "alert-success" %} Success!
