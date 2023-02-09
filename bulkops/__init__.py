@@ -29,6 +29,7 @@ db = SQLAlchemy(bulk)
 migrate = Migrate(bulk, db)
 login = LoginManager(bulk)
 login.login_view = "signin"
+login.login_message_category = "alert-warning"
 mail = Mail(bulk)
 moment = Moment(bulk)
 

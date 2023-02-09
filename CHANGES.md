@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 
+## v4.1.3 - (9 February 2023)
+## Updates and Patch
+* [Snyk] Security upgrade python from 3.10.8-slim-bullseye to 3.12.0a3-slim-bullseye
+* Made changes to flash messages 
+* Dependency update 
+* Updated versioning files
+
+
 ## v4.1.2 - (20 January 2023)
 ## Updates and Patch
 * Fixed issue with email link not appearing when delivered to Microsoft email systems

@@ -8,12 +8,13 @@ The below release version is supported.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| v4.1.3    | :white_check_mark: |
 | v4.1.2    | :white_check_mark: |
 | v4.1.1    | :white_check_mark: |
 | v4.1.0    | :white_check_mark: |
-| v4.0.9    | :white_check_mark: |
-| v4.0.8    | :white_check_mark: |
-| v4.0.7    | :white_check_mark: |
+| v4.0.9    | :x: |
+| v4.0.8    | :x: |
+| v4.0.7    | :x: |
 | v4.0.6    | :x: |
 | v4.0.5    | :x: |
 | v4.0.4    | :x: |

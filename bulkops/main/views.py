@@ -1905,7 +1905,7 @@ def delete_issue():
         p = len(q)
         r = k.strip("JQL:")
         start_at = 0
-        max_results = 50
+        max_results = 100
         sub_task = form.sub_task.data
         if p == 1:
             if m is not None:
@@ -1918,7 +1918,7 @@ def delete_issue():
                     jql_data = json.loads(data.content)
                     total = jql_data["total"]
                     full_number = int(total / 1)
-                    if str(jql_data["issues"]) == "[]":
+                    if not jql_data["issues"]:
                         error = "JQL: {} issues returned, please use another query." \
                             .format(total)
                         flash(error)
@@ -2025,7 +2025,7 @@ def bulk_schedule_delete(user_id, *args):
 
                         for w in list(wjson["issues"]):
                             issue_list.append([w["key"]])
-                        start_at += 50
+                        start_at += 100
                     if start_at > (full_number - 1):
                         break
 
@@ -2441,7 +2441,7 @@ def notifications():
 @bulk.route("/auto_logout", methods=["GET", "POST"])
 @login_required
 def auto_logout():
-    flash("You have been logged out due to inactivity for 10 minutes.", "success")
+    flash("You have been logged out due to inactivity for 10 minutes.", "alert-info")
     return redirect(url_for("logout"), code=302)
 
 
@@ -2492,7 +2492,7 @@ def account_delete():
         time.sleep(0.5)
         send_user_exit(user, admin, date)
         db.session.commit()
-        flash("You have been signed out")
+        flash("You have been signed out", "alert-info")
         return redirect(url_for("logout"))
     return render_template("/config/account.html",
                            title=f"Configuration - Delete Account ::{bulk.config['APP_NAME_SINGLE']}",
