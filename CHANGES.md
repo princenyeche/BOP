@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v4.1.4 - (16 February 2023)
+## Updates and Patch
+* [Snyk] Security upgrade werkzeug from 2.2.2 to 2.2.3
+
 
 ## v4.1.3 - (9 February 2023)
 ## Updates and Patch
