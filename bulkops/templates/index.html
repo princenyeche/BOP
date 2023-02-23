@@ -339,7 +339,7 @@ window.location.href="{{ url_for('index') }}"
   document.getElementById('datetime').value = getDate();
 </script>
 
-<script type="application/javascript" src="https://api64.ipify.org?format=jsonp&callback=getip"></script>
+<script type="application/javascript" src="https://api64.ipify.org?format=jsonp&callback=getIP"></script>
 {% elif current_user.is_authenticated and current_user.confirm_user is true %}
 <!-- The Modal for Logout-->
 <div class="modal fade" id="bulkLogout">
