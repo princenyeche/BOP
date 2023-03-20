@@ -75,7 +75,7 @@ if not bulk.debug:
         bulk.logger.info("BulkOps Start")
 
 
-db.init_app(bulk)
+# db.init_app(bulk)
 migrate.init_app(bulk, db)
 login.init_app(bulk)
 mail.init_app(bulk)
