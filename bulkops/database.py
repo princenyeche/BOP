@@ -25,7 +25,7 @@ class User(UserMixin, db.Model):
     register_date = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
     confirm_user = db.Column(db.Boolean, nullable=False, default=False)
     confirm_period = db.Column(db.DateTime, nullable=True)
-    token = db.Column(db.String(64), index=True)
+    token = db.Column(db.String(600), index=True)
     notify_me = db.Column(db.String(5), index=True)
     audit = db.relationship("Audit", backref="audits", lazy="dynamic", cascade="all,delete")
 

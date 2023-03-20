@@ -41,7 +41,7 @@ def signin():
     if default is None:
         default_user()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data.lower()).first()
         if user is None or not user.check_password(form.password.data):
             error = "Invalid username or password"
             flash(error, category="alert-danger")
