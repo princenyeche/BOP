@@ -1,6 +1,6 @@
 # Security Policy
 
-Security is very important to the **BulKops app** and its users and we're committed to responsible reporting of security related issues. Please help to report any security issues with this app. See below for more details
+Security is very important to the **BulkOps app** and its users and we're committed to responsible reporting of security related issues. Please help to report any security issues with this app. See below for more details
 
 ## Code Scanning
 We regularly scan our code for any potential security vulnerability and we check all dependencies for any impact on vulnerability before committing such changes to the release version. We use a number of tools to perform such scans such as **Codacy** and **Snyk.io** to monitor for any potential security vulnerability and provide mitigation measures where necessary. We regularly scan our code base to ensure best practice in writing code and mitigating any known threats relating to the use of certain code structure.
@@ -86,7 +86,7 @@ The below release version is supported. We encourage you to update to the latest
 
 ## Reporting A Vulnerability
 
-For any bugs or vulnerability please raise a **[Support ticket](https://elfapp.website/support)**. Please try to be explicit as possible, stating all the steps taken and the reproduction of the security issue. If you believe you've found a vulnerability within **BulkOps app** that has a security impact, please send us an email to [support[at]elfapp.webiste](mailto:support%40elfapp.website), indicating the vulnerability and describing the problem with steps of reproduction and we request not to publicly disclose the issue until it has been addressed by us.  
+For any bugs or vulnerability please raise a **[Support ticket](https://elfapp.website/support)**. Please try to be explicit as possible, stating all the steps taken and the reproduction of the security issue. If you believe you've found a vulnerability within **BulkOps app** that has a security impact, please send us an email to [support[at]elfapp.website](mailto:support%40elfapp.website), indicating the vulnerability and describing the problem with steps of reproduction and we request not to publicly disclose the issue until it has been addressed by us.  
 
 ### You can expect
 - Once you've raise a ticket or sent an email, we will look into the issue within 48 hours and get back to you. 
