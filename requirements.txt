@@ -10,7 +10,7 @@ Flask-Uploads==0.2.1
 Flask-WTF==1.1.1
 Jinja2==3.1.2
 Mako==1.2.4
-Markdown==3.4.1
+Markdown==3.4.3
 MarkupSafe==2.1.2
 SQLAlchemy==2.0.6
 urllib3==1.26.15
