@@ -1,9 +1,9 @@
 # Using BulkOps App
-The below documentation outlines, the basic use cases of the app and how you can perform various operations. The feature includes the below
+The below documentation outlines the basic use cases of the app and how to perform various operations. The feature includes the below
 
 ## Features
 * Bulk creating Jira users or Jira Service Management customer users
-* Bulk delete Jira users or delete Jira users or Jira Service Management users
+* Bulk delete Jira users or Jira Service Management users
 * Bulk creation of groups
 * Bulk deletion of groups
 * Bulk add users to groups (multiple users & groups)
@@ -28,20 +28,20 @@ The below documentation outlines, the basic use cases of the app and how you can
 
 ## Use cases
 ### Cloud to cloud import of users
-* User migration (cloud to cloud or even server to cloud or DC to cloud)? Yes, you can use this app to perform not just the user creation but add those users to their rightful groups as well with the click of a button and using a CSV file to design your data. Check the app help menu to see the format of creating and adding users to multiple groups at the same time.
+* User migration (cloud to cloud or even server to cloud or DC to cloud)? Yes, you can use this app to perform not just the user creation but add those users to their rightful groups with the click of a button; using a CSV file to design your data. Check the app help menu to see the format of creating and adding users to multiple groups at the same time.
 
 ### Deleting Jira users or customer user
-* With the BulkOps app for Jira, you can delete Jira users or Jira Service Management customer only user. Simply upload your user record and you can delete those set of users.
+* With the BulkOps app for Jira, you can delete Jira users or Jira Service Management customer only users. Simply upload your user record and delete those set of users.
 
 ### Change of multiple project leads
-* You can easily now change project lead but we didn’t stop there, you can do this in bulk for multiple projects.
+* You can easily change project lead but we didn’t stop there, you can do this in bulk for multiple projects.
 
 ### Create Jira Service Management customers
 * Not only can you create Jira users but you can create Jira Service Management customers properly with their display name.
 
 ### Deleting multiple users
 * Let’s say you made a mistake during user import, fear not as you can easily bulk delete those users.
-* Likewise, if you have hundreds of users, you want remove from utilizing your licenses, this can be done.
+* Likewise, if you have hundreds of users you want remove from utilizing your licenses, this can be done.
 
 ### Removing multiple users from group or simply add users to multiple groups
 * Perform bulk operations of adding users to group or remove them at will.
@@ -60,12 +60,12 @@ The below documentation outlines, the basic use cases of the app and how you can
 ## Signup
 ![](https://github.com/princenyeche/BOP/blob/master/img/signup.png)
 
-Once you load the app, you will need to create a user account for you to sign in. Navigate to the signin page and register a user. Please ensure when signing up, your email address must exist as a site-admin in the cloud instance that you sign up with. 
+When you load the app, you need to create a user account to sign in. Navigate to the signin page and register a user. Please ensure when signing up, your email address must exist as a site-admin in the cloud instance that you sign up with. 
 
 ## Home 
 ![](https://github.com/princenyeche/BOP/blob/master/img/home_screen.png)
 
-Once you've signed in, you can view the navigation menu or you can simply go straight to start using the app. The UI is pretty straight forward for navigation and anytime you're in doubt, click the "Need help" button to get the answer to any F.A.Q's
+When you've signed in, you can view the navigation menu or simply go straight to start using the app. The UI is pretty straight forward for navigation and anytime you're in doubt, click the "Need help" button to get the answer to any F.A.Q's.
 
 ## Configuration
 ![](https://github.com/princenyeche/BOP/blob/master/img/config_screen.png)
@@ -75,12 +75,12 @@ The configuration page helps you to input your API token. It has a status bar to
 ## Bulk creating users and add to multiple groups
 ![](https://github.com/princenyeche/BOP/blob/master/img/create_add_group.png)
 
-The above file format is required when creating Jira users and adding them to multiple groups during creation using your CSV file. You will need to use these characters `~>` as a delimiter between each group. Once done, simply upload the file and your users will be created and added into the specified groups.
+The above file format is required when creating Jira users and adding them to multiple groups during creation using your CSV file. You need to use this character `~>` as a delimiter between each group. Simply upload the file once done and your users will be created and added into the specified groups.
 
 ## Bulk creation of group
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulk_create_groups.png)
 
-Creating multiple groups is easy. Simply navigate to the create groups under the "Groups" button. Key in multiple group names separated by comma to begin.
+Creating multiple groups is easy, simply navigate to the create groups under the "Groups" button. Key in multiple group names separated by comma to begin.
 
 ## Bulk add users to group
 ![](https://github.com/princenyeche/BOP/blob/master/img/bulk_add_users_to_groups.png)
