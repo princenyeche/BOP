@@ -28,7 +28,7 @@ from jiraone import LOGIN, endpoint
 basedir = os.path.abspath(os.path.dirname(__file__))
 our_dir = os.path.join(basedir, bulk.config["UPLOAD_FOLDER"])
 
-if not os.path.exists(our_dir):
+if not os.path.isdir(our_dir):
     os.mkdir(our_dir)
 
 
