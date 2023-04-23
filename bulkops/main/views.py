@@ -2553,7 +2553,7 @@ def check_token_valid():
 
 
 def create_dir(direct, path):
-    if not os.path.exists(direct):
+    if not os.path.isdir(direct):
         os.mkdir(direct)
     if not os.path.exists(path):
         os.mkdir(path)
