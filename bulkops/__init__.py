@@ -63,7 +63,7 @@ if not bulk.debug:
         bulk.logger.addHandler(stream_handler)
     else:
         # error logging configurations
-        if not os.path.exists(our_logs):
+        if not os.path.isdir(our_logs):
             os.mkdir(our_logs)
         file_handler = RotatingFileHandler(os.path.join(our_logs, "bulkops.log"), maxBytes=10240, backupCount=10)
         file_handler.setFormatter(logging.Formatter(
