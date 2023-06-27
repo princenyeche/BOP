@@ -41,11 +41,12 @@ The below release version is supported. We encourage you to update to the latest
 
 | Version | Supported          |
 | ------- | ------------------ |
+| v4.2.1    | :white_check_mark: |
 | v4.2.0    | :white_check_mark: |
-| v4.1.7    | :white_check_mark: |
-| v4.1.6    | :white_check_mark: |
-| v4.1.5    | :white_check_mark: |
-| v4.1.4    | :white_check_mark: |
+| v4.1.7    | :x: |
+| v4.1.6    | :x: |
+| v4.1.5    | :x: |
+| v4.1.4    | :x: |
 | v4.1.3    | :x: |
 | v4.1.2    | :x: |
 | v4.1.1    | :x: |
