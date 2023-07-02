@@ -2353,10 +2353,14 @@ def sent_messages():
 @login_required
 @validate_account
 def delete_messages(id):
-    msg = Messages.query.get(id)
-    db.session.delete(msg)
-    db.session.commit()
-    flash("Your message has been deleted...")
+    msg_check = trigger_rmsg(id)
+    if msg_check is not None:
+        msg = Messages.query.get(id)
+        db.session.delete(msg)
+        db.session.commit()
+        flash("Your message has been deleted...")
+    else:
+        flash("Invalid request")
     return redirect(url_for("sent_messages"))
 
 
