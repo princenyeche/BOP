@@ -7,7 +7,7 @@ from bulkops.database import User, Messages
 from flask_login import current_user, login_user, login_required
 from flask import request
 from flask_login import logout_user
-from werkzeug.urls import url_parse
+from urllib.parse import urlsplit
 from bulkops import db
 from bulkops.secure.forms import RegistrationForm, LoginForm, ResetPasswordForm, ForgetEmailForm, ContactForm
 from bulkops.secure.notifier import send_reset_password, send_contact_form, login_alert, pre_config, \
@@ -55,7 +55,7 @@ def signin():
             login_alert(user, ipaddress, date)
         # Use if you want the user to always be redirected to login page or the link provided
         next_page = request.args.get("next")
-        if not next_page or url_parse(next_page).netloc != "":
+        if not next_page or urlsplit(next_page).netloc != "":
             next_page = url_for("index")
         return redirect(next_page)
     # else  return redirect(url_for('index'))
