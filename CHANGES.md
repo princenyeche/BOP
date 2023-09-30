@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v4.2.3 - (30 September 2023)
+* Dependency update
+  
+
 ## v4.2.2 - (2 July 2023)
 * Security fix
 
