@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# This shell script can be executed to install the app locally or to heroku
+# This shell script can be executed to install the app locally or to Heroku
 # response returned
 FAIL=1
 SUCCESS=0
 
 function systemCheck() {
   # check if python 3 is available
-  PYENV=$(python -c"import sys; print(sys.version_info.major)")
+  PYENV=$(python -c"import sys; print(sys.version_info.major)") || $(python3 -c"import sys; print(sys.version_info.major)")
   if [[ $PYENV -eq 2 ]]; then
      printf 'Checking python version. \n'
      printf 'Python version is lesser than 3, please upgrade and try again. \n'
@@ -26,7 +26,7 @@ function checkbrew() {
     else
       echo "Brew not found, please install it."
       echo 'run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" to install brew'
-      read -rp "Do you want to install heroku?: (y/n)" askinstall
+      read -rp "Do you want to install brew?: (y/n)" askinstall
       if [[ $askinstall == "y" || $askinstall == "Y" ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       else
@@ -86,7 +86,7 @@ function runError {
 function runHeroku {
   read -rp "Enter a name for your Heroku app: " app_name
   if [[ "$app_name" == null ]]; then
-      echo -n "Parameter for heroku app name is missing."
+      echo -n "Parameter for Heroku app name is missing."
       exit $FAIL
   else
     heroku create "$app_name"
