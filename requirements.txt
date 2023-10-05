@@ -1,7 +1,7 @@
 alembic==1.12.0
 chardet==5.2.0
 Click==8.1.7
-Flask==3.0.0
+Flask==2.3.3
 Flask-Login==0.6.2
 Flask-Mail==0.9.1
 Flask-Migrate==4.0.5
@@ -24,7 +24,7 @@ Python-dotenv
 requests
 pymysql
 email_validator
-Werkzeug==3.0.0
+Werkzeug==2.3.7
 redis==5.0.1
 rq==1.15.1
 jiraone==0.7.8
