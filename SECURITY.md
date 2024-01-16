@@ -6,10 +6,10 @@ Security is very important to the **BulkOps app** and its users and we're commit
 We regularly scan our code for any potential security vulnerability and we check all dependencies for any impact on vulnerability before committing such changes to the release version. We use several tools to perform such scans such as **Codacy** and **Snyk.io** to monitor for any potential security vulnerability and provide mitigation measures where necessary. We regularly scan our code base to ensure best practices in writing code and mitigating any known threats relating to the use of certain code structures.
 
 ## Confidentiality
-For cloud-based users, there's no interaction or storage of end-user data. Any information supplied to the app is processed immediately and discarded and no end-user data is stored. Access to log data is restricted to the [author](https://github.com/princenyeche) of the app and all those information is confidential.
+For cloud-based users, there's no interaction or storage of end-user data. Any information supplied to the app is processed immediately and discarded and no end-user data is stored. Access to log data is restricted to the [author](https://github.com/princenyeche) of the app and all that information is confidential.
 
 ## Testing
-We run automated and user-based tests for any update and upgrade that is done on the app, we use apps such as **Travis-ci** to perform automated tests when updates are done. We check for vulnerabilities within dependencies to know and understand if it impacts the app in any way or form. If there are impacts, we provide mitigation steps to remedy the issue.
+We run automated and user-based tests for any update and upgrade that is done on the app, we use apps such as **Travis-ci** to perform automated tests when updates are done. We check for vulnerabilities within dependencies to know and understand if they impact the app in any way or form. If there are impacts, we provide mitigation steps to remedy the issue.
 
 ## Disaster Recovery
 For cloud-based users, daily backup of the database is done in privately encrypted servers. This database is used to store log data used in the **audit** log feature and user-provided data during sign-up. This database **does not store** any end-user data or any uploaded file data.
@@ -41,6 +41,7 @@ The below release version is supported. We encourage you to update to the latest
 
 | Version | Supported          |
 | ------- | ------------------ |
+| v4.2.6    | :white_check_mark: |
 | v4.2.5    | :white_check_mark: |
 | v4.2.4    | :white_check_mark: |
 | v4.2.3    | :white_check_mark: |
