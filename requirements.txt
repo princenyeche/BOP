@@ -24,7 +24,7 @@ Python-dotenv
 requests
 pymysql
 email_validator
-Werkzeug==3.0.1
+Werkzeug==3.0.2
 redis==5.0.3
 rq==1.16.1
 jiraone==0.8.2
