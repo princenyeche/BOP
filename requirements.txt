@@ -26,7 +26,7 @@ pymysql
 email_validator
 Werkzeug==3.0.2
 redis==5.0.4
-rq==1.16.1
+rq==1.16.2
 jiraone==0.8.3
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography
