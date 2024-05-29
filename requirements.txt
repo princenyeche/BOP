@@ -17,7 +17,7 @@ urllib3==2.2.1
 WTForms==3.1.2
 PyJWT==2.8.0
 virtualenv
-Flask-Moment==1.0.5
+Flask-Moment==1.0.6
 psycopg2-binary
 gunicorn
 Python-dotenv
