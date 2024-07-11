@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_wtf.csrf import CSRFProtect
 from flask_moment import Moment
 from redis import Redis
 import rq
@@ -28,6 +29,7 @@ bulk.config.update(
 db = SQLAlchemy(bulk)
 migrate = Migrate(bulk, db)
 login = LoginManager(bulk)
+csrf = CSRFProtect(bulk)
 login.login_view = "signin"
 login.login_message_category = "alert-warning"
 mail = Mail(bulk)
@@ -80,6 +82,7 @@ migrate.init_app(bulk, db)
 login.init_app(bulk)
 mail.init_app(bulk)
 moment.init_app(bulk)
+csrf.init_app(bulk)
 
 from bulkops import database
 from bulkops.main import views
