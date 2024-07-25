@@ -31,3 +31,4 @@ jiraone==0.8.5
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography
 dnspython>=2.6.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
