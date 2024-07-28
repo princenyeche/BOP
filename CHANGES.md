@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## v4.2.8 - (28 July 2024)
+* Dependency update
+* Security patch
+
+
 ## v4.2.7 - (03 July 2024)
 * Dependency update
 * Security patch - #697 #675 #687 #691

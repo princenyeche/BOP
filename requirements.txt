@@ -28,6 +28,7 @@ Werkzeug==3.0.3
 redis==5.0.7
 rq==1.16.2
 jiraone==0.8.5
-setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
 cryptography
 dnspython>=2.6.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
