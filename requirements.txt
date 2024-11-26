@@ -7,14 +7,14 @@ Flask-Mail==0.10.0
 Flask-Migrate==4.0.7
 Flask-SQLAlchemy==3.1.1
 Flask-Uploads==0.2.1
-Flask-WTF==1.2.1
+Flask-WTF==1.2.2
 Jinja2==3.1.4
-Mako==1.3.5
+Mako==1.3.6
 Markdown==3.7
-MarkupSafe==3.0.1
+MarkupSafe==3.0.2
 SQLAlchemy==2.0.36
 urllib3==2.2.3
-WTForms==3.1.2
+WTForms==3.2.1
 PyJWT==2.9.0
 virtualenv
 Flask-Moment==1.0.6
@@ -24,8 +24,8 @@ Python-dotenv
 requests
 pymysql
 email_validator
-Werkzeug==3.0.4
-redis==5.1.1
+Werkzeug==3.0.6
+redis==5.2.0
 rq==1.16.2
 jiraone==0.8.5
 setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
