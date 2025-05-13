@@ -41,6 +41,7 @@ The below release version is supported. We encourage you to update to the latest
 
 | Version | Supported          |
 | ------- | ------------------ |
+| v4.3.1    | :white_check_mark: |
 | v4.3.0    | :white_check_mark: |
 | v4.2.9    | :white_check_mark: |
 | v4.2.8    | :white_check_mark: |
